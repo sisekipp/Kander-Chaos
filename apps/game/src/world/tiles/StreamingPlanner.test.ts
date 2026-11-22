@@ -53,4 +53,12 @@ describe('Streaming-Planer', () => {
     const pl = new StreamingPlanner({ tileSize: 250, viewDistance: 900, maxTiles: 80 }, (tx) => tx >= 0);
     expect(pl.plan(10, 10).every((t) => t.tx >= 0)).toBe(true);
   });
+
+  it('ohne volle Detailstufe (hoher Flug): keine Ring-0-Kacheln, nächste Kacheln in Ring 1', () => {
+    const p = new StreamingPlanner({ tileSize: 250, viewDistance: 900, maxTiles: 200 }, () => true);
+    const plan = p.plan(125, 125, 30, 0, false);
+    expect(plan.some((t) => t.ring === 0)).toBe(false);
+    expect(plan.find((t) => t.tx === 0 && t.tz === 0)!.ring).toBe(1);
+    expect(p.plan(125, 125, 0, 0, true).find((t) => t.tx === 0 && t.tz === 0)!.ring).toBe(0);
+  });
 });

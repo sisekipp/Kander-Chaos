@@ -48,6 +48,9 @@ export class CameraRig {
     if (this.mode === 'chase') {
       this.camera.alpha = chaseAlpha(this.camera.alpha, heading, dt, this.idle);
       this.camera.radius += (zoomForSpeed(speed) - this.camera.radius) * smoothFactor(2, dt);
+    } else if (Math.abs(this.camera.radius - this.walkRadius) > 0.01) {
+      // z. B. nach dem Flug (Radius 0,5 m): sanft zurück auf den Laufabstand
+      this.camera.radius += (this.walkRadius - this.camera.radius) * smoothFactor(4, dt);
     }
     const f = smoothFactor(this.mode === 'chase' ? 14 : 12, dt);
     this.camera.setTarget(Vector3.Lerp(this.camera.target, target, f), false, false, true);

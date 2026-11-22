@@ -27,6 +27,8 @@ import { CollisionLayer } from './tiles/CollisionLayer.ts';
 import { WorkerPool } from './WorkerPool.ts';
 import { createPanorama } from './panorama.ts';
 import { RoadLayer } from './roads/RoadLayer.ts';
+import { flightRoute } from '../fly/autopilot.ts';
+import { FlySession } from '../fly/FlySession.ts';
 
 export interface Place {
   name: string;
@@ -144,10 +146,52 @@ export class World {
     this.unsubs.push(game.onQualityChange((qq) => this.applyQuality(qq)));
   }
 
+  private fly: FlySession | null = null;
+
+  /** Flugmodus starten (nur zu Fuß). */
+  startFlying(): boolean {
+    if (this.fly?.flying || this.player.state.kind !== 'walking') return false;
+    const b = this.index.bounds,
+      s = this.index.tileSize;
+    this.fly = new FlySession(this.game.scene, this.game.camera, this.tiles, this.player, {
+      minX: b.minTx * s,
+      minZ: b.minTz * s,
+      maxX: (b.maxTx + 1) * s,
+      maxZ: (b.maxTz + 1) * s,
+    });
+    useGameStore.getState().setFlying(true);
+    return true;
+  }
+
+  /** Flugmodus beenden: zurück zur Figur oder hier landen. */
+  stopFlying(land = false): void {
+    if (!this.fly?.flying) return;
+    if (land) this.fly.land();
+    else this.fly.back();
+    useGameStore.getState().setFlying(false);
+  }
+
+  get flying(): boolean {
+    return this.fly?.flying ?? false;
+  }
+
+  /** Messroute „Flug“ (Kernstadt → Wollbach → zurück) im Flugmodus starten. */
+  startFlightRoute(town = 'Kandern', village = 'Wollbach'): boolean {
+    const a = this.places.find((p) => p.name === town),
+      b = this.places.find((p) => p.name === village);
+    if (!a || !b || (!this.fly?.flying && !this.startFlying())) return false;
+    this.fly?.controllerState?.startRoute(flightRoute(a, b));
+    return true;
+  }
+
   private update(dt: number): void {
+    const focus = this.fly?.update(dt) ?? null;
+    if (this.fly && !this.fly.active) this.fly = null;
     const p = this.player.position;
     const v = this.player.velocity;
-    this.tiles.update(p.x, p.z, v.x, v.z);
+    if (focus) this.tiles.update(focus.x, focus.z, focus.vx, focus.vz, focus.fullDetail);
+    else this.tiles.update(p.x, p.z, v.x, v.z);
+    this.fly?.checkLanding();
     this.player.update(dt);
     this.vehicles?.update(p.x, p.z);
     this.props?.update(collectPropActors(this.player, this.vehicles), p.x, p.z, this.player.state.kind === 'walking');
@@ -157,7 +201,8 @@ export class World {
       const from = p.add(new Vector3(0, 1, 0));
       this.debug.line(from, from.add(v.scale(0.5)), DEBUG_COLORS.velocity);
     }
-    this.panorama.follow(p.x, p.z, p.y - 60);
+    if (focus) this.panorama.follow(focus.x, focus.z, focus.y - 60);
+    else this.panorama.follow(p.x, p.z, p.y - 60);
     this.materials.setFog(this.game.scene.fogStart, this.game.scene.fogEnd);
     this.materials.setTime(performance.now() / 1000);
     this.game.perf.loadedTiles = this.tiles.loadedCount;
@@ -215,10 +260,11 @@ export class World {
   }
 
   get routeActive(): boolean {
-    return this.player.route !== null;
+    return this.player.route !== null || !!this.fly?.controllerState?.routeActive;
   }
 
   dispose(): void {
+    useGameStore.getState().setFlying(false);
     for (const u of this.unsubs) u();
     this.player.dispose();
     this.vehicles?.dispose();

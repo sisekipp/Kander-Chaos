@@ -72,6 +72,27 @@ export class PlayerController {
     );
   }
 
+  /** Flugmodus: Figur bleibt reglos stehen (kein Update, keine Eingabe), bis `resume` aufgerufen wird. */
+  suspended = false;
+
+  suspend(): void {
+    this.suspended = true;
+  }
+
+  /**
+   * Flug beenden: ohne Ziel bleibt die Figur, wo sie war (sie wird wie nach einem Teleport neu eingesetzt,
+   * sobald die Kollision ihrer Kachel wieder geladen ist); mit Ziel landet sie dort.
+   */
+  resume(land?: { x: number; z: number }): void {
+    this.suspended = false;
+    input.jump = false;
+    input.flyUp = false;
+    input.flyDown = false;
+    const p = land ?? this.walker.position;
+    this.walker.placeAt(p.x, p.z);
+    if (land) this.rig.jumpTo(this.walker.position.add(CAMERA_OFFSET));
+  }
+
   /** Figur an eine neue Stelle setzen (Spielstand, Messfahrt, Tests). Steigt vorher aus. */
   teleport(x: number, z: number): void {
     if (this.vehicle) this.leaveVehicle(true);
@@ -114,6 +135,7 @@ export class PlayerController {
   }
 
   update(dtMs: number): void {
+    if (this.suspended) return;
     const dt = Math.min(dtMs, 100) / 1000;
     const action = consumeAction();
     if (this.route) {

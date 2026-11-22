@@ -61,7 +61,11 @@ export class StreamingPlanner {
     if (x < ax0 || x > ax1 || z < az0 || z > az1) this.anchor = { tx, tz };
   }
 
-  plan(x: number, z: number, vx = 0, vz = 0): PlannedTile[] {
+  /**
+   * @param fullDetail false = keine volle Detailstufe (Flug in großer Höhe): Ring 0 wird zu Ring 1,
+   *   kein Vorausladen in Ring 0.
+   */
+  plan(x: number, z: number, vx = 0, vz = 0, fullDetail = true): PlannedTile[] {
     this.updateAnchor(x, z);
     const { tx: ax, tz: az } = this.anchor!;
     const s = this.o.tileSize;
@@ -80,7 +84,7 @@ export class StreamingPlanner {
           cz = (tz + 0.5) * s - z;
         const dist = Math.hypot(cx, cz);
         let ring: Ring;
-        if (cheb <= 1) ring = 0;
+        if (cheb <= 1) ring = fullDetail ? 0 : 1;
         else if (cheb <= 2) ring = 1;
         else if (dist <= this.o.viewDistance) ring = 2;
         else continue;
@@ -90,7 +94,7 @@ export class StreamingPlanner {
       }
     }
     // Vorausladen: bei schneller Fahrt die übernächste Kachel in Fahrtrichtung schon in Ring 0
-    if (speed >= this.o.lookAheadSpeed) {
+    if (fullDetail && speed >= this.o.lookAheadSpeed) {
       const lx = Math.floor((x + dirX * s * 1.5) / s),
         lz = Math.floor((z + dirZ * s * 1.5) / s);
       for (const t of out) {

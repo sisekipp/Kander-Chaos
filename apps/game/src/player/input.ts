@@ -15,6 +15,9 @@ export const input = {
   gas: false,
   brake: false,
   horn: false,
+  /** Flugmodus: steigen / sinken (Knöpfe bzw. Leertaste / Umschalt). */
+  flyUp: false,
+  flyDown: false,
   /** Einmaliges Ereignis: Ein-/Aussteigen (Knopf oder Taste E); wird beim Lesen zurückgesetzt. */
   action: false,
 };
@@ -37,6 +40,8 @@ function applyKeys(): void {
   }
   if (keys.has('Space')) input.jump = true;
   input.brake = keys.has('Space') || keys.has('ShiftLeft');
+  input.flyUp = keys.has('Space');
+  input.flyDown = keys.has('ShiftLeft') || keys.has('ShiftRight');
   input.gas = keys.has('KeyW') || keys.has('ArrowUp');
 }
 

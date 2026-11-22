@@ -83,11 +83,11 @@ export function PlayingScreen() {
     setFast(input.fast);
   };
 
-  const route = (names: string[], label: string) => {
+  const route = (names: string[], label: string, flight = false) => {
     const w = getWorld(),
       g = getGame();
     if (!w || !g) return;
-    if (!w.startRoute(names)) {
+    if (!(flight ? w.startFlightRoute(names[0], names[1]) : w.startRoute(names))) {
       setStatus(`Route ${names.join(' → ')}: Orte nicht gefunden`);
       return;
     }
@@ -97,6 +97,7 @@ export function PlayingScreen() {
     const poll = window.setInterval(() => {
       if (getWorld()?.routeActive) return;
       window.clearInterval(poll);
+      if (flight) getWorld()?.stopFlying();
       g.perf.recorder.stop();
       // Bericht über den Messlauf-Mechanismus (0 s Nachlauf) herunterladen
       runMeasurement(
@@ -177,6 +178,9 @@ export function PlayingScreen() {
           onClick={() => route(['Feuerbach', 'Kandern', 'Wollbach'], 'langefahrt')}
         >
           Lange Fahrt
+        </button>
+        <button className="secondary" disabled={measuring} onClick={() => route(['Kandern', 'Wollbach'], 'flug', true)}>
+          Flug
         </button>
         <button className="secondary" disabled={measuring} onClick={() => measureFree('messlauf', 60)}>
           Messlauf 60 s

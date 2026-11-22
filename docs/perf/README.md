@@ -48,6 +48,16 @@ Ergebnisse in `docs/perf/<datum>-fahrzeuge.md` eintragen (Tabelle wie oben).
 
 **Desktop-Vergleich** (Playwright-WebKit, keine Abnahme): Beim Chaos-Test wurden 533 Objekte in 30 s ausgelöst, höchstens 80 Körper und 60 Trümmer waren gleichzeitig aktiv, bei ~100 fps. Die Endgeschwindigkeiten lagen bei Auto 74,5, Motorrad 84,5 und Fahrrad 28,3 km/h.
 
+## Flugmodus (Change `fly-mode`, Aufgabe 4.3)
+
+Menü → **Testmodus** (Qualität „Niedrig“):
+
+1. **Flug** antippen. Der Autopilot fliegt eine Runde in 100 m Höhe über der Kernstadt (25 m/s), dann in 150 m Höhe mit 50 m/s nach Wollbach und im Tiefflug (30 m, 25 m/s) zurück. Das dauert etwa 6 Minuten. Am Ende landet die Kamera wieder bei der Figur, und `messung-flug-….json` wird heruntergeladen.
+2. Während des Flugs auf Löcher im Gelände unter und vor der Kamera achten (es darf keine geben) und auf die Kachelzahl in der Leistungsanzeige.
+3. Ziel: Ø ≥ 30 fps, 1-%-Low ≥ 20 fps (`summary.avgFps`, `summary.p1LowFps`). Ergebnis in `docs/perf/<datum>-flug.md` eintragen.
+
+**Desktop-Vergleich** (Playwright-WebKit, keine Abnahme): wird nach dem ersten Lauf von `e2e/fly.spec.ts` nachgetragen.
+
 ## Ziele (Spec `performance-budget`)
 
 | Kennzahl | Ziel | Quelle |

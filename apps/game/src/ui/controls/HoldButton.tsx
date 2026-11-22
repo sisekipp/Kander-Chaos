@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { input } from '../../player/input.ts';
 
-type HoldKey = 'gas' | 'brake' | 'horn' | 'jump';
+type HoldKey = 'gas' | 'brake' | 'horn' | 'jump' | 'flyUp' | 'flyDown' | 'fast';
 
 /** Großer Knopf, der einen Eingabeschalter setzt, solange er gedrückt ist (Multitouch-fähig). */
 export function HoldButton({ field, label, className }: { field: HoldKey; label: string; className?: string }) {

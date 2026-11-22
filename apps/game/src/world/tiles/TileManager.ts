@@ -104,19 +104,19 @@ export class TileManager {
     return !!t && t.ring === 0 && t.hasCollision;
   }
 
-  /** Pro Bild aufrufen. */
-  update(x: number, z: number, vx: number, vz: number): void {
+  /** Pro Bild aufrufen. `fullDetail` = false: keine Ring-0-Kacheln (Flug in großer Höhe). */
+  update(x: number, z: number, vx: number, vz: number, fullDetail = true): void {
     if (this.disposed) return;
     const now = performance.now();
     if (now - this.lastPlan > 200) {
       this.lastPlan = now;
-      this.replan(x, z, vx, vz);
+      this.replan(x, z, vx, vz, fullDetail);
     }
     this.queue.process(this.o.uploadBudgetMs ?? 4);
   }
 
-  private replan(x: number, z: number, vx: number, vz: number): void {
-    const plan = this.planner.plan(x, z, vx, vz);
+  private replan(x: number, z: number, vx: number, vz: number, fullDetail: boolean): void {
+    const plan = this.planner.plan(x, z, vx, vz, fullDetail);
     this.desired.clear();
     for (const t of plan) this.desired.set(t.id, t.ring);
     for (const [id, t] of this.loaded) {

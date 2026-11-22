@@ -46,6 +46,9 @@ export interface GameState {
   setStorage(s: GameState['storage']): void;
   /** Laden der 3D-Modelle beim Start (Fortschritt im Ladebildschirm). */
   models: { loaded: number; total: number; ready: boolean; error: string };
+  /** Flugmodus aktiv (Kamera frei, Figur eingefroren). */
+  flying: boolean;
+  setFlying(v: boolean): void;
   setModels(m: Partial<GameState['models']>): void;
 }
 
@@ -90,4 +93,6 @@ export const useGameStore = create<GameState>((set) => ({
   setStorage: (storage) => set({ storage }),
   models: { loaded: 0, total: 0, ready: false, error: '' },
   setModels: (m) => set((s) => ({ models: { ...s.models, ...m } })),
+  flying: false,
+  setFlying: (flying) => set({ flying }),
 }));
