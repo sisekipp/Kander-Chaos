@@ -1,37 +1,10 @@
 {
   "id": "car-compact",
   "kind": "vehicle",
-  "source": "kenney-car-kit/Models/GLB format/sedan.glb",
-  "scale": [1.17, 1.26, 1.65],
-  "texture": {
-    "paintNode": "body"
+  "source": "own/car-compact.glb",
+  "colorZones": {
+    "paint": ["paint"]
   },
-  "parts": [
-    {
-      "name": "detach_bumper_front",
-      "from": "body",
-      "min": [-0.85, -0.2, 1.07],
-      "max": [0.85, 0.42, 1.47]
-    },
-    {
-      "name": "detach_bumper_back",
-      "from": "body",
-      "min": [-0.85, -0.2, -1.47],
-      "max": [0.85, 0.42, -1.07]
-    },
-    {
-      "name": "detach_door_left",
-      "from": "body",
-      "min": [0.62, 0.15, -0.35],
-      "max": [0.85, 0.75, 0.45]
-    },
-    {
-      "name": "detach_door_right",
-      "from": "body",
-      "min": [-0.85, 0.15, -0.35],
-      "max": [-0.62, 0.75, 0.45]
-    }
-  ],
   "vehicle": {
     "vehicleKind": 0,
     "type": "Kompaktwagen",

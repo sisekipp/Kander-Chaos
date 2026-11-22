@@ -1,0 +1,13 @@
+{
+  "id": "bike-city",
+  "kind": "vehicle",
+  "source": "own/bike-city.glb",
+  "colorZones": {
+    "paint": ["paint"]
+  },
+  "vehicle": {
+    "vehicleKind": 1,
+    "type": "Stadtrad",
+    "wheels": ["wheel-front", "wheel-back"]
+  }
+}

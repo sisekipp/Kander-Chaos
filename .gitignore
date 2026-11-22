@@ -21,3 +21,4 @@ assets/sources/kenney-car-kit/Models/GLB format/*
 !assets/sources/kenney-car-kit/Models/GLB format/hatchback-sports.glb
 !assets/sources/kenney-car-kit/Models/GLB format/suv-luxury.glb
 !assets/sources/kenney-car-kit/Models/GLB format/van.glb
+__pycache__/

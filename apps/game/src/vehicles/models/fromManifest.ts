@@ -46,8 +46,19 @@ export function wheelSpecs(base: VehicleSpec, info: VehicleInfo): WheelSpec[] {
   });
 }
 
-/** Spezifikation für ein Modell: Fahrverhalten der Art, Box und Räder aus den Modellmaßen. */
+/** Abweichendes Fahrverhalten einzelner Fahrzeugtypen gegenüber ihrer Art (z. B. Roller langsamer als Motorrad). */
+const TYPE_TUNING: Record<string, Partial<VehicleSpec>> = {
+  Roller: { maxSpeed: 45 / 3.6, engineForce: 1900, mass: 140 },
+};
+
+/**
+ * Spezifikation für ein Modell: Fahrverhalten der Art, Box und Räder aus den Modellmaßen. Bei Zweirädern bleibt
+ * die Kollisionsbox so schmal wie in der Art vorgegeben (der Lenker soll nicht wie eine breite Karosserie wirken).
+ */
 export function specForModel(base: VehicleSpec, entry: ModelEntry): VehicleSpec {
   const info = entry.vehicle!;
-  return { ...base, name: info.type, box: physicsBox(info).box, wheels: wheelSpecs(base, info) };
+  const box = physicsBox(info).box;
+  if (base.twoWheeler) box[0] = Math.min(box[0], base.box[0]);
+  const tuned = { ...base, ...TYPE_TUNING[info.type] };
+  return { ...tuned, name: info.type, box, wheels: wheelSpecs(tuned, info) };
 }

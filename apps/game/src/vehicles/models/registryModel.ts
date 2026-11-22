@@ -63,6 +63,9 @@ export function buildRegistryVehicle(
     if (m.material?.name.endsWith('zone_paint')) bakePaint(m, paint);
     m.material = material;
     m.isPickable = false;
+    // Vertex-Farben kommen als RGBA (Alpha immer 1): sonst landet das Mesh im Transparenz-Durchgang
+    // ohne Tiefenschreiben, und innere Flächen scheinen durch (Dach, Glas, Haube fehlen scheinbar)
+    m.hasVertexAlpha = false;
     const nodeName = m.name.split(':').pop() ?? '';
     const parentName = m.parent?.name.split(':').pop() ?? '';
     if (nodeName.startsWith('detach_') || parentName.startsWith('detach_')) detachable.push(m);
@@ -86,11 +89,26 @@ export function buildRegistryVehicle(
   // Teile ohne eigenen Knoten unter root hängen (für das Abkoppeln im Schadensfall)
   for (const d of detachable) d.setParent(root);
 
+  // Zweiräder: Knoten „steer“ (Gabel, Lenker) und Vorderrad drehen um die Senkrechte durch das Vorderrad
+  let steerNode: TransformNode | null = null;
+  const steerPart = [modelRoot, ...modelRoot.getChildren(undefined, false)].find(
+    (n) => n.name.split(':').pop() === 'steer',
+  ) as TransformNode | undefined;
+  const front = spec.wheels.findIndex((w) => w.steer);
+  if (spec.twoWheeler && steerPart && front >= 0) {
+    steerNode = new TransformNode(`${name}-steer`, scene);
+    steerNode.parent = root;
+    steerNode.position.set(spec.wheels[front].x, 0, spec.wheels[front].z);
+    steerNode.computeWorldMatrix(true);
+    steerPart.setParent(steerNode);
+    wheels[front].setParent(steerNode);
+  }
+
   return {
     root,
     body: body ?? meshes[0],
     wheels,
-    steerNode: null,
+    steerNode,
     detachable,
     material,
     dispose: () => {

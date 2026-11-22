@@ -20,6 +20,68 @@
       "parts": []
     },
     {
+      "id": "bike-city",
+      "kind": "vehicle",
+      "file": "bike-city.glb",
+      "bytes": 41560,
+      "triangles": 1772,
+      "zones": ["paint"],
+      "parts": ["detach_basket", "detach_mudguard_back", "detach_mudguard_front", "detach_rack"],
+      "vehicle": {
+        "vehicleKind": 1,
+        "type": "Stadtrad",
+        "wheels": [
+          {
+            "name": "wheel-front",
+            "x": 0,
+            "y": 0.35,
+            "z": 0.56,
+            "radius": 0.35
+          },
+          {
+            "name": "wheel-back",
+            "x": 0,
+            "y": 0.35,
+            "z": -0.56,
+            "radius": 0.35
+          }
+        ],
+        "box": [0.58, 0.946, 1.822],
+        "center": [0, 0.593, -0.04]
+      }
+    },
+    {
+      "id": "bike-mtb",
+      "kind": "vehicle",
+      "file": "bike-mtb.glb",
+      "bytes": 34256,
+      "triangles": 1528,
+      "zones": ["paint"],
+      "parts": ["detach_bottle", "detach_seatclamp"],
+      "vehicle": {
+        "vehicleKind": 1,
+        "type": "Mountainbike",
+        "wheels": [
+          {
+            "name": "wheel-front",
+            "x": -0.008,
+            "y": 0.35,
+            "z": 0.6,
+            "radius": 0.35
+          },
+          {
+            "name": "wheel-back",
+            "x": -0.008,
+            "y": 0.35,
+            "z": -0.54,
+            "radius": 0.35
+          }
+        ],
+        "box": [0.72, 0.815, 1.174],
+        "center": [0, 0.557, 0.037]
+      }
+    },
+    {
       "id": "bike-rack",
       "kind": "prop",
       "file": "bike-rack.glb",
@@ -68,135 +130,416 @@
       "id": "car-compact",
       "kind": "vehicle",
       "file": "car-compact.glb",
-      "bytes": 48232,
-      "triangles": 2032,
+      "bytes": 51872,
+      "triangles": 2084,
       "zones": ["paint"],
-      "parts": ["detach_bumper_front", "detach_bumper_back", "detach_door_left", "detach_door_right"],
+      "parts": [
+        "detach_bumper_back",
+        "detach_bumper_front",
+        "detach_door_left",
+        "detach_door_right",
+        "detach_mirror_left",
+        "detach_mirror_right"
+      ],
       "vehicle": {
         "vehicleKind": 0,
         "type": "Kompaktwagen",
         "wheels": [
           {
             "name": "wheel-front-left",
-            "x": 0.497,
-            "y": 0.378,
-            "z": 1.089,
-            "radius": 0.378
+            "x": 0.762,
+            "y": 0.32,
+            "z": 1.33,
+            "radius": 0.32
           },
           {
             "name": "wheel-front-right",
-            "x": -0.497,
-            "y": 0.378,
-            "z": 1.089,
-            "radius": 0.378
+            "x": -0.762,
+            "y": 0.32,
+            "z": 1.33,
+            "radius": 0.32
           },
           {
             "name": "wheel-back-left",
-            "x": 0.497,
-            "y": 0.378,
-            "z": -1.089,
-            "radius": 0.378
+            "x": 0.762,
+            "y": 0.32,
+            "z": -1.33,
+            "radius": 0.32
           },
           {
             "name": "wheel-back-right",
-            "x": -0.497,
-            "y": 0.378,
-            "z": -1.089,
-            "radius": 0.378
+            "x": -0.762,
+            "y": 0.32,
+            "z": -1.33,
+            "radius": 0.32
           }
         ],
-        "box": [1.755, 1.449, 4.207],
-        "center": [0, 0.913, -0.041]
+        "box": [2.14, 1.23, 4.313],
+        "center": [0, 0.915, 0.016]
       }
     },
     {
       "id": "car-estate",
       "kind": "vehicle",
       "file": "car-estate.glb",
-      "bytes": 43740,
-      "triangles": 2086,
+      "bytes": 52540,
+      "triangles": 2136,
       "zones": ["paint"],
-      "parts": ["detach_bumper_front", "detach_bumper_back", "detach_door_left", "detach_door_right"],
+      "parts": [
+        "detach_bumper_back",
+        "detach_bumper_front",
+        "detach_door_left",
+        "detach_door_right",
+        "detach_mirror_left",
+        "detach_mirror_right"
+      ],
       "vehicle": {
         "vehicleKind": 0,
         "type": "Kombi",
         "wheels": [
           {
             "name": "wheel-front-left",
-            "x": 0.51,
-            "y": 0.39,
-            "z": 1.272,
-            "radius": 0.39
+            "x": 0.782,
+            "y": 0.33,
+            "z": 1.42,
+            "radius": 0.33
           },
           {
             "name": "wheel-front-right",
-            "x": -0.51,
-            "y": 0.39,
-            "z": 1.272,
-            "radius": 0.39
+            "x": -0.782,
+            "y": 0.33,
+            "z": 1.42,
+            "radius": 0.33
           },
           {
             "name": "wheel-back-left",
-            "x": 0.51,
-            "y": 0.39,
-            "z": -1.115,
-            "radius": 0.39
+            "x": 0.782,
+            "y": 0.33,
+            "z": -1.42,
+            "radius": 0.33
           },
           {
             "name": "wheel-back-right",
-            "x": -0.51,
-            "y": 0.39,
-            "z": -1.115,
-            "radius": 0.39
+            "x": -0.782,
+            "y": 0.33,
+            "z": -1.42,
+            "radius": 0.33
           }
         ],
-        "box": [1.8, 1.527, 4.475],
-        "center": [0, 0.926, 0.039]
+        "box": [2.18, 1.225, 4.773],
+        "center": [0, 0.912, 0.007]
+      }
+    },
+    {
+      "id": "car-mini",
+      "kind": "vehicle",
+      "file": "car-mini.glb",
+      "bytes": 50652,
+      "triangles": 1968,
+      "zones": ["paint"],
+      "parts": [
+        "detach_bumper_back",
+        "detach_bumper_front",
+        "detach_door_left",
+        "detach_door_right",
+        "detach_mirror_left",
+        "detach_mirror_right"
+      ],
+      "vehicle": {
+        "vehicleKind": 0,
+        "type": "Kleinstwagen",
+        "wheels": [
+          {
+            "name": "wheel-front-left",
+            "x": 0.652,
+            "y": 0.29,
+            "z": 0.88,
+            "radius": 0.29
+          },
+          {
+            "name": "wheel-front-right",
+            "x": -0.652,
+            "y": 0.29,
+            "z": 0.88,
+            "radius": 0.29
+          },
+          {
+            "name": "wheel-back-left",
+            "x": 0.652,
+            "y": 0.29,
+            "z": -0.88,
+            "radius": 0.29
+          },
+          {
+            "name": "wheel-back-right",
+            "x": -0.652,
+            "y": 0.29,
+            "z": -0.88,
+            "radius": 0.29
+          }
+        ],
+        "box": [1.94, 1.25, 2.773],
+        "center": [0, 0.925, 0.007]
+      }
+    },
+    {
+      "id": "car-mpv",
+      "kind": "vehicle",
+      "file": "car-mpv.glb",
+      "bytes": 52260,
+      "triangles": 2120,
+      "zones": ["paint"],
+      "parts": [
+        "detach_bumper_back",
+        "detach_bumper_front",
+        "detach_door_left",
+        "detach_door_right",
+        "detach_mirror_left",
+        "detach_mirror_right"
+      ],
+      "vehicle": {
+        "vehicleKind": 0,
+        "type": "Familienvan",
+        "wheels": [
+          {
+            "name": "wheel-front-left",
+            "x": 0.782,
+            "y": 0.32,
+            "z": 1.45,
+            "radius": 0.32
+          },
+          {
+            "name": "wheel-front-right",
+            "x": -0.782,
+            "y": 0.32,
+            "z": 1.45,
+            "radius": 0.32
+          },
+          {
+            "name": "wheel-back-left",
+            "x": 0.782,
+            "y": 0.32,
+            "z": -1.45,
+            "radius": 0.32
+          },
+          {
+            "name": "wheel-back-right",
+            "x": -0.782,
+            "y": 0.32,
+            "z": -1.45,
+            "radius": 0.32
+          }
+        ],
+        "box": [2.18, 1.495, 4.653],
+        "center": [0, 1.047, 0.007]
+      }
+    },
+    {
+      "id": "car-pickup",
+      "kind": "vehicle",
+      "file": "car-pickup.glb",
+      "bytes": 52168,
+      "triangles": 2131,
+      "zones": ["paint"],
+      "parts": [
+        "detach_bumper_back",
+        "detach_bumper_front",
+        "detach_door_left",
+        "detach_door_right",
+        "detach_mirror_left",
+        "detach_mirror_right"
+      ],
+      "vehicle": {
+        "vehicleKind": 0,
+        "type": "Pickup",
+        "wheels": [
+          {
+            "name": "wheel-front-left",
+            "x": 0.832,
+            "y": 0.38,
+            "z": 1.6,
+            "radius": 0.38
+          },
+          {
+            "name": "wheel-front-right",
+            "x": -0.832,
+            "y": 0.38,
+            "z": 1.6,
+            "radius": 0.38
+          },
+          {
+            "name": "wheel-back-left",
+            "x": 0.832,
+            "y": 0.38,
+            "z": -1.6,
+            "radius": 0.38
+          },
+          {
+            "name": "wheel-back-right",
+            "x": -0.832,
+            "y": 0.38,
+            "z": -1.6,
+            "radius": 0.38
+          }
+        ],
+        "box": [2.28, 1.43, 5.253],
+        "center": [0, 1.135, 0.007]
+      }
+    },
+    {
+      "id": "car-sedan",
+      "kind": "vehicle",
+      "file": "car-sedan.glb",
+      "bytes": 52068,
+      "triangles": 2100,
+      "zones": ["paint"],
+      "parts": [
+        "detach_bumper_back",
+        "detach_bumper_front",
+        "detach_door_left",
+        "detach_door_right",
+        "detach_mirror_left",
+        "detach_mirror_right"
+      ],
+      "vehicle": {
+        "vehicleKind": 0,
+        "type": "Limousine",
+        "wheels": [
+          {
+            "name": "wheel-front-left",
+            "x": 0.782,
+            "y": 0.33,
+            "z": 1.42,
+            "radius": 0.33
+          },
+          {
+            "name": "wheel-front-right",
+            "x": -0.782,
+            "y": 0.33,
+            "z": 1.42,
+            "radius": 0.33
+          },
+          {
+            "name": "wheel-back-left",
+            "x": 0.782,
+            "y": 0.33,
+            "z": -1.42,
+            "radius": 0.33
+          },
+          {
+            "name": "wheel-back-right",
+            "x": -0.782,
+            "y": 0.33,
+            "z": -1.42,
+            "radius": 0.33
+          }
+        ],
+        "box": [2.18, 1.201, 4.773],
+        "center": [0, 0.901, 0.007]
       }
     },
     {
       "id": "car-small",
       "kind": "vehicle",
       "file": "car-small.glb",
-      "bytes": 48544,
-      "triangles": 2088,
+      "bytes": 53328,
+      "triangles": 2084,
       "zones": ["paint"],
-      "parts": ["detach_bumper_front", "detach_bumper_back", "detach_door_left", "detach_door_right"],
+      "parts": [
+        "detach_bumper_back",
+        "detach_bumper_front",
+        "detach_door_left",
+        "detach_door_right",
+        "detach_mirror_left",
+        "detach_mirror_right"
+      ],
       "vehicle": {
         "vehicleKind": 0,
         "type": "Kleinwagen",
         "wheels": [
           {
             "name": "wheel-front-left",
-            "x": 0.548,
-            "y": 0.39,
-            "z": 1.077,
-            "radius": 0.39
+            "x": 0.722,
+            "y": 0.32,
+            "z": 1.22,
+            "radius": 0.32
           },
           {
             "name": "wheel-front-right",
-            "x": -0.548,
-            "y": 0.39,
-            "z": 1.077,
-            "radius": 0.39
+            "x": -0.722,
+            "y": 0.32,
+            "z": 1.22,
+            "radius": 0.32
           },
           {
             "name": "wheel-back-left",
-            "x": 0.548,
-            "y": 0.39,
-            "z": -1.077,
-            "radius": 0.39
+            "x": 0.722,
+            "y": 0.32,
+            "z": -1.22,
+            "radius": 0.32
           },
           {
             "name": "wheel-back-right",
-            "x": -0.548,
-            "y": 0.39,
-            "z": -1.077,
-            "radius": 0.39
+            "x": -0.722,
+            "y": 0.32,
+            "z": -1.22,
+            "radius": 0.32
           }
         ],
-        "box": [1.677, 1.235, 3.791],
-        "center": [0, 0.812, -0.033]
+        "box": [2.06, 1.22, 3.893],
+        "center": [0, 0.91, 0.026]
+      }
+    },
+    {
+      "id": "car-suv",
+      "kind": "vehicle",
+      "file": "car-suv.glb",
+      "bytes": 52476,
+      "triangles": 2140,
+      "zones": ["paint"],
+      "parts": [
+        "detach_bumper_back",
+        "detach_bumper_front",
+        "detach_door_left",
+        "detach_door_right",
+        "detach_mirror_left",
+        "detach_mirror_right"
+      ],
+      "vehicle": {
+        "vehicleKind": 0,
+        "type": "SUV",
+        "wheels": [
+          {
+            "name": "wheel-front-left",
+            "x": 0.813,
+            "y": 0.37,
+            "z": 1.36,
+            "radius": 0.37
+          },
+          {
+            "name": "wheel-front-right",
+            "x": -0.812,
+            "y": 0.37,
+            "z": 1.36,
+            "radius": 0.37
+          },
+          {
+            "name": "wheel-back-left",
+            "x": 0.813,
+            "y": 0.37,
+            "z": -1.36,
+            "radius": 0.37
+          },
+          {
+            "name": "wheel-back-right",
+            "x": -0.812,
+            "y": 0.37,
+            "z": -1.36,
+            "radius": 0.37
+          }
+        ],
+        "box": [2.24, 1.325, 4.573],
+        "center": [0, 1.063, 0.007]
       }
     },
     {
@@ -227,6 +570,37 @@
       "parts": []
     },
     {
+      "id": "motorbike",
+      "kind": "vehicle",
+      "file": "motorbike.glb",
+      "bytes": 50248,
+      "triangles": 1980,
+      "zones": ["paint"],
+      "parts": ["detach_exhaust", "detach_fender", "detach_fender_back"],
+      "vehicle": {
+        "vehicleKind": 2,
+        "type": "Motorrad",
+        "wheels": [
+          {
+            "name": "wheel-front",
+            "x": 0,
+            "y": 0.32,
+            "z": 0.72,
+            "radius": 0.32
+          },
+          {
+            "name": "wheel-back",
+            "x": 0,
+            "y": 0.32,
+            "z": -0.72,
+            "radius": 0.32
+          }
+        ],
+        "box": [0.74, 0.825, 2.07],
+        "center": [0, 0.685, -0.022]
+      }
+    },
+    {
       "id": "planter",
       "kind": "prop",
       "file": "planter.glb",
@@ -243,6 +617,37 @@
       "triangles": 80,
       "zones": [],
       "parts": []
+    },
+    {
+      "id": "scooter",
+      "kind": "vehicle",
+      "file": "scooter.glb",
+      "bytes": 43880,
+      "triangles": 1892,
+      "zones": ["paint"],
+      "parts": ["detach_exhaust", "detach_fender", "detach_mirror_left", "detach_mirror_right", "detach_rack"],
+      "vehicle": {
+        "vehicleKind": 2,
+        "type": "Roller",
+        "wheels": [
+          {
+            "name": "wheel-front",
+            "x": 0,
+            "y": 0.24,
+            "z": 0.6,
+            "radius": 0.24
+          },
+          {
+            "name": "wheel-back",
+            "x": 0,
+            "y": 0.24,
+            "z": -0.6,
+            "radius": 0.24
+          }
+        ],
+        "box": [0.68, 1.064, 1.775],
+        "center": [0, 0.718, -0.021]
+      }
     },
     {
       "id": "sign-busstop",
@@ -293,45 +698,52 @@
       "id": "van-delivery",
       "kind": "vehicle",
       "file": "van-delivery.glb",
-      "bytes": 46620,
-      "triangles": 2082,
+      "bytes": 50600,
+      "triangles": 1912,
       "zones": ["paint"],
-      "parts": ["detach_bumper_front", "detach_bumper_back", "detach_door_left", "detach_door_right"],
+      "parts": [
+        "detach_bumper_back",
+        "detach_bumper_front",
+        "detach_door_left",
+        "detach_door_right",
+        "detach_mirror_left",
+        "detach_mirror_right"
+      ],
       "vehicle": {
         "vehicleKind": 0,
         "type": "Kleintransporter",
         "wheels": [
           {
             "name": "wheel-front-left",
-            "x": 0.54,
-            "y": 0.45,
-            "z": 1.353,
-            "radius": 0.45
+            "x": 0.862,
+            "y": 0.34,
+            "z": 1.75,
+            "radius": 0.34
           },
           {
             "name": "wheel-front-right",
-            "x": -0.54,
-            "y": 0.45,
-            "z": 1.353,
-            "radius": 0.45
+            "x": -0.862,
+            "y": 0.34,
+            "z": 1.75,
+            "radius": 0.34
           },
           {
             "name": "wheel-back-left",
-            "x": 0.54,
-            "y": 0.45,
-            "z": -1.353,
-            "radius": 0.45
+            "x": 0.862,
+            "y": 0.34,
+            "z": -1.75,
+            "radius": 0.34
           },
           {
             "name": "wheel-back-right",
-            "x": -0.54,
-            "y": 0.45,
-            "z": -1.353,
-            "radius": 0.45
+            "x": -0.862,
+            "y": 0.34,
+            "z": -1.75,
+            "radius": 0.34
           }
         ],
-        "box": [1.905, 1.8, 4.895],
-        "center": [0, 1.125, -0.044]
+        "box": [2.36, 2.02, 5.273],
+        "center": [0, 1.35, -0.003]
       }
     }
   ]

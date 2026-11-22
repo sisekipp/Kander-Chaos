@@ -32,9 +32,10 @@ Ergebnisse der Recherche:
 
 ### D1 Quellen und Auswahl
 
-- **Kandidaten** (Lizenz und Inhalt werden je Paket vor der Übernahme geprüft und ins Register eingetragen):
-  - Quaternius: animierte Menschen und Kinder (Figur und NPCs), Fahrzeug- und Stadtpakete
-  - Kenney: Auto-, Stadt- und Straßenobjekt-Pakete
+- **Blender zuerst** (Entscheidung nach den ersten Props, auf Wunsch): Modelle entstehen vorrangig als Skripte für die Blender-Kommandozeile (`tools/asset-pipeline/blender/*.py`). Das gilt für Props, Zweiräder, Wahrzeichen und auch für Spielfigur und NPCs (Skelett und Animationen per Skript). So passen alle Modelle zum selben Stil, und lösbare Teile, Lackzonen und Knotennamen sind von Anfang an eingeplant. Fotos aus dem Internet dienen nur als Vorlage (Proportionen, Fenster, Dachform) und werden nicht ins Projekt übernommen.
+- **Pakete** nur, wo sie sichtbar besser sind (Lizenz und Inhalt werden vor der Übernahme geprüft und ins Register eingetragen):
+  - Kenney Car Kit (CC0): nach dem Vergleich ersetzt durch neun eigene Autotypen aus `blender/cars.py` (Kleinstwagen, Kleinwagen, Kompaktwagen, Kombi, Limousine, SUV, Familienvan, Kastenwagen, Pickup); Zweiräder aus `blender/vehicles.py`
+  - Quaternius wird nicht mehr benötigt
 - **Stilprüfung** (Spec `asset-pipeline`): europäische Fahrzeugformen, keine Logos, StVO-Schilder. Was kein Paket passend liefert (z. B. Kleintransporter im europäischen Stil, StVO-Schilder, deutsche Straßenlaterne), wird **selbst gebaut**: einfache Low-Poly-Modelle in Blender (über die vorhandene Blender-Anbindung) oder weiter mit dem Teile-Baukasten. Dieselben Pipeline-Regeln gelten auch dann.
 - Keine Nachbildung bestimmter Fahrzeugmarken oder -modelle. Die Fahrzeuge sind generische Typen (Kleinwagen, Kombi …).
 
@@ -75,7 +76,7 @@ Der Spiel-Build (Budget-Plugin aus Phase 0) zählt `models/` mit. Das Asset-Mani
 
 ### D5 Spielfigur mit Animationszustand
 
-- `player/figure.ts` lädt das Figurmodell (≤ 3.000 Dreiecke) mit einer Variante aus dem Spielstand.
+- `player/figure.ts` lädt das Figurmodell (≤ 3.000 Dreiecke, in Blender gebaut: Low-Poly-Kind mit Skelett, Animationen als Aktionen im GLB) mit einer Variante aus dem Spielstand.
 - `player/animation/` (neu):
   - `animState.ts` (+ test): reine Zustandsmaschine (idle, walk, run, jump, fall, enter, exit, sitBike), Eingaben sind Geschwindigkeit, Bodenkontakt und Modus
   - `blend.ts` (+ test): Überblendgewichte über 0,3 s

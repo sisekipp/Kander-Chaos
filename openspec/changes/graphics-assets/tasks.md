@@ -5,7 +5,7 @@ Für alle Aufgaben gilt die Codestruktur aus Design D9 bzw. Projektregeln: höch
 ## 1. Asset-Pipeline
 
 - [x] 1.1 Ordner `assets/` (Quellen, `registry.json`, `recipes/`) und Werkzeug `tools/asset-pipeline` mit `build`/`check` anlegen; `registry.ts` mit Pflichtfeldern (Quelle, Paket, Lizenz, Abrufdatum, Stilprüfung, Änderungen); Unit-Test: Build schlägt bei Modell ohne Registereintrag fehl
-- [ ] 1.2 Kandidatenpakete (Quaternius, Kenney) auf Lizenz (CC0) und Stil prüfen, Ergebnis je Modell ins Register; Lücken (europäischer Kleintransporter, StVO-Schilder, deutsche Laterne o. ä.) als selbst zu bauende Modelle im Register vormerken
+- [x] 1.2 Kandidatenpakete (Kenney; Quaternius entfällt, Figuren entstehen in Blender) auf Lizenz (CC0) und Stil prüfen, Ergebnis je Modell ins Register; Lücken (europäischer Kleintransporter, StVO-Schilder, deutsche Laterne o. ä.) als selbst zu bauende Modelle im Register vormerken
 - [x] 1.3 `optimize.ts` mit gltf-transform (dedup, weld, Quantisierung, meshopt, Texturen ≤ 512 px) und `recolor.ts` (Farbzonen); Unit-Test für Farbzonen; Prüfung, dass die Ausgabe in Babylon lädt (Node-Test mit Loader oder Browsertest)
 - [x] 1.4 `validate.ts`: Dreiecksgrenzen je Art, Materialanzahl, mindestens 2 lösbare Teile bei Fahrzeugen, Budget 15 MB gesamt; Unit-Tests für jede Regel
 - [ ] 1.5 README der Asset-Pipeline (Ablauf, Regeln, wie man ein Modell hinzufügt); prüfen, dass ein frischer Checkout mit den Befehlen die Modelle erzeugt
@@ -31,20 +31,20 @@ Für alle Aufgaben gilt die Codestruktur aus Design D9 bzw. Projektregeln: höch
 
 ## 4. Fahrzeuge
 
-- [ ] 4.1 Fahrzeugmodelle (4 Autos, 2 Fahrräder, Roller, Motorrad) übernehmen bzw. bauen; Rezepte mit Box- und Radmaßen, Rad- und Sitzknoten, `detach_*`-Teilen
+- [x] 4.1 Fahrzeugmodelle (9 Autos, 2 Fahrräder, Roller, Motorrad) in Blender bauen; Rezepte mit Box- und Radmaßen, Radknoten, Lenkknoten `steer` (Sitzknoten folgen mit 5.3), `detach_*`-Teilen
 - [x] 4.2 `vehicles/models` als Adapter auf die Registry (deterministische Modell- und Farbwahl je Parkposition, VehicleSpec-Maße aus dem Rezept); Unit-Test für die Modellwahl; alle Fahrphysik-, Fahr- und Schadens-E2E-Tests grün (Endgeschwindigkeiten weiter ±15 %)
 - [ ] 4.3 Sichtprüfung per Screenshot (Straße mit mehreren Modellen), Prüfliste „europäisch, keine Logos“ im Register abgehakt
 
 ## 5. Spielfigur
 
-- [ ] 5.1 Figurmodell mit ≥ 4 Varianten und Animationen (stehen, gehen, rennen, springen, fallen, einsteigen, aussteigen, sitzen) übernehmen; Validierung ≤ 3.000 Dreiecke
+- [ ] 5.1 Figurmodell (Blender-Skript) mit ≥ 4 Varianten und Animationen (stehen, gehen, rennen, springen, fallen, einsteigen, aussteigen, sitzen) übernehmen; Validierung ≤ 3.000 Dreiecke
 - [ ] 5.2 `player/animation/animState.ts` und `blend.ts` (Zustände, Überblendung 0,3 s, Gehgeschwindigkeit passend); Unit-Tests für Zustandswechsel und Gewichte
 - [ ] 5.3 `FigureAnimator.ts` und neue `figure.ts`; Figur sitzt sichtbar auf Fahrrad/Motorrad und neigt sich mit; E2E-Test: Animation wechselt beim Losgehen und beim Einsteigen
 - [ ] 5.4 Figurvariante im Menü wählbar und im Spielstand gespeichert (Schema-Version 2 mit Migration); Unit-Test für die Migration, E2E-Test: Variante bleibt nach Neustart erhalten
 
 ## 6. NPC-Figuren vorbereiten
 
-- [ ] 6.1 ≥ 8 NPC-Figuren mit gemeinsamem Animationssatz übernehmen; `bakeVat.ts` backt Animationstexturen
+- [ ] 6.1 ≥ 8 NPC-Figuren mit gemeinsamem Animationssatz (Blender-Skript) bauen; `bakeVat.ts` backt Animationstexturen
 - [ ] 6.2 Testansicht im Testmodus (alle Figuren nebeneinander, gebackene Gehanimation mit Thin Instances); Browsertest: 8 Figuren sichtbar, Draw Calls ≤ Anzahl Figurmodelle
 
 ## 7. Wahrzeichen

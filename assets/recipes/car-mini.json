@@ -1,0 +1,13 @@
+{
+  "id": "car-mini",
+  "kind": "vehicle",
+  "source": "own/car-mini.glb",
+  "colorZones": {
+    "paint": ["paint"]
+  },
+  "vehicle": {
+    "vehicleKind": 0,
+    "type": "Kleinstwagen",
+    "wheels": ["wheel-front-left", "wheel-front-right", "wheel-back-left", "wheel-back-right"]
+  }
+}

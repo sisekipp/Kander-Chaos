@@ -3,7 +3,9 @@ import { firstVisit, waitPlayable } from './helpers.ts';
 
 test.setTimeout(180_000);
 
-test('am Startpunkt stehen ≥ 5 benutzbare Fahrzeuge inkl. Zweirad im Umkreis von 150 m', async ({ page }) => {
+test('am Startpunkt stehen ≥ 5 benutzbare Fahrzeuge inkl. Zweirad im Umkreis von 150 m, verschiedene Modelle, undurchsichtig', async ({
+  page,
+}) => {
   await firstVisit(page);
   await page.getByRole('button', { name: 'Testmodus' }).click();
   await waitPlayable(page);
@@ -25,6 +27,10 @@ test('am Startpunkt stehen ≥ 5 benutzbare Fahrzeuge inkl. Zweirad im Umkreis v
       dynamic: w.vehicles.dynamicCount,
       near: near.length,
       twoWheelers: near.filter((v: any) => v.kind !== 0).length,
+      // undurchsichtig: kein Mesh im Transparenz-Durchgang (sonst fehlen Dach/Glas scheinbar)
+      alphaMeshes: near.flatMap((v: any) => v.sim.model.root.getChildMeshes(false)).filter((m: any) => m.hasVertexAlpha)
+        .length,
+      models: new Set(near.map((v: any) => v.modelId)).size,
     };
   });
   console.log(JSON.stringify(info));
@@ -32,4 +38,6 @@ test('am Startpunkt stehen ≥ 5 benutzbare Fahrzeuge inkl. Zweirad im Umkreis v
   expect(info.twoWheelers).toBeGreaterThanOrEqual(1);
   expect(info.total).toBeLessThanOrEqual(24);
   expect(info.dynamic).toBeLessThanOrEqual(8);
+  expect(info.alphaMeshes).toBe(0);
+  expect(info.models).toBeGreaterThanOrEqual(4);
 });

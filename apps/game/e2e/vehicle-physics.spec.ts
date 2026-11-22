@@ -22,8 +22,12 @@ async function place(page: Page, x: number, z: number) {
   );
 }
 
-/** Fährt `kind` mit Vollgas geradeaus und misst die Endgeschwindigkeit (km/h). */
-async function topSpeed(page: Page, kind: number, seconds: number): Promise<number> {
+/** Fährt `kind` mit Vollgas geradeaus und misst die Endgeschwindigkeit (km/h); dazu Typ und Richtwert des Modells. */
+async function topSpeed(
+  page: Page,
+  kind: number,
+  seconds: number,
+): Promise<{ max: number; type: string; target: number }> {
   return page.evaluate(
     async ({ kind, seconds }) => {
       const v = (window as any).__kcSpawn(kind, 6);
@@ -36,7 +40,7 @@ async function topSpeed(page: Page, kind: number, seconds: number): Promise<numb
         max = Math.max(max, v.forwardSpeed * 3.6);
       }
       v.controls.gas = 0;
-      return max;
+      return { max, type: v.spec.name as string, target: v.spec.maxSpeed * 3.6 };
     },
     { kind, seconds },
   );
@@ -45,17 +49,15 @@ async function topSpeed(page: Page, kind: number, seconds: number): Promise<numb
 test('Endgeschwindigkeiten je Fahrzeugart innerhalb ±15 % der Richtwerte', async ({ page }) => {
   await setup(page);
   // flachste freie Kachel (Wiese bei Wollbach, 6 m Höhenunterschied auf 250 m), Fahrt nach Norden
-  const results: Record<string, number> = {};
-  for (const [kind, name, target] of [
-    [0, 'Auto', 80],
-    [2, 'Motorrad', 90],
-    [1, 'Fahrrad', 30],
-  ] as const) {
+  // Richtwerte der Arten: Auto 80, Motorrad 90 (Roller 45), Fahrrad 30 km/h – das Modell wird zufällig gewählt
+  const allowed: Record<number, number[]> = { 0: [80], 2: [90, 45], 1: [30] };
+  for (const kind of [0, 2, 1]) {
     await place(page, -1375, -5480);
-    results[name] = await topSpeed(page, kind, kind === 1 ? 12 : 18);
-    console.log(`${name}: ${results[name].toFixed(1)} km/h (Ziel ${target})`);
-    expect(results[name]).toBeGreaterThan(target * 0.85);
-    expect(results[name]).toBeLessThan(target * 1.15);
+    const r = await topSpeed(page, kind, kind === 1 ? 12 : 18);
+    console.log(`${r.type}: ${r.max.toFixed(1)} km/h (Ziel ${r.target.toFixed(0)})`);
+    expect(allowed[kind].some((t) => Math.abs(t - r.target) < 0.5)).toBe(true);
+    expect(r.max).toBeGreaterThan(r.target * 0.85);
+    expect(r.max).toBeLessThan(r.target * 1.15);
   }
 });
 

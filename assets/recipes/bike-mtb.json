@@ -1,0 +1,13 @@
+{
+  "id": "bike-mtb",
+  "kind": "vehicle",
+  "source": "own/bike-mtb.glb",
+  "colorZones": {
+    "paint": ["paint"]
+  },
+  "vehicle": {
+    "vehicleKind": 1,
+    "type": "Mountainbike",
+    "wheels": ["wheel-front", "wheel-back"]
+  }
+}

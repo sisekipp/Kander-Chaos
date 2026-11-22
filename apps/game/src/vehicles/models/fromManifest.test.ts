@@ -26,9 +26,28 @@ const car = (id: string, type: string) => ({
     ],
   },
 });
+const twoWheeler = (id: string, kind: 1 | 2, type: string) => ({
+  ...car(id, type),
+  vehicle: {
+    vehicleKind: kind,
+    type,
+    box: [0.72, 1.0, 1.8],
+    center: [0, 0.7, 0],
+    wheels: [
+      { name: 'wheel-front', x: 0, y: 0.3, z: 0.65, radius: 0.3 },
+      { name: 'wheel-back', x: 0, y: 0.3, z: -0.65, radius: 0.3 },
+    ],
+  },
+});
 const manifest = parseManifest({
   version: 1,
-  models: [car('car-a', 'Kleinwagen'), car('car-b', 'Kombi'), car('van', 'Kleintransporter')],
+  models: [
+    car('car-a', 'Kleinwagen'),
+    car('car-b', 'Kombi'),
+    car('van', 'Kleintransporter'),
+    twoWheeler('scooter', 2, 'Roller'),
+    twoWheeler('moto', 2, 'Motorrad'),
+  ],
 });
 
 describe('Fahrzeugmodelle aus dem Manifest', () => {
@@ -38,6 +57,17 @@ describe('Fahrzeugmodelle aus dem Manifest', () => {
       expect(pickVehicleModel(manifest, VehicleKind.Car, id)).toBe(pickVehicleModel(manifest, VehicleKind.Car, id));
     const used = new Set(ids.map((id) => pickVehicleModel(manifest, VehicleKind.Car, id)!.id));
     expect(used.size).toBe(3);
+  });
+
+  it('Zweiräder: schmale Box der Art, Vorderrad lenkt; Roller langsamer als Motorrad', () => {
+    const base = VEHICLE_SPECS[VehicleKind.Motorbike];
+    const roller = specForModel(base, manifest.models[3]);
+    const moto = specForModel(base, manifest.models[4]);
+    expect(roller.box[0]).toBe(base.box[0]);
+    expect(roller.wheels.map((w) => w.steer)).toEqual([true, false]);
+    expect(roller.maxSpeed).toBeCloseTo(45 / 3.6);
+    expect(moto.maxSpeed).toBe(base.maxSpeed);
+    expect(pickVehicleModel(manifest, VehicleKind.Motorbike, 5)?.vehicle?.vehicleKind).toBe(2);
   });
 
   it('ohne passendes Modell (z. B. Fahrrad) oder ohne Manifest: null (prozeduraler Rückfall)', () => {

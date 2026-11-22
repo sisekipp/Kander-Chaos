@@ -4,61 +4,61 @@
     {
       "id": "car-compact",
       "kind": "vehicle",
-      "source": "https://kenney.nl/assets/car-kit",
-      "package": "Kenney Car Kit 3.1 (sedan.glb)",
-      "license": "CC0-1.0",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/cars.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
       "retrieved": "2026-11-22",
       "style": {
         "european": true,
         "noLogos": true,
-        "notes": "generischer Kompaktwagen, keine Markenmerkmale, keine Blaulicht-/Taxiaufbauten"
+        "notes": "Kompaktwagen, Kennzeichen ohne Schrift, keine Markenmerkmale"
       },
-      "changes": "Paletten-Textur in Vertex-Farben eingebacken, Lack als Farbzone, Stoßstangen und Türen als lösbare Teile abgetrennt, auf reale Maße skaliert",
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Karosserie als Lackzone, Stoßfänger, Türen und Spiegel als lösbare Teile",
       "status": "accepted"
     },
     {
       "id": "car-small",
       "kind": "vehicle",
-      "source": "https://kenney.nl/assets/car-kit",
-      "package": "Kenney Car Kit 3.1 (hatchback-sports.glb)",
-      "license": "CC0-1.0",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/cars.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
       "retrieved": "2026-11-22",
       "style": {
         "european": true,
         "noLogos": true,
-        "notes": "generischer Kleinwagen, keine Markenmerkmale, keine Blaulicht-/Taxiaufbauten"
+        "notes": "fünftüriger Kleinwagen mit steiler Heckklappe, Kennzeichen ohne Schrift, keine Markenmerkmale"
       },
-      "changes": "Paletten-Textur in Vertex-Farben eingebacken, Lack als Farbzone, Stoßstangen und Türen als lösbare Teile abgetrennt, auf reale Maße skaliert",
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Karosserie als Lackzone, Stoßfänger, Türen und Spiegel als lösbare Teile",
       "status": "accepted"
     },
     {
       "id": "car-estate",
       "kind": "vehicle",
-      "source": "https://kenney.nl/assets/car-kit",
-      "package": "Kenney Car Kit 3.1 (suv-luxury.glb)",
-      "license": "CC0-1.0",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/cars.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
       "retrieved": "2026-11-22",
       "style": {
         "european": true,
         "noLogos": true,
-        "notes": "generischer Kombi, keine Markenmerkmale, keine Blaulicht-/Taxiaufbauten"
+        "notes": "Kombi mit Dachreling, Kennzeichen ohne Schrift, keine Markenmerkmale"
       },
-      "changes": "Paletten-Textur in Vertex-Farben eingebacken, Lack als Farbzone, Stoßstangen und Türen als lösbare Teile abgetrennt, auf reale Maße skaliert",
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Karosserie als Lackzone, Stoßfänger, Türen und Spiegel als lösbare Teile",
       "status": "accepted"
     },
     {
       "id": "van-delivery",
       "kind": "vehicle",
-      "source": "https://kenney.nl/assets/car-kit",
-      "package": "Kenney Car Kit 3.1 (van.glb)",
-      "license": "CC0-1.0",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/cars.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
       "retrieved": "2026-11-22",
       "style": {
         "european": true,
         "noLogos": true,
-        "notes": "generischer Kleintransporter, keine Markenmerkmale, keine Blaulicht-/Taxiaufbauten"
+        "notes": "Kastenwagen ohne Beschriftung, Kennzeichen ohne Schrift, keine Markenmerkmale"
       },
-      "changes": "Paletten-Textur in Vertex-Farben eingebacken, Lack als Farbzone, Stoßstangen und Türen als lösbare Teile abgetrennt, auf reale Maße skaliert",
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Karosserie als Lackzone, Stoßfänger, Türen und Spiegel als lösbare Teile",
       "status": "accepted"
     },
     {
@@ -199,62 +199,62 @@
     {
       "id": "bike-city",
       "kind": "vehicle",
-      "source": "eigenes Modell (Blender-Kommandozeile, tools/asset-pipeline)",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/vehicles.py (Blender-Kommandozeile)",
       "package": "Kandern Chaos – eigene Modelle",
       "license": "own",
       "retrieved": "2026-11-22",
       "style": {
         "european": true,
         "noLogos": true,
-        "notes": "Stadtrad"
+        "notes": "Stadtrad mit tiefem Einstieg, Korb, Gepäckträger und Schutzblechen"
       },
-      "changes": "selbst zu bauen (kein passendes CC0-Modell im Car Kit)",
-      "status": "planned"
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Rahmen/Karosserie als Lackzone, Lenkung als eigener Knoten",
+      "status": "accepted"
     },
     {
       "id": "bike-mtb",
       "kind": "vehicle",
-      "source": "eigenes Modell (Blender-Kommandozeile, tools/asset-pipeline)",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/vehicles.py (Blender-Kommandozeile)",
       "package": "Kandern Chaos – eigene Modelle",
       "license": "own",
       "retrieved": "2026-11-22",
       "style": {
         "european": true,
         "noLogos": true,
-        "notes": "Mountainbike"
+        "notes": "Mountainbike mit Federgabel und Trinkflasche"
       },
-      "changes": "selbst zu bauen (kein passendes CC0-Modell im Car Kit)",
-      "status": "planned"
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Rahmen/Karosserie als Lackzone, Lenkung als eigener Knoten",
+      "status": "accepted"
     },
     {
       "id": "scooter",
       "kind": "vehicle",
-      "source": "eigenes Modell (Blender-Kommandozeile, tools/asset-pipeline)",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/vehicles.py (Blender-Kommandozeile)",
       "package": "Kandern Chaos – eigene Modelle",
       "license": "own",
       "retrieved": "2026-11-22",
       "style": {
         "european": true,
         "noLogos": true,
-        "notes": "Motorroller"
+        "notes": "Motorroller mit Beinschild und Sitzbank, kein Markenemblem"
       },
-      "changes": "selbst zu bauen (kein passendes CC0-Modell im Car Kit)",
-      "status": "planned"
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Rahmen/Karosserie als Lackzone, Lenkung als eigener Knoten",
+      "status": "accepted"
     },
     {
       "id": "motorbike",
       "kind": "vehicle",
-      "source": "eigenes Modell (Blender-Kommandozeile, tools/asset-pipeline)",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/vehicles.py (Blender-Kommandozeile)",
       "package": "Kandern Chaos – eigene Modelle",
       "license": "own",
       "retrieved": "2026-11-22",
       "style": {
         "european": true,
         "noLogos": true,
-        "notes": "Motorrad (generisch)"
+        "notes": "Naked Bike, Kennzeichenhalter ohne Schrift"
       },
-      "changes": "selbst zu bauen (kein passendes CC0-Modell im Car Kit)",
-      "status": "planned"
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Rahmen/Karosserie als Lackzone, Lenkung als eigener Knoten",
+      "status": "accepted"
     },
     {
       "id": "landmark-church-kandern",
@@ -544,6 +544,81 @@
         "notes": "Blumenkübel aus Beton"
       },
       "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "car-mini",
+      "kind": "vehicle",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/cars.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "zweisitziger Stadtwagen, Kennzeichen ohne Schrift, keine Markenmerkmale"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Karosserie als Lackzone, Stoßfänger, Türen und Spiegel als lösbare Teile",
+      "status": "accepted"
+    },
+    {
+      "id": "car-sedan",
+      "kind": "vehicle",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/cars.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Stufenhecklimousine, Kennzeichen ohne Schrift, keine Markenmerkmale"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Karosserie als Lackzone, Stoßfänger, Türen und Spiegel als lösbare Teile",
+      "status": "accepted"
+    },
+    {
+      "id": "car-suv",
+      "kind": "vehicle",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/cars.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "SUV mit Radlaufverbreiterungen und Dachreling, Kennzeichen ohne Schrift, keine Markenmerkmale"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Karosserie als Lackzone, Stoßfänger, Türen und Spiegel als lösbare Teile",
+      "status": "accepted"
+    },
+    {
+      "id": "car-mpv",
+      "kind": "vehicle",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/cars.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Familienvan mit Schiebetür, Kennzeichen ohne Schrift, keine Markenmerkmale"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Karosserie als Lackzone, Stoßfänger, Türen und Spiegel als lösbare Teile",
+      "status": "accepted"
+    },
+    {
+      "id": "car-pickup",
+      "kind": "vehicle",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/cars.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Pickup mit Laderaumabdeckung, Kennzeichen ohne Schrift, keine Markenmerkmale"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Karosserie als Lackzone, Stoßfänger, Türen und Spiegel als lösbare Teile",
       "status": "accepted"
     }
   ]

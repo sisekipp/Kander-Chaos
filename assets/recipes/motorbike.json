@@ -1,0 +1,13 @@
+{
+  "id": "motorbike",
+  "kind": "vehicle",
+  "source": "own/motorbike.glb",
+  "colorZones": {
+    "paint": ["paint"]
+  },
+  "vehicle": {
+    "vehicleKind": 2,
+    "type": "Motorrad",
+    "wheels": ["wheel-front", "wheel-back"]
+  }
+}

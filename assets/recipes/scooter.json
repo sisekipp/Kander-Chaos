@@ -1,0 +1,13 @@
+{
+  "id": "scooter",
+  "kind": "vehicle",
+  "source": "own/scooter.glb",
+  "colorZones": {
+    "paint": ["paint"]
+  },
+  "vehicle": {
+    "vehicleKind": 2,
+    "type": "Roller",
+    "wheels": ["wheel-front", "wheel-back"]
+  }
+}
