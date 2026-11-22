@@ -91,3 +91,34 @@ test('Wahrzeichen ersetzen das generierte Gebäude und halten die Figur auf', as
   expect(r.skipped).toBe(true);
   expect(r.dist).toBeGreaterThan(r.halfWidth - 0.5); // nicht durch die Wand
 });
+
+test('Wahrzeichen sind auch im Flug in 200 m Höhe sichtbar (Ring 1), ohne Kollision dort', async ({ page }) => {
+  await setup(page, -85, 110);
+  await page.getByRole('button', { name: 'Fliegen' }).dispatchEvent('pointerdown');
+  await page.waitForFunction(() => (window as any).__kc.getWorld().flying);
+  await page.evaluate(() => {
+    const w = (window as any).__kc.getWorld();
+    const c = w.fly.controllerState;
+    c.state = { ...c.state, x: -85, z: 60, y: (w.tiles.heightAt(-85, 60) ?? c.ground) + 200, vx: 0, vy: 0, vz: 0 };
+  });
+  await page.waitForTimeout(500);
+  await page.waitForFunction(
+    () => {
+      const w = (window as any).__kc.getWorld();
+      return w.tiles.isSettled && ![...w.tiles.tiles].some((t: any) => t.ring === 0);
+    },
+    null,
+    { timeout: 90_000, polling: 300 },
+  );
+  const r = await page.evaluate(() => {
+    const w = (window as any).__kc.getWorld();
+    const root = w.landmarks.placed.get('kandern-stadtkirche');
+    const ids = [...w.landmarks.placed.keys()];
+    const visible = root && root.getChildMeshes(false).some((m: any) => m.isEnabled() && m.isVisible);
+    return { count: ids.length, church: !!root, visible };
+  });
+  console.log(JSON.stringify(r));
+  expect(r.church).toBe(true);
+  expect(r.visible).toBe(true);
+  expect(r.count).toBeGreaterThanOrEqual(15);
+});

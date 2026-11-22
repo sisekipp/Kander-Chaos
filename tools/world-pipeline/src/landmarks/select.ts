@@ -60,6 +60,8 @@ export interface Landmark {
   wallHeight: number;
   roofHeight: number;
   levels: number;
+  /** Tiefste Geländehöhe unter Mitte und Grundrissecken (m, aus dem DGM): Fußpunkt des Modells in allen Ringen. */
+  ground: number;
 }
 
 export interface RawLandmarkBuilding {
@@ -128,8 +130,18 @@ export function selectLandmarks(
   placed: Map<number, Building>,
   overrides: Record<string, LandmarkOverride>,
   extras: LandmarkExtra[] = [],
+  groundAt: (x: number, z: number) => number = () => 0,
 ): Landmark[] {
-  const out: Landmark[] = [];
+  const lowest = (l: Omit<Landmark, 'ground'>) => {
+    let g = groundAt(l.x, l.z);
+    for (let i = 0; i < l.footprint.length; i += 2) {
+      const lx = l.footprint[i],
+        lz = l.footprint[i + 1];
+      g = Math.min(g, groundAt(l.x + lx * l.ux - lz * l.uz, l.z + lx * l.uz + lz * l.ux));
+    }
+    return round(g);
+  };
+  const out: Omit<Landmark, 'ground'>[] = [];
   const used = new Set<string>();
   const unique = (base: string) => {
     let id = base,
@@ -183,5 +195,5 @@ export function selectLandmarks(
       levels: 0,
     });
   }
-  return out.sort((a, b) => a.id.localeCompare(b.id));
+  return out.map((l) => ({ ...l, ground: lowest(l) })).sort((a, b) => a.id.localeCompare(b.id));
 }

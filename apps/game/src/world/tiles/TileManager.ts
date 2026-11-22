@@ -21,7 +21,7 @@ export interface TileManagerOptions {
   /** Upload-Budget pro Bild in ms. */
   uploadBudgetMs?: number;
   onTileBuilt?: (t: BuiltTile) => void;
-  /** Gebäude-IDs mit Wahrzeichen-Modell: in Ring 0 nicht generieren. */
+  /** Gebäude-IDs mit Wahrzeichen-Modell: in Ring 0 und 1 nicht generieren (dort steht das Modell). */
   skipBuildings?: number[];
 }
 
@@ -155,7 +155,7 @@ export class TileManager {
         length: loc[2],
         ring,
         vegetationDensity: this.vegetationDensity,
-        skipBuildings: ring === 0 ? this.o.skipBuildings : undefined,
+        skipBuildings: ring <= 1 ? this.o.skipBuildings : undefined,
       })
       .then((built) => {
         this.inFlight.delete(id);

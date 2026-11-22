@@ -16,7 +16,8 @@
       ],
       "wallHeight": 14.4,
       "roofHeight": 8.49,
-      "levels": 4
+      "levels": 4,
+      "ground": 314.22
     },
     {
       "id": "church-431224179",
@@ -34,7 +35,8 @@
       ],
       "wallHeight": 14.4,
       "roofHeight": 7.59,
-      "levels": 4
+      "levels": 4,
+      "ground": 310.97
     },
     {
       "id": "church-evangelische-kirche-holzen",
@@ -52,7 +54,8 @@
       ],
       "wallHeight": 14.4,
       "roofHeight": 8.75,
-      "levels": 4
+      "levels": 4,
+      "ground": 296.29
     },
     {
       "id": "church-evangelische-kirche-sitzenkirch",
@@ -70,7 +73,8 @@
       ],
       "wallHeight": 14.4,
       "roofHeight": 7.85,
-      "levels": 4
+      "levels": 4,
+      "ground": 418.82
     },
     {
       "id": "church-evangelische-pfarrkirche-wollbach",
@@ -85,7 +89,8 @@
       "footprint": [12.27, -5.54, 12.27, 6.19, -11.47, 6.22, -11.47, -7.51, -4.64, -7.64, -4.58, -5.47, -0.68, -5.58],
       "wallHeight": 14.4,
       "roofHeight": 8.87,
-      "levels": 4
+      "levels": 4,
+      "ground": 308.04
     },
     {
       "id": "church-johanniter-kirche",
@@ -102,7 +107,8 @@
       ],
       "wallHeight": 14.4,
       "roofHeight": 7.37,
-      "levels": 4
+      "levels": 4,
+      "ground": 380.32
     },
     {
       "id": "church-matthiaskirche",
@@ -120,7 +126,8 @@
       ],
       "wallHeight": 14.4,
       "roofHeight": 9,
-      "levels": 4
+      "levels": 4,
+      "ground": 362
     },
     {
       "id": "church-sankt-nikolaus",
@@ -138,7 +145,8 @@
       ],
       "wallHeight": 14.4,
       "roofHeight": 9,
-      "levels": 4
+      "levels": 4,
+      "ground": 618.34
     },
     {
       "id": "civic-436214915",
@@ -156,7 +164,8 @@
       ],
       "wallHeight": 6.2,
       "roofHeight": 7.03,
-      "levels": 2
+      "levels": 2,
+      "ground": 349.01
     },
     {
       "id": "civic-554351961",
@@ -174,7 +183,8 @@
       ],
       "wallHeight": 6.2,
       "roofHeight": 3.21,
-      "levels": 2
+      "levels": 2,
+      "ground": 334.43
     },
     {
       "id": "civic-kandertalhalle",
@@ -193,7 +203,8 @@
       ],
       "wallHeight": 9.1,
       "roofHeight": 9,
-      "levels": 3
+      "levels": 3,
+      "ground": 317.95
     },
     {
       "id": "fire_station-30483984",
@@ -208,7 +219,8 @@
       "footprint": [5.11, 2.53, 5.11, 4.32, -5.1, 4.31, -5.11, -4.32, 5.1, -4.32],
       "wallHeight": 6.2,
       "roofHeight": 3.62,
-      "levels": 2
+      "levels": 2,
+      "ground": 317.86
     },
     {
       "id": "fire_station-freiwillige-feuerwehr-kandern",
@@ -226,7 +238,8 @@
       ],
       "wallHeight": 9.1,
       "roofHeight": 5.25,
-      "levels": 3
+      "levels": 3,
+      "ground": 342.67
     },
     {
       "id": "fire_station-freiwillige-feuerwehr-mappach",
@@ -241,7 +254,8 @@
       "footprint": [9.33, 7.59, -9.33, 7.59, -9.32, -7.59, 9.33, -7.59],
       "wallHeight": 9.1,
       "roofHeight": 6.37,
-      "levels": 3
+      "levels": 3,
+      "ground": 309.95
     },
     {
       "id": "fire_station-freiwillige-feuerwehr-sitzenkirch",
@@ -256,7 +270,8 @@
       "footprint": [-6.92, 5.38, -6.96, -5.38, 6.93, -5.38, 6.95, 5.39],
       "wallHeight": 2.9,
       "roofHeight": 3.77,
-      "levels": 1
+      "levels": 1,
+      "ground": 415.5
     },
     {
       "id": "inn-668713560",
@@ -274,7 +289,8 @@
       ],
       "wallHeight": 6.2,
       "roofHeight": 5.57,
-      "levels": 2
+      "levels": 2,
+      "ground": 350.85
     },
     {
       "id": "inn-blessings-dorfmitte",
@@ -292,7 +308,8 @@
       ],
       "wallHeight": 9.1,
       "roofHeight": 8.79,
-      "levels": 3
+      "levels": 3,
+      "ground": 294.36
     },
     {
       "id": "inn-gasthaus-hirschen",
@@ -307,7 +324,8 @@
       "footprint": [4.59, -4.57, 4.59, -6.91, 9.81, -6.91, 9.8, 5.26, 3.65, 5.27, -10.68, 5.26, -10.68, -4.57],
       "wallHeight": 9.1,
       "roofHeight": 5.11,
-      "levels": 3
+      "levels": 3,
+      "ground": 297.39
     },
     {
       "id": "inn-gasthaus-zum-engel",
@@ -325,7 +343,8 @@
       ],
       "wallHeight": 6.2,
       "roofHeight": 9,
-      "levels": 2
+      "levels": 2,
+      "ground": 414.03
     },
     {
       "id": "inn-landgasthof-krone",
@@ -340,7 +359,8 @@
       "footprint": [0, 5.07, -6, 5.07, -6, -5.07, 4.07, -5.07, 6, -5.07, 6, 5.07],
       "wallHeight": 6.2,
       "roofHeight": 4.26,
-      "levels": 2
+      "levels": 2,
+      "ground": 310.56
     },
     {
       "id": "inn-pfaffen-keller",
@@ -355,7 +375,8 @@
       "footprint": [-6.47, 5.53, -6.44, -5.52, 6.47, -5.52, 6.44, 5.52],
       "wallHeight": 6.2,
       "roofHeight": 0,
-      "levels": 2
+      "levels": 2,
+      "ground": 306.46
     },
     {
       "id": "inn-zur-schnecke",
@@ -373,7 +394,8 @@
       ],
       "wallHeight": 9.1,
       "roofHeight": 6.17,
-      "levels": 3
+      "levels": 3,
+      "ground": 350.27
     },
     {
       "id": "kandern-august-macke-schule",
@@ -393,7 +415,8 @@
       ],
       "wallHeight": 9.1,
       "roofHeight": 0,
-      "levels": 3
+      "levels": 3,
+      "ground": 370.58
     },
     {
       "id": "kandern-bahnhof",
@@ -411,7 +434,8 @@
       ],
       "wallHeight": 6.2,
       "roofHeight": 3.57,
-      "levels": 2
+      "levels": 2,
+      "ground": 346.1
     },
     {
       "id": "kandern-bfa",
@@ -430,7 +454,8 @@
       ],
       "wallHeight": 9.1,
       "roofHeight": 8.31,
-      "levels": 3
+      "levels": 3,
+      "ground": 339.59
     },
     {
       "id": "kandern-bfa-2",
@@ -448,7 +473,8 @@
       ],
       "wallHeight": 9.1,
       "roofHeight": 7.44,
-      "levels": 3
+      "levels": 3,
+      "ground": 339.39
     },
     {
       "id": "kandern-bfa-3",
@@ -466,7 +492,8 @@
       ],
       "wallHeight": 9.1,
       "roofHeight": 9,
-      "levels": 3
+      "levels": 3,
+      "ground": 339.3
     },
     {
       "id": "kandern-bfa-kapelle",
@@ -484,7 +511,8 @@
       ],
       "wallHeight": 14.4,
       "roofHeight": 9,
-      "levels": 4
+      "levels": 4,
+      "ground": 339.54
     },
     {
       "id": "kandern-forsthaus",
@@ -499,7 +527,8 @@
       "footprint": [-9.48, 6.66, -9.48, -6.66, 9.47, -6.66, 9.48, 6.67],
       "wallHeight": 9.1,
       "roofHeight": 5.59,
-      "levels": 3
+      "levels": 3,
+      "ground": 349.54
     },
     {
       "id": "kandern-gueterhalle",
@@ -514,7 +543,8 @@
       "footprint": [5.97, 3.51, -5.33, 3.52, -5.98, 3.52, -5.98, -3.52, 5.98, -3.52],
       "wallHeight": 6.2,
       "roofHeight": 2.46,
-      "levels": 2
+      "levels": 2,
+      "ground": 345.92
     },
     {
       "id": "kandern-hieber",
@@ -533,7 +563,8 @@
       ],
       "wallHeight": 2.9,
       "roofHeight": 0,
-      "levels": 1
+      "levels": 1,
+      "ground": 343.44
     },
     {
       "id": "kandern-museum",
@@ -548,7 +579,8 @@
       "footprint": [-4.96, 3.97, -4.98, -3.23, -4.98, -3.97, 4.97, -3.97, 4.98, 3.97],
       "wallHeight": 6.2,
       "roofHeight": 3.33,
-      "levels": 2
+      "levels": 2,
+      "ground": 347.74
     },
     {
       "id": "kandern-penny",
@@ -566,7 +598,8 @@
       ],
       "wallHeight": 2.9,
       "roofHeight": 0,
-      "levels": 1
+      "levels": 1,
+      "ground": 356.71
     },
     {
       "id": "kandern-rathaus",
@@ -581,7 +614,8 @@
       "footprint": [-13.67, -4.73, 13.66, -4.73, 13.67, 4.73, -13.66, 4.73],
       "wallHeight": 9.1,
       "roofHeight": 5.64,
-      "levels": 3
+      "levels": 3,
+      "ground": 345.11
     },
     {
       "id": "kandern-st-franz",
@@ -599,7 +633,8 @@
       ],
       "wallHeight": 14.4,
       "roofHeight": 9,
-      "levels": 4
+      "levels": 4,
+      "ground": 366.83
     },
     {
       "id": "kandern-stadtkirche",
@@ -617,7 +652,8 @@
       ],
       "wallHeight": 14.4,
       "roofHeight": 9,
-      "levels": 4
+      "levels": 4,
+      "ground": 351.03
     },
     {
       "id": "kindergarten-30483982",
@@ -635,7 +671,8 @@
       ],
       "wallHeight": 9.1,
       "roofHeight": 7.44,
-      "levels": 3
+      "levels": 3,
+      "ground": 319.23
     },
     {
       "id": "kindergarten-431078930",
@@ -650,7 +687,8 @@
       "footprint": [-10.11, -6.72, 10.11, -6.72, 10.11, 6.72, -10.11, 6.73],
       "wallHeight": 6.2,
       "roofHeight": 4.71,
-      "levels": 2
+      "levels": 2,
+      "ground": 362.25
     },
     {
       "id": "kindergarten-668713576",
@@ -665,7 +703,8 @@
       "footprint": [-13.53, 11.93, -13.52, -11.94, 13.53, -11.94, 13.52, 11.93],
       "wallHeight": 9.1,
       "roofHeight": 8.36,
-      "levels": 3
+      "levels": 3,
+      "ground": 351.02
     },
     {
       "id": "manor-schloss-buergeln",
@@ -683,7 +722,8 @@
       ],
       "wallHeight": 12,
       "roofHeight": 9,
-      "levels": 4
+      "levels": 4,
+      "ground": 665.89
     },
     {
       "id": "sausenburg",
@@ -698,7 +738,8 @@
       "footprint": [-25, -15, 25, -15, 25, 15, -25, 15],
       "wallHeight": 0,
       "roofHeight": 0,
-      "levels": 0
+      "levels": 0,
+      "ground": 655.81
     },
     {
       "id": "school-christliche-schule-kandern",
@@ -716,7 +757,8 @@
       ],
       "wallHeight": 6.2,
       "roofHeight": 3.64,
-      "levels": 2
+      "levels": 2,
+      "ground": 315.73
     },
     {
       "id": "school-grundschule-kandern",
@@ -734,7 +776,8 @@
       ],
       "wallHeight": 9.1,
       "roofHeight": 6.95,
-      "levels": 3
+      "levels": 3,
+      "ground": 351.51
     },
     {
       "id": "station-347879101",
@@ -749,7 +792,8 @@
       "footprint": [-5.46, 3, -5.48, -2.73, -5.47, -3.67, 5.46, -3.67, 5.47, 3.68, -5.46, 3.68],
       "wallHeight": 6.2,
       "roofHeight": 2.57,
-      "levels": 2
+      "levels": 2,
+      "ground": 298.79
     },
     {
       "id": "townhall-30483981",
@@ -767,7 +811,8 @@
       ],
       "wallHeight": 6.2,
       "roofHeight": 7.98,
-      "levels": 2
+      "levels": 2,
+      "ground": 317.52
     },
     {
       "id": "townhall-ehemaliges-rathaus",
@@ -782,7 +827,8 @@
       "footprint": [8.69, -5.74, 8.71, 5.74, -8.69, 5.73, -8.71, -5.74],
       "wallHeight": 6.2,
       "roofHeight": 4.02,
-      "levels": 2
+      "levels": 2,
+      "ground": 357.66
     },
     {
       "id": "townhall-rathaus",
@@ -797,7 +843,8 @@
       "footprint": [-5.87, -5.08, 5.9, -5.08, 5.87, 5.07, -5.9, 5.08, -5.89, 1.75],
       "wallHeight": 6.2,
       "roofHeight": 3.56,
-      "levels": 2
+      "levels": 2,
+      "ground": 308.15
     },
     {
       "id": "townhall-rathaus-sitzenkirch",
@@ -815,7 +862,8 @@
       ],
       "wallHeight": 6.2,
       "roofHeight": 7.64,
-      "levels": 2
+      "levels": 2,
+      "ground": 415.27
     }
   ]
 }

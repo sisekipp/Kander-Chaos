@@ -23,6 +23,7 @@ export async function buildLandmarks(
   placed: Map<number, Building>,
   project: (p: { lat: number; lon: number }) => [number, number],
   inWorld: (x: number, z: number) => boolean,
+  groundAt: (x: number, z: number) => number,
 ): Promise<Landmark[]> {
   const file = path.join(LANDMARK_DIR, 'config.json');
   const cfg: LandmarkConfig = existsSync(file)
@@ -37,7 +38,7 @@ export async function buildLandmarks(
       return { ...e, x, z };
     })
     .filter((e) => inWorld(e.x, e.z));
-  return selectLandmarks(rings, placed, cfg.overrides, extras);
+  return selectLandmarks(rings, placed, cfg.overrides, extras, groundAt);
 }
 
 export async function writeLandmarks(landmarks: Landmark[], outDir: string): Promise<void> {

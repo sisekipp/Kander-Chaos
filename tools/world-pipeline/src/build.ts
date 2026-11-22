@@ -217,8 +217,12 @@ export async function runBuild(outDir = config.paths.out): Promise<BuildResult> 
     spawn: { x: Math.round(spawnPlace.x * 10) / 10, z: Math.round(spawnPlace.z * 10) / 10 },
   });
   await writeFile(path.join(outDir, 'index.json'), JSON.stringify(index));
-  const landmarks = await buildLandmarks(rawBuildings, placedById, projectToWorld, (x, z) =>
-    included.has(tileId(Math.floor(x / config.tileSize), Math.floor(z / config.tileSize))),
+  const landmarks = await buildLandmarks(
+    rawBuildings,
+    placedById,
+    projectToWorld,
+    (x, z) => included.has(tileId(Math.floor(x / config.tileSize), Math.floor(z / config.tileSize))),
+    height,
   );
   await writeLandmarks(landmarks, outDir);
   log(`${landmarks.length} Wahrzeichen`);

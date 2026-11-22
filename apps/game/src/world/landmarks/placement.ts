@@ -16,6 +16,8 @@ export interface LandmarkInfo {
   wallHeight: number;
   roofHeight: number;
   levels: number;
+  /** Fußpunkt aus dem DGM (tiefste Höhe unter dem Grundriss); fehlt in älteren Daten. */
+  ground?: number;
 }
 
 /** Modell-ID in der Registry. */

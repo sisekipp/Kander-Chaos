@@ -14,8 +14,9 @@ import type { TileState } from '../tiles/TileState.ts';
 import { groundFor, landmarkModelId, rotationY, tileOfLandmark, type LandmarkInfo } from './placement.ts';
 
 /**
- * Wahrzeichen in Ring-0-Kacheln (Design D7): Modell aus der Registry an Grundrissmitte, Längsachse und tiefster
- * Geländehöhe; der Worker lässt das generierte Gebäude dort aus. Kollision als statisches Mesh in Weltlage.
+ * Wahrzeichen in Ring-0- und Ring-1-Kacheln (Design D7), damit sie auch im Flug zu sehen sind: Modell aus der
+ * Registry an Grundrissmitte, Längsachse und Fußpunkt aus dem DGM; der Worker lässt das generierte Gebäude dort
+ * aus. Kollision als statisches Mesh in Weltlage nur in Ring 0.
  */
 export class LandmarkLayer implements TileLayer {
   readonly name = 'landmarks';
@@ -40,19 +41,20 @@ export class LandmarkLayer implements TileLayer {
     this.material = createVertexColorMaterial(scene, 'landmark-mat');
   }
 
-  /** Wahrzeichen mit vorhandenem Modell: deren Gebäude lässt der Worker in Ring 0 aus. */
+  /** Wahrzeichen mit vorhandenem Modell: deren Gebäude lässt der Worker in Ring 0 und 1 aus. */
   static usable(landmarks: LandmarkInfo[], registry: ModelRegistry | null): LandmarkInfo[] {
     const ids = new Set(registry?.ids ?? []);
     return landmarks.filter((l) => ids.has(landmarkModelId(l)));
   }
 
   upload(tile: TileState, b: BuiltTile): (() => void)[] {
-    if (b.ring !== 0) return [];
-    return (this.byTile.get(tile.id) ?? []).map((l) => () => this.place(tile, l));
+    if (b.ring > 1) return [];
+    return (this.byTile.get(tile.id) ?? []).map((l) => () => this.place(tile, l, b.ring === 0));
   }
 
-  private place(tile: TileState, l: LandmarkInfo): void {
-    const ground = groundFor(l, (x, z) => tile.heightAt(x, z));
+  private place(tile: TileState, l: LandmarkInfo, near: boolean): void {
+    // Fußpunkt aus den Daten (gleich in allen Ringen, kein Springen beim Ringwechsel); sonst Höhenraster (Ring 0)
+    const ground = l.ground ?? groundFor(l, (x, z) => tile.heightAt(x, z));
     if (ground === null) return;
     const root = new TransformNode(`landmark-${l.id}`, this.scene);
     root.position.set(l.x, ground, l.z);
@@ -71,10 +73,10 @@ export class LandmarkLayer implements TileLayer {
       m.computeWorldMatrix(true);
       m.freezeWorldMatrix();
     }
-    const collider = this.physics ? this.addCollider(l, meshes) : null;
+    const collider = this.physics && near ? this.addCollider(l, meshes) : null;
     this.placed.set(l.id, root);
     tile.onDispose(() => {
-      this.placed.delete(l.id);
+      if (this.placed.get(l.id) === root) this.placed.delete(l.id); // beim Ringwechsel steht kurz eine neue Kopie
       collider?.();
       root.dispose(false, false);
     });

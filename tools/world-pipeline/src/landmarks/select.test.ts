@@ -71,6 +71,12 @@ describe('selectLandmarks', () => {
     expect(Math.max(...burg.footprint)).toBe(25);
   });
 
+  it('Bodenhöhe = tiefster Punkt unter Mitte und Ecken', () => {
+    const [l] = selectLandmarks(raw.slice(0, 1), placed, {}, [], (x, z) => x / 10 + z / 100);
+    // Ecken bei x = 94 … 106, z = 185 … 215 -> Minimum bei (94, 185)
+    expect(l.ground).toBeCloseTo(9.4 + 1.85);
+  });
+
   it('localFootprint dreht in die Längsachse', () => {
     expect(localFootprint([10, 0, 0, 10], 0, 0, 0, 1)).toEqual([0, -10, 10, 0]);
   });
