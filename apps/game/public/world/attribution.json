@@ -1,0 +1,25 @@
+{
+  "generatedFor": "Kandern Chaos – Weltdaten",
+  "sources": [
+    {
+      "id": "osm",
+      "name": "OpenStreetMap",
+      "attribution": "© OpenStreetMap-Mitwirkende",
+      "license": "Open Database License (ODbL) 1.0",
+      "licenseUrl": "https://opendatacommons.org/licenses/odbl/1-0/",
+      "url": "https://www.openstreetmap.org/copyright",
+      "retrieved": "2026-11-22",
+      "note": "Gebäude, Straßen, Landnutzung und Gewässer. Die abgeleiteten Kacheldaten stehen auf Anfrage unter der ODbL zur Verfügung."
+    },
+    {
+      "id": "lgl-dgm1",
+      "name": "Digitales Geländemodell DGM1, Landesamt für Geoinformation und Landentwicklung Baden-Württemberg",
+      "attribution": "Datenquelle: LGL, www.lgl-bw.de",
+      "license": "Datenlizenz Deutschland – Namensnennung – Version 2.0",
+      "licenseUrl": "https://www.govdata.de/dl-de/by-2-0",
+      "url": "https://opengeodata.lgl-bw.de/",
+      "retrieved": "2026-11-22",
+      "note": "Höhendaten, auf 2-m-Raster gemittelt."
+    }
+  ]
+}

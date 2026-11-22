@@ -1,0 +1,17 @@
+{
+  "name": "@kandern/world-pipeline",
+  "version": "0.1.0",
+  "private": true,
+  "bin": {
+    "world-pipeline": "./src/cli.ts"
+  },
+  "type": "module",
+  "scripts": {
+    "pipeline": "vpx ./src/cli.ts",
+    "test": "vp test run src"
+  },
+  "dependencies": {
+    "@kandern/world-format": "workspace:*",
+    "fflate": "^0.8.2"
+  }
+}
