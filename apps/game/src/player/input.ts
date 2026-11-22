@@ -11,7 +11,20 @@ export const input = {
   lookDY: 0,
   fast: false,
   jump: false,
+  /** Fahren: Gas-/Bremsknopf gehalten, Hupe. */
+  gas: false,
+  brake: false,
+  horn: false,
+  /** Einmaliges Ereignis: Ein-/Aussteigen (Knopf oder Taste E); wird beim Lesen zurückgesetzt. */
+  action: false,
 };
+
+/** Liest und verbraucht das Aktionsereignis. */
+export function consumeAction(): boolean {
+  const a = input.action;
+  input.action = false;
+  return a;
+}
 
 const keys = new Set<string>();
 
@@ -23,12 +36,15 @@ function applyKeys(): void {
     input.moveY = f;
   }
   if (keys.has('Space')) input.jump = true;
+  input.brake = keys.has('Space') || keys.has('ShiftLeft');
+  input.gas = keys.has('KeyW') || keys.has('ArrowUp');
 }
 
 /** Tastatur für Desktop-Tests (WASD/Pfeile, Leertaste). */
 export function attachKeyboard(): () => void {
   const down = (e: KeyboardEvent) => {
     if ((e.target as HTMLElement)?.tagName === 'INPUT') return;
+    if (e.code === 'KeyE' && !e.repeat) input.action = true;
     keys.add(e.code);
     applyKeys();
   };

@@ -4,13 +4,13 @@ Kindgerechtes Open-World-Spiel in der echten Gemeinde Kandern: Babylon.js, React
 
 ## Struktur
 
-| Ordner | Inhalt |
-|---|---|
-| `apps/game` | Spiel: React-UI, Babylon.js-Engine, Web Worker, Service Worker, E2E-Tests |
-| `packages/world-format` | Kachelformat (gemeinsam für Pipeline und Spiel) |
-| `tools/world-pipeline` | OSM + LGL-DGM → Kachelpakete |
-| `docs/perf` | Messanleitung und -protokolle für das iPad Pro 1. Gen |
-| `openspec/` | Planung (Changes, Specs) |
+| Ordner                  | Inhalt                                                                    |
+| ----------------------- | ------------------------------------------------------------------------- |
+| `apps/game`             | Spiel: React-UI, Babylon.js-Engine, Web Worker, Service Worker, E2E-Tests |
+| `packages/world-format` | Kachelformat (gemeinsam für Pipeline und Spiel)                           |
+| `tools/world-pipeline`  | OSM + LGL-DGM → Kachelpakete                                              |
+| `docs/perf`             | Messanleitung und -protokolle für das iPad Pro 1. Gen                     |
+| `openspec/`             | Planung (Changes, Specs)                                                  |
 
 ## Befehle
 

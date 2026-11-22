@@ -29,6 +29,25 @@ Menü → **Testmodus**:
 3. **Kaltstart**: App vom Home-Bildschirm im Flugmodus starten und die Zeit bis zur steuerbaren Figur stoppen (Ziel ≤ 15 s).
 4. Kachel-Erzeugung: `extra.maxTileGenMs` / `extra.maxTileBuildMs` aus dem Bericht (Ziel ≤ 3000 ms für die dichteste Kachel).
 
+## Fahrzeuge und Zerstörung (Change `vehicles-and-destruction`, Aufgabe 7.3)
+
+Menü → **Testmodus** (Qualität „Niedrig“):
+
+1. **Autofahrt**: Neben ein geparktes Auto gehen, **Einsteigen**, im Testmodus **Messlauf 60 s** starten und dabei durch die Kernstadt Richtung Holzen fahren. Dabei auch Büsche, Mülleimer und Zäune umfahren. Bericht: `messung-messlauf-….json`.
+2. **Chaos-Test**: Am Blumenplatz zu Fuß **Chaos-Test** antippen. 30 s lang werden laufend Kleinobjekte ausgelöst. Bericht: `messung-chaostest-….json` mit `extra.maxBodies` (Ziel ≤ 80) und `extra.maxDebris` (Ziel ≤ 60).
+3. **Bedienung**: Einfach-Modus (nur lenken) und normaler Modus (Gas-Knopf) ausprobieren. Ein-/Aussteigen, Hupe und Bremse/Rückwärts müssen mit Kinderhänden gut treffbar sein.
+
+| Kennzahl | Ziel | Quelle |
+|---|---|---|
+| Ø Bildrate Autofahrt / Chaos-Test | ≥ 30 fps | `summary.avgFps` |
+| 1-%-Low | ≥ 20 fps | `summary.p1LowFps` |
+| dynamische Körper im Chaos-Test | ≤ 80 | `extra.maxBodies` |
+| Trümmerteile im Chaos-Test | ≤ 60 | `extra.maxDebris` |
+
+Ergebnisse in `docs/perf/<datum>-fahrzeuge.md` eintragen (Tabelle wie oben).
+
+**Desktop-Vergleich** (Playwright-WebKit, keine Abnahme): Beim Chaos-Test wurden 533 Objekte in 30 s ausgelöst, höchstens 80 Körper und 60 Trümmer waren gleichzeitig aktiv, bei ~100 fps. Die Endgeschwindigkeiten lagen bei Auto 74,5, Motorrad 84,5 und Fahrrad 28,3 km/h.
+
 ## Ziele (Spec `performance-budget`)
 
 | Kennzahl | Ziel | Quelle |

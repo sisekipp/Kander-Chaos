@@ -60,6 +60,20 @@ Die meisten OSM-Gebäude in Kandern haben nur Grundriss und `building=yes|house`
 
 Geschätzte Gebäude tragen in den Kacheldaten `estimated = 1`. So lassen sich OSM-Lücken später gezielt nachpflegen.
 
+## Kleinobjekte und Parkpositionen
+
+Quelle ist ein zweiter, fortsetzbarer Overpass-Abruf (`data/raw/osm-props-chunks/` → `osm-props.json`, 4-km-Teilstücke) mit Laternen, Ampeln, Haltestellen, Mülleimern, Bänken, Schildern, Zäunen, Hecken, Mauern, Parkplätzen und Spielplätzen. Danach werden je Kachel (`src/props/`) nacheinander gesetzt:
+
+1. **Echte OSM-Objekte** an ihrer Position, sofern sie nicht auf einer Fahrbahn oder in einem Gebäude liegen. Zäune und Mauern werden in 2,5-m-Felder zerlegt, Hecken in Büsche alle 1,8 m.
+2. **Ergänzung nach Regeln** (`fill.ts`, Zufall aus Weg- bzw. Gebäude-ID):
+   - Laternen alle ~30 m entlang von Wohn-, Neben- und Ortsstraßen im bebauten Umfeld, wechselseitig, Breite/2 + 1,6 m vom Straßenmittelpunkt.
+   - Zaunfelder in Läufen von 3–8 Feldern am Rand von Wohnstraßen (Breite/2 + 2 m).
+   - 1–3 Büsche je Wohn-, Fachwerk- oder Hofgebäude, 2–5 m vor einer Wand.
+   - Bank und Mülleimer an Bushaltestellen, Spielplätzen und Parks.
+3. **Parkpositionen** (`parking.ts`): am Rand von Wohn- und Nebenstraßen alle 6–10 m mit 25 % Wahrscheinlichkeit, mindestens 15 m von echten Kreuzungen und 6 m voneinander entfernt. In Parkplatzflächen als Raster 2,8 × 5,5 m (höchstens 30 je Fläche). Etwa 10 % sind Zweiräder.
+
+Konflikte prüft ein 0,5-m-Raster (`conflicts.ts`) gegen Fahrbahnen, Wege und Gebäude der Kachel **und ihrer Nachbarn**. Gesetzte Objekte belegen ihren Platz. `check` verlangt mindestens 10 Parkpositionen und 3 Prop-Arten im Umkreis von 300 m um den Blumenplatz.
+
 ## Determinismus
 
 - Quelldaten werden zwischengespeichert, OSM-Elemente nach Typ und ID sortiert.

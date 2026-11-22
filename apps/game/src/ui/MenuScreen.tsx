@@ -4,6 +4,8 @@ import { exportSave, importSave, SaveValidationError } from '../save/saveStore.t
 
 export function MenuScreen({ onDevTools }: { onDevTools: () => void }) {
   const setScreen = useGameStore((s) => s.setScreen);
+  const simple = useGameStore((s) => s.simpleDriving);
+  const setSimple = useGameStore((s) => s.setSimpleDriving);
   const [msg, setMsg] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -51,6 +53,10 @@ export function MenuScreen({ onDevTools }: { onDevTools: () => void }) {
           onChange={onImport}
           data-testid="import-input"
         />
+        <label className="toggle">
+          <input type="checkbox" checked={simple} onChange={(e) => setSimple(e.target.checked)} />
+          <span>Einfach fahren (Auto gibt selbst Gas)</span>
+        </label>
         <button className="secondary" onClick={() => setScreen('about')}>
           Über das Spiel
         </button>

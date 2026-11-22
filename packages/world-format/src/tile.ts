@@ -1,4 +1,5 @@
 import { ByteReader, ByteWriter } from './bytes.ts';
+import { readProps, writeProps } from './propsSection.ts';
 import {
   FORMAT_VERSION,
   TILE_MAGIC,
@@ -17,6 +18,7 @@ const enum Section {
   Roads = 3,
   Land = 4,
   Waterways = 5,
+  Props = 6,
 }
 
 const WATER_KINDS: Waterway['kind'][] = ['river', 'stream', 'ditch'];
@@ -99,6 +101,10 @@ export function encodeTile(t: TileData): Uint8Array {
     }
   });
 
+  const props = t.props ?? [];
+  const parking = t.parking ?? [];
+  if (props.length || parking.length) writeSection(w, Section.Props, (s) => writeProps(s, props, parking));
+
   return w.finish();
 }
 
@@ -119,6 +125,8 @@ export function decodeTile(bytes: Uint8Array): TileData {
     roads: [],
     land: [],
     waterways: [],
+    props: [],
+    parking: [],
   };
 
   while (r.remaining > 0) {
@@ -198,6 +206,12 @@ export function decodeTile(bytes: Uint8Array): TileData {
           const ww: Waterway = { kind, width: body.f32(), name: body.str(), points: body.f32Array() };
           t.waterways.push(ww);
         }
+        break;
+      }
+      case Section.Props: {
+        const { props, parking } = readProps(body);
+        t.props = props;
+        t.parking = parking;
         break;
       }
       default:

@@ -21,6 +21,7 @@ import { roadsPerTile, splitAtJunctions, type RawWay } from './roads.ts';
 import { landKind, landPerTile, waterwayKind, waterwaysPerTile, type RawArea, type RawWaterway } from './landuse.ts';
 import { buildTerrainLods } from './terrain.ts';
 import { buildAttribution } from './attribution.ts';
+import { addPropsToTiles, readOsmProps } from './props/index.ts';
 
 const log = (...a: unknown[]) => console.log('[build]', ...a);
 
@@ -159,6 +160,14 @@ export async function runBuild(outDir = config.paths.out): Promise<BuildResult> 
       waterways: water.get(key) ?? [],
     };
   });
+  if (existsSync(rawPaths.osmProps())) {
+    const osmProps = readOsmProps(
+      JSON.parse(await readFile(rawPaths.osmProps(), 'utf8')) as OverpassResult,
+      projectToWorld,
+    );
+    const n = addPropsToTiles(tiles, osmProps);
+    log(`${n.props} Kleinobjekte (${osmProps.props.length} aus OSM), ${n.parking} Parkpositionen`);
+  } else log('keine Props-Rohdaten (osm-props.json) – Kacheln ohne Kleinobjekte');
   const nb = tiles.reduce((s, t) => s + t.buildings.length, 0);
   log(`${nb} Gebäude in der Welt, davon ${estimated} mit geschätzten Werten`);
 

@@ -5,14 +5,25 @@ import '@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent';
 import type { WorldIndex } from '@kandern/world-format';
 import type { Game } from '../engine/Game.ts';
 import { enableHavok, releaseHavok } from '../engine/physics/havok.ts';
+import { enableFixedPhysicsSteps } from '../engine/physics/fixedStep.ts';
+import { PhysicsBudget } from '../engine/physics/budget/index.ts';
+import { DEBUG_COLORS, DebugLines } from '../engine/debug/DebugLines.ts';
+import { useGameStore } from '../state/store.ts';
+import { VehicleManager } from '../vehicles/VehicleManager.ts';
+import { Particles } from '../engine/fx/particles.ts';
+import { PropSystem } from '../props/PropSystem.ts';
+import { collectPropActors } from './propActors.ts';
 import { BASE_URL } from '../engine/assets.ts';
 import type { QualitySettings } from '../engine/quality.ts';
-import { Player } from '../player/Player.ts';
+import { PlayerController } from '../player/PlayerController.ts';
 import { RouteFollower } from '../player/route.ts';
-import { FAST_SPEED } from '../player/Player.ts';
+import { FAST_SPEED } from '../player/constants.ts';
 import { createWorldMaterials, type WorldMaterials } from './materials.ts';
-import { createTreeBases } from './treeMeshes.ts';
-import { TileManager } from './TileManager.ts';
+import { createTreeBases } from './vegetation/treeMeshes.ts';
+import { TreeLayer } from './vegetation/TreeLayer.ts';
+import { TileManager } from './tiles/TileManager.ts';
+import { GeometryLayer } from './tiles/GeometryLayer.ts';
+import { CollisionLayer } from './tiles/CollisionLayer.ts';
 import { WorkerPool } from './WorkerPool.ts';
 import { createPanorama } from './panorama.ts';
 
@@ -39,11 +50,16 @@ export async function loadWorldIndex(): Promise<{ index: WorldIndex; places: Pla
 /** Verbindet Streaming, Spielfigur, Physik und Qualitätsstufen zur spielbaren Welt. */
 export class World {
   readonly tiles: TileManager;
-  readonly player: Player;
+  readonly player: PlayerController;
   private readonly pool: WorkerPool;
   private readonly materials: WorldMaterials;
   private readonly panorama: ReturnType<typeof createPanorama>;
   private readonly unsubs: (() => void)[] = [];
+  readonly budget = new PhysicsBudget();
+  readonly debug: DebugLines;
+  readonly vehicles: VehicleManager | null;
+  readonly fx: Particles;
+  readonly props: PropSystem | null;
   private fxaa: FxaaPostProcess | null = null;
   private shadows: ShadowGenerator | null = null;
 
@@ -89,8 +105,6 @@ export class World {
       index,
       worldUrl: WORLD_URL,
       pool: this.pool,
-      materials: this.materials,
-      treeBases,
       viewDistance: q.viewDistance,
       vegetationDensity: q.vegetationDensity,
       physics,
@@ -102,10 +116,27 @@ export class World {
         }
       },
     });
+    this.debug = new DebugLines(scene);
+    if (physics) this.unsubs.push(enableFixedPhysicsSteps(scene));
+    this.unsubs.push(useGameStore.subscribe((st) => (this.debug.enabled = st.debugPhysics)));
+    this.debug.enabled = useGameStore.getState().debugPhysics;
+    this.tiles.addLayer(new GeometryLayer(scene, this.materials));
+    if (physics) this.tiles.addLayer(new CollisionLayer(scene));
+    this.tiles.addLayer(new TreeLayer(scene, treeBases));
+    // Fahrzeuge brauchen Physik (Kollision, Raycasts)
+    this.fx = new Particles(scene);
+    this.vehicles = physics ? new VehicleManager(scene, this.tiles, this.debug, this.budget, this.fx) : null;
+    if (this.vehicles) this.tiles.addLayer(this.vehicles.layer);
+    // Kleinobjekte brauchen Physik (Ersatzkörper, Trümmer, Collider)
+    this.props = physics ? new PropSystem(scene, this.budget, this.fx, (t, x, z) => t.heightAt(x, z) ?? 0) : null;
+    if (this.props) this.tiles.addLayer(this.props.layer);
     game.camera.detachControl();
     game.camera.maxZ = 2600;
     this.panorama = createPanorama(scene, scene.fogColor);
-    this.player = new Player(scene, game.camera, this.tiles, new Vector3(start.x, 0, start.z), physics);
+    this.player = new PlayerController(scene, game.camera, this.tiles, new Vector3(start.x, 0, start.z), physics);
+    this.player.vehicles = this.vehicles;
+    this.unsubs.push(useGameStore.subscribe((st) => (this.player.simpleDriving = st.simpleDriving)));
+    this.player.simpleDriving = useGameStore.getState().simpleDriving;
     // Höhe beim Start: so hoch, bis die erste Kachel da ist
     this.unsubs.push(game.onFrame((dt) => this.update(dt)));
     this.unsubs.push(game.onQualityChange((qq) => this.applyQuality(qq)));
@@ -116,6 +147,14 @@ export class World {
     const v = this.player.velocity;
     this.tiles.update(p.x, p.z, v.x, v.z);
     this.player.update(dt);
+    this.vehicles?.update(p.x, p.z);
+    this.props?.update(collectPropActors(this.player, this.vehicles), p.x, p.z, this.player.state.kind === 'walking');
+    this.publishPlayState();
+    this.budget.update();
+    if (this.debug.enabled) {
+      const from = p.add(new Vector3(0, 1, 0));
+      this.debug.line(from, from.add(v.scale(0.5)), DEBUG_COLORS.velocity);
+    }
     this.panorama.follow(p.x, p.z, p.y - 60);
     this.materials.updateLighting(
       this.game.sun.direction,
@@ -127,8 +166,25 @@ export class World {
     this.game.perf.recorder.extra.maxTileBuildMs = Math.round(this.tiles.maxTileBuildMs);
   }
 
+  private lastPublish = 0;
+
+  /** Spielzustand für die UI (gedrosselt auf 4 Hz). */
+  private publishPlayState(): void {
+    const now = performance.now();
+    if (now - this.lastPublish < 250) return;
+    this.lastPublish = now;
+    const v = this.player.vehicle;
+    useGameStore.getState().setPlay({
+      mode: v ? 'driving' : 'walking',
+      canEnter: this.player.canEnter,
+      vehicleHealth: v ? Math.round(v.health * 100) / 100 : 1,
+      speedKmh: v ? Math.round(Math.abs(v.sim.forwardSpeed) * 3.6) : 0,
+    });
+  }
+
   private applyQuality(q: QualitySettings): void {
     this.tiles?.setQuality(q.viewDistance, q.vegetationDensity);
+    if (this.fx) this.fx.lowQuality = q.level === 'low';
     const cam = this.game.camera;
     this.game.camera.maxZ = 2600;
     if (q.fxaa && !this.fxaa) this.fxaa = new FxaaPostProcess('fxaa', 1.0, cam);
@@ -139,7 +195,7 @@ export class World {
     if (q.shadows && !this.shadows) {
       this.shadows = new ShadowGenerator(1024, this.game.sun);
       this.shadows.usePercentageCloserFiltering = true;
-      for (const m of this.player?.root.getChildMeshes() ?? [])
+      for (const m of this.player?.walker.figure.meshes ?? [])
         if (!m.name.includes('shadow')) this.shadows.addShadowCaster(m);
     }
     if (!q.shadows && this.shadows) {
@@ -167,6 +223,11 @@ export class World {
   dispose(): void {
     for (const u of this.unsubs) u();
     this.player.dispose();
+    this.vehicles?.dispose();
+    this.props?.dispose();
+    this.fx.dispose();
+    this.budget.dispose();
+    this.debug.dispose();
     this.tiles.dispose();
     this.pool.dispose();
     this.panorama.dispose();

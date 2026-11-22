@@ -28,3 +28,10 @@ if (import.meta.env.DEV || new URLSearchParams(location.search).has('debug')) {
     };
   });
 }
+
+// Nur in der Entwicklung bzw. mit ?debug: Testfahrzeug erzeugen (Fahrphysik-Tests)
+if (import.meta.env.DEV || new URLSearchParams(location.search).has('debug')) {
+  void import('./vehicles/devSpawn.ts').then(
+    (m) => ((window as unknown as Record<string, unknown>).__kcSpawn = m.devSpawnVehicle),
+  );
+}

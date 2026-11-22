@@ -60,6 +60,8 @@ async function build(req: BuildRequest): Promise<BuiltTile> {
     buildings,
     roads,
     trees,
+    props: req.ring === 0 ? (tile.props ?? []) : [],
+    parking: req.ring === 0 ? (tile.parking ?? []) : [],
     heightfield,
     stats: {
       buildings: tile.buildings.length,

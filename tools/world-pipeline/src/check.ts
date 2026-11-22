@@ -13,6 +13,7 @@ import {
 import { existsSync } from 'node:fs';
 import { DgmGrid } from './dgm.ts';
 import { rawPaths } from './fetch.ts';
+import { checkProps } from './props/check.ts';
 import { config } from './config.ts';
 import { RoadGraph } from './roads.ts';
 import type { Place } from './build.ts';
@@ -95,7 +96,12 @@ export async function runCheck({ determinism }: { determinism: boolean }): Promi
     }
   }
 
-  // 5. Höhengenauigkeit am Startpunkt (Blumenplatz) gegen das DGM-Raster
+  // 5. Kleinobjekte und Parkpositionen
+  const pc = checkProps(index, tiles);
+  for (const m of pc.messages) console.log(`  ${m.startsWith('✔') || m.startsWith('✘') ? m : `✘ ${m}`}`);
+  if (!pc.ok) good = false;
+
+  // 5b. Höhengenauigkeit am Startpunkt (Blumenplatz) gegen das DGM-Raster
   if (existsSync(rawPaths.dgmGrid())) {
     const grid = DgmGrid.deserialize(await readFile(rawPaths.dgmGrid()));
     const s = config.tileSize;

@@ -5,9 +5,11 @@ import { getWorld, setWorld } from '../world/worldInstance.ts';
 import { attachKeyboard, input } from '../player/input.ts';
 import { runMeasurement } from '../engine/devTools.ts';
 import { hideStressScene } from '../engine/devTools.ts';
-import { TouchControls } from './TouchControls.tsx';
+import { Controls } from './controls/index.tsx';
+import { HealthBar } from './hud/HealthBar.tsx';
 import { useGameStore } from '../state/store.ts';
 import { loadSave, newSave, startAutosave } from '../save/saveStore.ts';
+import { runChaosTest } from '../world/chaosTest.ts';
 
 /** Testmodus: Welt laden, Figur steuern, Messfahrten starten. */
 export function PlayingScreen() {
@@ -16,6 +18,8 @@ export function PlayingScreen() {
   const [fast, setFast] = useState(false);
   const [quality, setQualityState] = useState(getGame()?.quality.level ?? 'low');
   const [measuring, setMeasuring] = useState(false);
+  const debugPhysics = useGameStore((s) => s.debugPhysics);
+  const setDebugPhysics = useGameStore((s) => s.setDebugPhysics);
 
   useEffect(() => {
     let cancelled = false;
@@ -109,6 +113,37 @@ export function PlayingScreen() {
     }, 250);
   };
 
+  /** Freier Messlauf (z. B. während einer Autofahrt) bzw. Chaos-Test – lädt jeweils einen JSON-Bericht herunter. */
+  const measureFree = (label: string, seconds: number, during?: () => Promise<Record<string, number>>) => {
+    const g = getGame(),
+      w = getWorld();
+    if (!g || !w) return;
+    setMeasuring(true);
+    setStatus(`${label} läuft (${seconds} s) …`);
+    g.perf.recorder.start(label);
+    void (during ? during() : new Promise<Record<string, number>>((r) => setTimeout(() => r({}), seconds * 1000))).then(
+      (extra) => {
+        g.perf.recorder.stop();
+        Object.assign(g.perf.recorder.extra, extra, {
+          maxPhysicsBodies: w.budget.count,
+          vehicles: w.vehicles?.count ?? 0,
+        });
+        runMeasurement(
+          g,
+          label,
+          0,
+          (r) => {
+            setMeasuring(false);
+            setStatus(
+              `${label}: Ø ${r.summary.avgFps.toFixed(1)} fps, 1 %-Low ${r.summary.p1LowFps.toFixed(1)} fps${extra.maxBodies !== undefined ? `, max. ${extra.maxBodies} Körper` : ''}`,
+            );
+          },
+          true,
+        );
+      },
+    );
+  };
+
   const switchQuality = () => {
     const g = getGame();
     if (!g) return;
@@ -119,7 +154,8 @@ export function PlayingScreen() {
 
   return (
     <>
-      <TouchControls />
+      <Controls />
+      <HealthBar />
       <div className="hud">
         <button className="secondary" onClick={() => setScreen('menu')}>
           Menü
@@ -140,6 +176,22 @@ export function PlayingScreen() {
           onClick={() => route(['Feuerbach', 'Kandern', 'Wollbach'], 'langefahrt')}
         >
           Lange Fahrt
+        </button>
+        <button className="secondary" disabled={measuring} onClick={() => measureFree('messlauf', 60)}>
+          Messlauf 60 s
+        </button>
+        <button
+          className="secondary"
+          disabled={measuring}
+          onClick={() => {
+            const w = getWorld();
+            if (w) measureFree('chaostest', 30, () => runChaosTest(w));
+          }}
+        >
+          Chaos-Test
+        </button>
+        <button className={debugPhysics ? 'active' : 'secondary'} onClick={() => setDebugPhysics(!debugPhysics)}>
+          Debug
         </button>
         <button className="secondary" onClick={switchQuality}>
           Qualität: {quality === 'low' ? 'Niedrig' : 'Hoch'}

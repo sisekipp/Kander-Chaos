@@ -4,7 +4,9 @@ const ignore = ['**/dist/**', 'openspec/**', '.claude/**', '.agents/**', 'data/*
 
 export default defineConfig({
   run: {
-    cache: true,
+    // Kein Task-Cache: die Welt-Pipeline hat Netzwerk- und Dateiseiteneffekte (Abruf, fortsetzbare Teilstücke),
+    // die sich nicht als zwischenspeicherbares Ergebnis eines Tasks beschreiben lassen.
+    cache: false,
   },
   test: {
     include: ['{apps,packages,tools}/*/src/**/*.test.ts'],
@@ -16,5 +18,15 @@ export default defineConfig({
   },
   lint: {
     ignorePatterns: ignore,
+    rules: {
+      // Codestruktur (Design D11): keine Riesen-Dateien
+      'max-lines': ['error', { max: 300, skipBlankLines: true, skipComments: true }],
+    },
+    overrides: [
+      {
+        files: ['**/*.test.ts', '**/e2e/**'],
+        rules: { 'max-lines': 'off' },
+      },
+    ],
   },
 });

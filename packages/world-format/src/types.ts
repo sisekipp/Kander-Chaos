@@ -139,6 +139,46 @@ export interface Waterway {
   name: string;
 }
 
+/** Zerstörbare Kleinobjekte (Abschnitt 6). */
+export enum PropKind {
+  Bush = 0,
+  Bin = 1,
+  Fence = 2,
+  Sign = 3,
+  Lamp = 4,
+  Bench = 5,
+}
+
+export const PROP_KIND_COUNT = 6;
+
+export interface Prop {
+  kind: PropKind;
+  /** Kachel-lokal. */
+  x: number;
+  z: number;
+  /** Drehung um die Hochachse (Radiant, 0 = Blick nach Norden). */
+  rot: number;
+  /** Modellvariante (z. B. Buschgröße, Schildtyp). */
+  variant: number;
+}
+
+export enum VehicleKind {
+  Car = 0,
+  Bike = 1,
+  Motorbike = 2,
+}
+
+/** Parkposition für ein Fahrzeug (Abschnitt 6). */
+export interface ParkingSpot {
+  /** Stabile ID (deterministisch aus Quelle + Index), z. B. für Farbe und Wiedererscheinen. */
+  id: number;
+  x: number;
+  z: number;
+  /** Fahrtrichtung als Gierwinkel (Radiant). */
+  heading: number;
+  kind: VehicleKind;
+}
+
 export interface TileData {
   tx: number;
   tz: number;
@@ -151,6 +191,10 @@ export interface TileData {
   roads: Road[];
   land: LandArea[];
   waterways: Waterway[];
+  /** Kleinobjekte (optionaler Abschnitt 6; ältere Kacheln: leer). */
+  props?: Prop[];
+  /** Parkpositionen (optionaler Abschnitt 6; ältere Kacheln: leer). */
+  parking?: ParkingSpot[];
 }
 
 /** Eintrag eines Regionspakets im Index. */

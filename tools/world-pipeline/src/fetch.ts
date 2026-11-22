@@ -9,26 +9,14 @@ import { config } from './config.ts';
 import { studyAreaFromBoundary } from './area.ts';
 import type { OverpassResult } from './osm.ts';
 import { DgmGrid } from './dgm.ts';
+import { fetchOsmChunked, overpass } from './osmChunks.ts';
 
 const log = (...a: unknown[]) => console.log('[fetch]', ...a);
-
-async function overpass(query: string): Promise<string> {
-  for (let attempt = 1; attempt <= 4; attempt++) {
-    const res = await fetch(config.overpassUrl, {
-      method: 'POST',
-      headers: { 'User-Agent': config.userAgent, 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ data: query }),
-    });
-    if (res.ok) return res.text();
-    log(`Overpass HTTP ${res.status}, Versuch ${attempt}/4`);
-    await new Promise((r) => setTimeout(r, 15000 * attempt));
-  }
-  throw new Error('Overpass nicht erreichbar');
-}
 
 export const rawPaths = {
   boundary: () => path.join(config.paths.raw, 'osm-boundary.json'),
   osm: () => process.env.KC_OSM_FILE ?? path.join(config.paths.raw, 'osm-data.json'),
+  osmProps: () => path.join(config.paths.raw, 'osm-props.json'),
   dgmZip: (e: number, n: number) => path.join(config.paths.raw, 'dgm', `dgm1_32_${e}_${n}_2_bw.zip`),
   dgmMissing: (e: number, n: number) => path.join(config.paths.raw, 'dgm', `dgm1_32_${e}_${n}_2_bw.missing`),
   dgmGrid: () => path.join(config.paths.work, 'dgm-2m.bin'),
@@ -108,7 +96,24 @@ export async function runFetch(): Promise<void> {
   else await buildDgmGrid(zips, minE, minN, maxE, maxN);
 
   // 5. OSM-Daten in Teilstücken (große Abfragen scheitern am Overpass-Zeitlimit)
-  await fetchOsmChunked();
+  const boundary = JSON.parse(await readFile(rawPaths.boundary(), 'utf8')) as OverpassResult;
+  await fetchOsmChunked({
+    label: 'OSM',
+    boundary,
+    query: OSM_QUERY_BODY,
+    chunkDir: path.join(config.paths.raw, 'osm-chunks'),
+    outFile: rawPaths.osm(),
+    chunkKm: 2,
+  });
+  // 6. Straßenmöbel, Barrieren, Parkplätze
+  await fetchOsmChunked({
+    label: 'Props',
+    boundary,
+    query: PROPS_QUERY_BODY,
+    chunkDir: path.join(config.paths.raw, 'osm-props-chunks'),
+    outFile: rawPaths.osmProps(),
+    chunkKm: 4,
+  });
 }
 
 async function buildDgmGrid(
@@ -148,54 +153,13 @@ const OSM_QUERY_BODY = `(
 );
 out body geom;`;
 
-/**
- * Lädt OSM-Daten in Teilstücken von ca. 2 x 2 km, speichert jedes Stück einzeln (fortsetzbar)
- * und führt sie zu osm-data.json zusammen (doppelte Elemente entfernt, stabil sortiert).
- */
-async function fetchOsmChunked(): Promise<void> {
-  if (existsSync(rawPaths.osm())) {
-    log('vorhanden:', path.relative(config.paths.raw, rawPaths.osm()));
-    return;
-  }
-  const b = JSON.parse(await readFile(rawPaths.boundary(), 'utf8')) as OverpassResult;
-  const rel = b.elements[0] as unknown as {
-    bounds?: { minlat: number; minlon: number; maxlat: number; maxlon: number };
-  };
-  const bb = rel.bounds ?? { minlat: 47.6586, minlon: 7.5696, maxlat: 47.7478, maxlon: 7.7183 };
-  const dLat = config.bufferM / 111320 + 0.002;
-  const dLon = config.bufferM / (111320 * Math.cos((bb.minlat * Math.PI) / 180)) + 0.003;
-  const s0 = bb.minlat - dLat,
-    w0 = bb.minlon - dLon,
-    n0 = bb.maxlat + dLat,
-    e0 = bb.maxlon + dLon;
-  const stepLat = 0.018,
-    stepLon = 0.027; // ca. 2 x 2 km
-  const chunks: [number, number, number, number][] = [];
-  for (let la = s0; la < n0; la += stepLat)
-    for (let lo = w0; lo < e0; lo += stepLon) {
-      chunks.push([la, lo, Math.min(la + stepLat, n0), Math.min(lo + stepLon, e0)]);
-    }
-  const dir = path.join(config.paths.raw, 'osm-chunks');
-  await mkdir(dir, { recursive: true });
-  let timestamp = '';
-  const merged = new Map<string, unknown>();
-  for (const [i, c] of chunks.entries()) {
-    const file = path.join(dir, `chunk-${String(i).padStart(3, '0')}.json`);
-    if (!existsSync(file)) {
-      log(`OSM-Teilstück ${i + 1}/${chunks.length} …`);
-      const bbox = c.map((v) => v.toFixed(6)).join(',');
-      const text = await overpass(`[out:json][timeout:300][bbox:${bbox}];\n${OSM_QUERY_BODY}`);
-      JSON.parse(text); // nur vollständige Antworten speichern
-      await writeFile(`${file}.tmp`, text);
-      await rename(`${file}.tmp`, file);
-    }
-    const part = JSON.parse(await readFile(file, 'utf8')) as OverpassResult;
-    timestamp = part.osm3s?.timestamp_osm_base ?? timestamp;
-    for (const el of part.elements) merged.set(`${el.type}/${el.id}`, el);
-  }
-  const order = { node: 0, way: 1, relation: 2 } as const;
-  const elements = [...merged.values()] as OverpassResult['elements'];
-  elements.sort((a, b) => order[a.type] - order[b.type] || a.id - b.id);
-  await writeFile(rawPaths.osm(), JSON.stringify({ osm3s: { timestamp_osm_base: timestamp }, elements }));
-  log(`OSM zusammengeführt: ${elements.length} Elemente aus ${chunks.length} Teilstücken`);
-}
+/** Straßenmöbel, Barrieren und Parkplätze (dünn gesät -> größere Teilstücke). */
+const PROPS_QUERY_BODY = `(
+  node["highway"~"^(street_lamp|traffic_signals|bus_stop)$"];
+  node["amenity"~"^(waste_basket|bench|bicycle_parking|parking)$"];
+  node["traffic_sign"];
+  way["barrier"~"^(fence|hedge|wall)$"];
+  way["amenity"="parking"]; relation["amenity"="parking"];
+  node["leisure"="playground"]; way["leisure"="playground"];
+);
+out body geom;`;

@@ -1,5 +1,20 @@
 schema: spec-driven
 
+context: |
+  Kandern Chaos: kindgerechtes Open-World-Spiel (8–12 Jahre) in der Gemeinde Kandern.
+  Babylon.js + React + Vite+, offline als PWA über Cloudflare, Zielgerät iPad Pro 1. Gen (Safari 16).
+  Artefakte auf Deutsch schreiben.
+  Codestruktur: höchstens 300 Zeilen je Datei (Lint-Regel max-lines), ein Ordner je Feature mit
+  kleiner Schnittstelle, Rechenlogik ohne Babylon-Import in eigenen Modulen, Tests als
+  modul.test.ts neben modul.ts; Spieler-Abläufe zusätzlich per Playwright/WebKit.
+
+rules:
+  design:
+    - Eine Entscheidung zur Modulstruktur (Ordner/Dateien der neuen Teile) aufnehmen
+  tasks:
+    - Jede Aufgabe nennt die Tests, die sie mitliefert, und gilt erst mit grünen Tests und fehlerfreiem vp check als erledigt
+    - Wächst eine bestehende Datei absehbar über 300 Zeilen, zuerst eine Aufteilungsaufgabe einplanen
+
 # Project context (optional)
 # Add only constraints that should guide OpenSpec artifacts and workflows.
 # Include constraints an agent cannot infer by reading the code.

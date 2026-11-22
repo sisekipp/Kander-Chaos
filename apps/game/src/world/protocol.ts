@@ -1,3 +1,4 @@
+import type { ParkingSpot, Prop } from '@kandern/world-format';
 import type { GeometryBuffers } from './gen/GeoBuilder.ts';
 
 /** Detailstufe einer Kachel: 0 = volle Details, 1 = vereinfacht, 2 = nur Gelände + Silhouetten. */
@@ -27,6 +28,9 @@ export interface BuiltTile {
   buildings: GeometryBuffers | null;
   roads: GeometryBuffers | null;
   trees: { matrices: Float32Array[]; counts: number[] };
+  /** Kleinobjekte und Parkpositionen (nur Ring 0, Kachel-lokal). */
+  props: Prop[];
+  parking: ParkingSpot[];
   /** Für Kollision (nur Ring 0): Höhenraster LOD0 in Metern. */
   heightfield: { samples: number; heights: Float32Array } | null;
   stats: { buildings: number; roads: number; genMs: number; fetchMs: number };

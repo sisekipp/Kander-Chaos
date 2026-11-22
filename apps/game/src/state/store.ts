@@ -34,7 +34,24 @@ export interface GameState {
   updateReady: boolean;
   setUpdateReady(v: boolean): void;
   storage: { persisted: boolean; usageMb: number | null; quotaMb: number | null } | null;
+  /** „Einfach“-Fahrmodus: Auto-Gas beim Lenken (gespeichert). */
+  simpleDriving: boolean;
+  setSimpleDriving(v: boolean): void;
+  /** Spielzustand für die UI (4 Hz aus der Welt). */
+  play: { mode: 'walking' | 'driving'; canEnter: boolean; vehicleHealth: number; speedKmh: number };
+  setPlay(p: Partial<GameState['play']>): void;
+  /** Debug-Ansicht der Physik (Raycasts, Kräfte) im Testmodus. */
+  debugPhysics: boolean;
+  setDebugPhysics(v: boolean): void;
   setStorage(s: GameState['storage']): void;
+}
+
+function readSimple(): boolean {
+  try {
+    return localStorage.getItem('kc.simpleDriving') !== '0'; // Standard: an
+  } catch {
+    return true;
+  }
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -49,5 +66,23 @@ export const useGameStore = create<GameState>((set) => ({
   updateReady: false,
   setUpdateReady: (updateReady) => set({ updateReady }),
   storage: null,
+  simpleDriving: readSimple(),
+  setSimpleDriving: (simpleDriving) => {
+    try {
+      localStorage.setItem('kc.simpleDriving', simpleDriving ? '1' : '0');
+    } catch {
+      /* privater Modus */
+    }
+    set({ simpleDriving });
+  },
+  play: { mode: 'walking', canEnter: false, vehicleHealth: 1, speedKmh: 0 },
+  setPlay: (p) =>
+    set((s) => {
+      const next = { ...s.play, ...p };
+      const same = (Object.keys(next) as (keyof typeof next)[]).every((k) => next[k] === s.play[k]);
+      return same ? s : { play: next };
+    }),
+  debugPhysics: false,
+  setDebugPhysics: (debugPhysics) => set({ debugPhysics }),
   setStorage: (storage) => set({ storage }),
 }));

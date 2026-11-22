@@ -87,6 +87,14 @@ Straßen werden an Kachelgrenzen geschnitten. Am Schnittpunkt erhalten beide Tei
 
 `u32 anzahl`, je Gewässerlinie: `u8 kind` (0 Fluss, 1 Bach, 2 Graben), `f32 width`, `str name`, `f32[] points`.
 
+### 6 – Props (optional)
+
+Kleinobjekte und Parkpositionen. Der Abschnitt steht **hinter** allen anderen und fehlt bei Kacheln ohne Inhalt, die dadurch bytegleich zum alten Format bleiben. Leser ohne Kenntnis des Abschnitts überspringen ihn, deshalb gibt es keine neue Formatversion.
+
+`u32 anzahlProps`, je Prop: `u8 kind` (`PropKind`: 0 Busch, 1 Mülleimer, 2 Zaunfeld, 3 Schild, 4 Laterne, 5 Bank), `u8 variant`, `f32 x`, `f32 z` (Kachel-lokal), `f32 rot` (Gierwinkel).
+
+`u32 anzahlParkpositionen`, je Position: `f64 id` (stabil), `u8 kind` (`VehicleKind`: 0 Auto, 1 Fahrrad, 2 Motorrad), `f32 x`, `f32 z`, `f32 heading`.
+
 ## Versionierung
 
 - `FORMAT_VERSION` wird erhöht, sobald sich bestehende Abschnitte inkompatibel ändern. Ältere Spiele lehnen neuere Kacheln mit einer klaren Fehlermeldung ab.
