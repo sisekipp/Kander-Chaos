@@ -84,3 +84,28 @@ Ergebnisse in `docs/perf/<datum>-fahrzeuge.md` eintragen (Tabelle wie oben).
 ## Desktop-Vergleichswerte (keine Abnahme)
 
 Playwright-WebKit am Mac (`e2e/route.spec.ts`), Testroute vollständig: Ø 100 fps, 1-%-Low 83 fps, längstes Bild 63 ms, 0 Bilder über 100 ms, höchstens 90 Kacheln gleichzeitig, dichteste Kachel 180 Gebäude, Erzeugung 14 ms. Diese Werte zeigen nur, dass Streaming und Messkette funktionieren. Sie ersetzen nicht die Messung auf dem iPad.
+
+**Vergleich vor/nach der Grafik-Überarbeitung (graphics-world), gleiche Testroute, Playwright-WebKit am Mac:**
+
+| | vorher | nachher |
+|---|---|---|
+| Ø fps | 100 | 100 |
+| 1-%-Low | 83 fps | 83 fps |
+| längstes Bild | 63 ms | 31 ms |
+| Bilder > 100 ms | 0 | 0 |
+| Kacheln gleichzeitig | 90 | 78 |
+| Erzeugung dichteste Kachel (Worker) | 14 ms | 29 ms |
+
+Die Bildrate ist am Desktop durch die Bildwiederholrate begrenzt (100 fps) und sagt über das iPad wenig. Die Kachel-Erzeugung im Worker ist durch weiche Landnutzungs-Übergänge, Verschattung, Straßenquerschnitte und Kreuzungen etwa doppelt so teuer, liegt aber weit unter dem Ziel von 3 s. Entscheidend ist die Messung auf dem iPad Pro 1. Gen (`docs/perf/<datum>-grafik.md`).
+
+Screenshots der Sichtprüfungs-Orte (Blumenplatz, Hauptstraße, Feldweg, Kirche, Brücke, Kreisverkehr) legt `e2e/screenshots.spec.ts` im Testlauf unter `apps/game/test-results/` ab.
+
+## Vergleich Uniform-Buffer an/aus
+
+Auf alten iOS-Geräten sind einzelne Uniforms manchmal schneller als Uniform-Buffer. So vergleichst du beides:
+
+1. Im Testmodus den Knopf **UBO: an/aus** drücken. Die Seite lädt neu, die Einstellung bleibt gespeichert. Alternativ den URL-Parameter `?ubo=0` bzw. `?ubo=1` verwenden; er hat Vorrang vor der gespeicherten Einstellung.
+2. An derselben Stelle (z. B. Blumenplatz, Kamera unverändert) **Messlauf 60 s** starten.
+3. Umschalten und den Messlauf wiederholen. Im Bericht steht unter `extra.uniformBuffers`, mit welcher Einstellung gemessen wurde.
+
+Die schnellere Einstellung wird nach der iPad-Messung als Standard übernommen.

@@ -8,7 +8,7 @@ import type { TileState } from '../tiles/TileState.ts';
 import { offsetInstanceMatrices } from './instances.ts';
 
 /**
- * Bäume einer Kachel als Thin Instances je Baumart.
+ * Bäume einer Kachel als Thin Instances je Baumart (höchstens 5 Draw Calls je Kachel).
  * Wichtig (aus Phase 0): eigene Geometrie-Kopie je Mesh – Instanzpuffer hängen an der Geometrie –
  * und kein Elternknoten (unter eingefrorenem Elternknoten wurden Instanzen nicht gezeichnet);
  * deshalb werden Weltkoordinaten in die Matrizen eingebacken.
@@ -36,6 +36,9 @@ export class TreeLayer implements TileLayer {
           inst.material = this.bases[sp].material;
           offsetInstanceMatrices(m, tile.originX, tile.originZ);
           inst.thinInstanceSetBuffer('matrix', m, 16, true);
+          // Tönung je Baum (instanceColor im Licht-Shader)
+          const colors = b.trees.colors[sp];
+          if (colors) inst.thinInstanceSetBuffer('color', colors, 4, true);
           inst.thinInstanceRefreshBoundingInfo(false);
           inst.isPickable = false;
           inst.setEnabled(false); // wird mit der Kachel sichtbar

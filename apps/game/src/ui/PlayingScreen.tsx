@@ -5,6 +5,7 @@ import { getWorld, setWorld } from '../world/worldInstance.ts';
 import { attachKeyboard, input } from '../player/input.ts';
 import { runMeasurement } from '../engine/devTools.ts';
 import { hideStressScene } from '../engine/devTools.ts';
+import { saveUniformBuffersEnabled } from '../engine/renderFlags.ts';
 import { Controls } from './controls/index.tsx';
 import { HealthBar } from './hud/HealthBar.tsx';
 import { useGameStore } from '../state/store.ts';
@@ -192,6 +193,17 @@ export function PlayingScreen() {
         </button>
         <button className={debugPhysics ? 'active' : 'secondary'} onClick={() => setDebugPhysics(!debugPhysics)}>
           Debug
+        </button>
+        <button
+          className="secondary"
+          onClick={() => {
+            const g = getGame();
+            if (!g) return;
+            saveUniformBuffersEnabled(!g.uniformBuffers);
+            location.reload();
+          }}
+        >
+          UBO: {getGame()?.uniformBuffers === false ? 'aus' : 'an'}
         </button>
         <button className="secondary" onClick={switchQuality}>
           Qualität: {quality === 'low' ? 'Niedrig' : 'Hoch'}

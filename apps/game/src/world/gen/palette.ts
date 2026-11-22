@@ -1,32 +1,32 @@
-import { BuildingType, LandKind, RoadKind } from '@kandern/world-format';
+import { BuildingType, LandKind } from '@kandern/world-format';
 
 export type RGB = [number, number, number];
 
 const hex = (h: number): RGB => [((h >> 16) & 255) / 255, ((h >> 8) & 255) / 255, (h & 255) / 255];
 
-/** Warme, leicht comicartige Palette (Platzhalter in Zielqualität "gut genug zum Messen"). */
+/** Warme, leicht comicartige Palette; Bodenfarben gedämpft, weil der Boden das volle Himmels- und Sonnenlicht bekommt. */
 export const LAND_COLORS: Record<LandKind, RGB> = {
-  [LandKind.ForestDeciduous]: hex(0x4f7d3a),
-  [LandKind.ForestConiferous]: hex(0x3c6338),
-  [LandKind.ForestMixed]: hex(0x47703a),
-  [LandKind.Meadow]: hex(0x8cba5a),
-  [LandKind.Farmland]: hex(0xc9b56a),
-  [LandKind.Orchard]: hex(0x9cc463),
-  [LandKind.Vineyard]: hex(0xa7a356),
-  [LandKind.Residential]: hex(0x9fb57e),
+  [LandKind.ForestDeciduous]: hex(0x456b34),
+  [LandKind.ForestConiferous]: hex(0x37583a),
+  [LandKind.ForestMixed]: hex(0x3f6236),
+  [LandKind.Meadow]: hex(0x7aa04e),
+  [LandKind.Farmland]: hex(0xb59d5c),
+  [LandKind.Orchard]: hex(0x86a854),
+  [LandKind.Vineyard]: hex(0x969150),
+  [LandKind.Residential]: hex(0x8da06e),
   [LandKind.Commercial]: hex(0xa9a99a),
   [LandKind.Industrial]: hex(0x9d9a90),
-  [LandKind.Water]: hex(0x4f9ac4),
-  [LandKind.Park]: hex(0x86c05a),
-  [LandKind.Cemetery]: hex(0x7fa36a),
-  [LandKind.Sports]: hex(0x6fb34e),
+  [LandKind.Water]: hex(0x3d6b73),
+  [LandKind.Park]: hex(0x74a64e),
+  [LandKind.Cemetery]: hex(0x6f8f5d),
+  [LandKind.Sports]: hex(0x63a046),
 };
 
-export const DEFAULT_GROUND: RGB = hex(0x93bd60);
+export const DEFAULT_GROUND: RGB = hex(0x7fa451);
 
-/** Wandfarben je Typ; mehrere Töne, Auswahl deterministisch über die Gebäude-ID. */
+/** Wandfarben je Typ (Markgräflerland: Weiß, Elfenbein, helles Ocker), Auswahl deterministisch über die Gebäude-ID. */
 export const WALL_COLORS: Record<BuildingType, RGB[]> = {
-  [BuildingType.Residential]: [0xf3e6c8, 0xf6d7b0, 0xe9eef0, 0xf4efe2, 0xf2cfc0, 0xdbe6cf, 0xfbe7a1, 0xd9e2ee].map(hex),
+  [BuildingType.Residential]: [0xf6f1e6, 0xf3e9d2, 0xefdcb2, 0xf4ecdc, 0xe9d4a7, 0xf7f3ea, 0xeee2c8, 0xf1e4cf].map(hex),
   [BuildingType.HalfTimbered]: [0xf7f0dc, 0xf3e7c9, 0xf6efe6].map(hex),
   [BuildingType.Farm]: [0xc89a6a, 0xb7865a, 0xe8dcc0].map(hex),
   [BuildingType.Commercial]: [0xd8dde2, 0xe4d6c3, 0xc9d3dc].map(hex),
@@ -44,7 +44,7 @@ export const ROOF_COLORS: Record<'tile' | 'dark' | 'flat' | 'metal', RGB[]> = {
   metal: [0x7d8b93, 0x6f7a80].map(hex),
 };
 
-/** Fassadenmuster im Shader (uv2.x). */
+/** Fassadenmuster im Shader (uv2.x = Fassade + 100 · Ladenfarbe, siehe `ShutterColor`). */
 export const enum Facade {
   Plaster = 0,
   HalfTimbered = 1,
@@ -52,6 +52,11 @@ export const enum Facade {
   Glass = 3,
   Public = 4,
   Plain = 5,
+  /** Haustür (eigene Fläche vor der Wand, uv 0 … 1). */
+  Door = 6,
+  /** Kirchenschiff mit Rundbogenfenstern und Kirchturm mit Schallöffnungen. */
+  ChurchNave = 7,
+  ChurchTower = 8,
   RoofTile = 10,
   RoofFlat = 11,
 }
@@ -63,27 +68,10 @@ export const FACADE_OF: Record<BuildingType, Facade> = {
   [BuildingType.Commercial]: Facade.Glass,
   [BuildingType.Industrial]: Facade.Plain,
   [BuildingType.Public]: Facade.Public,
-  [BuildingType.Church]: Facade.Public,
+  [BuildingType.Church]: Facade.ChurchNave,
   [BuildingType.Garage]: Facade.Plain,
   [BuildingType.Shed]: Facade.Wood,
 };
-
-export const ROAD_COLORS: Record<RoadKind, RGB> = {
-  [RoadKind.Motorway]: hex(0x5c5f66),
-  [RoadKind.Primary]: hex(0x63666c),
-  [RoadKind.Secondary]: hex(0x686b70),
-  [RoadKind.Tertiary]: hex(0x6d7074),
-  [RoadKind.Residential]: hex(0x74777a),
-  [RoadKind.Service]: hex(0x7d7f80),
-  [RoadKind.Track]: hex(0xa88d64),
-  [RoadKind.Path]: hex(0xc2a878),
-  [RoadKind.Cycleway]: hex(0x8a6d6d),
-  [RoadKind.Footway]: hex(0xc9b48c),
-  [RoadKind.Rail]: hex(0x5b4a3e),
-  [RoadKind.Steps]: hex(0xb8ab98),
-};
-
-export const WATER_COLOR: RGB = hex(0x4a95c2);
 
 export function pick<T>(list: T[], r: number): T {
   return list[Math.min(list.length - 1, Math.floor(r * list.length))];

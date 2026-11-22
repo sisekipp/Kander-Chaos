@@ -1,4 +1,5 @@
 import { ByteReader, ByteWriter } from './bytes.ts';
+import { hasDetails, readDetails, writeDetails } from './detailsSection.ts';
 import { readProps, writeProps } from './propsSection.ts';
 import {
   FORMAT_VERSION,
@@ -19,6 +20,7 @@ const enum Section {
   Land = 4,
   Waterways = 5,
   Props = 6,
+  Details = 7,
 }
 
 const WATER_KINDS: Waterway['kind'][] = ['river', 'stream', 'ditch'];
@@ -104,6 +106,8 @@ export function encodeTile(t: TileData): Uint8Array {
   const props = t.props ?? [];
   const parking = t.parking ?? [];
   if (props.length || parking.length) writeSection(w, Section.Props, (s) => writeProps(s, props, parking));
+  const details = t.details;
+  if (hasDetails(details)) writeSection(w, Section.Details, (s) => writeDetails(s, details, t.roads.length));
 
   return w.finish();
 }
@@ -214,6 +218,9 @@ export function decodeTile(bytes: Uint8Array): TileData {
         t.parking = parking;
         break;
       }
+      case Section.Details:
+        t.details = readDetails(body);
+        break;
       default:
         // Unbekannter Abschnitt aus neuerer Minor-Version: überspringen.
         break;

@@ -17,7 +17,10 @@ import {
   type OverpassResult,
 } from './osm.ts';
 import { placeBuildings, type RawBuilding } from './buildings.ts';
-import { roadsPerTile, splitAtJunctions, type RawWay } from './roads.ts';
+import { roadsPerTile, splitAtJunctions, type RawWay } from './roads/network.ts';
+import { settlementLookup } from './roads/attributes.ts';
+import { addDetailsToTiles } from './roads/details.ts';
+import type { RoadPart } from './roads/network.ts';
 import { landKind, landPerTile, waterwayKind, waterwaysPerTile, type RawArea, type RawWaterway } from './landuse.ts';
 import { buildTerrainLods } from './terrain.ts';
 import { buildAttribution } from './attribution.ts';
@@ -141,7 +144,9 @@ export async function runBuild(outDir = config.paths.out): Promise<BuildResult> 
     if (!list) buildingsByTile.set(key, (list = []));
     list.push(pb.building);
   }
-  const roads = roadsPerTile(splitAtJunctions(rawWays), config.tileSize, includes);
+  const roadParts = new Map<string, RoadPart[]>();
+  const pieces = splitAtJunctions(rawWays, settlementLookup(rawAreas));
+  const roads = roadsPerTile(pieces, config.tileSize, includes, roadParts);
   const land = landPerTile(rawAreas, config.tileSize, includes);
   const water = waterwaysPerTile(rawWater, config.tileSize, includes);
 
@@ -160,6 +165,8 @@ export async function runBuild(outDir = config.paths.out): Promise<BuildResult> 
       waterways: water.get(key) ?? [],
     };
   });
+  let zebras: { x: number; z: number }[] = [];
+  let towerParts: number[][] = [];
   if (existsSync(rawPaths.osmProps())) {
     const osmProps = readOsmProps(
       JSON.parse(await readFile(rawPaths.osmProps(), 'utf8')) as OverpassResult,
@@ -167,7 +174,13 @@ export async function runBuild(outDir = config.paths.out): Promise<BuildResult> 
     );
     const n = addPropsToTiles(tiles, osmProps);
     log(`${n.props} Kleinobjekte (${osmProps.props.length} aus OSM), ${n.parking} Parkpositionen`);
+    zebras = osmProps.zebras;
+    towerParts = osmProps.towerParts;
   } else log('keine Props-Rohdaten (osm-props.json) – Kacheln ohne Kleinobjekte');
+  const ds = addDetailsToTiles(tiles, { pieces, parts: roadParts, ground: height, zebras, towerParts });
+  log(
+    `${ds.junctions} Kreuzungen (${ds.fallback} Rückfall), ${ds.bridges} Brückenteilstücke, ${ds.crossings} Zebrastreifen, ${ds.towers} Kirchtürme, ${ds.roundabouts} Kreisverkehre`,
+  );
   const nb = tiles.reduce((s, t) => s + t.buildings.length, 0);
   log(`${nb} Gebäude in der Welt, davon ${estimated} mit geschätzten Werten`);
 

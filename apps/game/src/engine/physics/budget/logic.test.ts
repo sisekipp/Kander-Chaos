@@ -64,4 +64,15 @@ describe('Physik-Budget', () => {
     expect(b.tick(13000)).toEqual([]);
     expect(b.tick(14000)).toEqual([{ id: d, action: 'fade' }]);
   });
+
+  it('Fahrzeugteile, die nie zur Ruhe kommen, verschwinden spätestens nach 15 s', () => {
+    const b = new BodyBudget();
+    const part = b.add('part', 0).id;
+    const d = b.add('debris', 0).id;
+    for (let t = 0; t < 15000; t += 1000) b.setResting(part, false, t);
+    expect(b.tick(14999)).toEqual([]);
+    expect(b.tick(15000)).toEqual([{ id: part, action: 'fade' }]);
+    // Trümmer haben keine Höchstlebensdauer
+    expect(b.tick(60000).some((a) => a.id === d)).toBe(false);
+  });
 });

@@ -4,3 +4,4 @@ export * from './tile.ts';
 export * from './pack.ts';
 export * from './geom.ts';
 export * from './propsSection.ts';
+export * from './detailsSection.ts';

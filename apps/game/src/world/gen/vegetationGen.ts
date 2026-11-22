@@ -2,16 +2,21 @@ import { LandKind, sampleHeight, type TileData } from '@kandern/world-format';
 import { LandLookup } from './landLookup.ts';
 
 export const enum TreeSpecies {
+  /** Runder Laubbaum (Buche, Linde). */
   Deciduous = 0,
   Conifer = 1,
   Fruit = 2,
+  /** Hoher, schlanker Laubbaum (Pappel, Esche). */
+  Tall = 3,
+  Bush = 4,
 }
 
-export const SPECIES_COUNT = 3;
+export const SPECIES_COUNT = 5;
 
-/** Instanzmatrizen je Baumart (16 Floats pro Baum, Kachel-lokal). */
+/** Instanzmatrizen (16 Floats, Kachel-lokal) und Farbtönung (RGBA) je Baumart. */
 export interface VegetationBuffers {
   matrices: Float32Array[];
+  colors: Float32Array[];
   counts: number[];
 }
 
@@ -83,29 +88,51 @@ export interface VegetationOptions {
   blocked?: (x: number, z: number) => boolean;
 }
 
-/** Wahrscheinlichkeit, an einem Kandidatenpunkt einen Baum zu setzen, und die Art. */
-function speciesFor(kind: LandKind | null, r: number): TreeSpecies | null {
+/**
+ * Art an einem Kandidatenpunkt je Landnutzung (null = kein Baum). `r` ist eine Zufallszahl 0 … 1:
+ * Wälder dicht mit gemischten Formen und Unterholz, Siedlungen mit Obstbäumen und Büschen.
+ */
+export function speciesFor(kind: LandKind | null, r: number): TreeSpecies | null {
   switch (kind) {
     case LandKind.ForestDeciduous:
-      return r < 0.9 ? TreeSpecies.Deciduous : TreeSpecies.Conifer;
+      return r < 0.62
+        ? TreeSpecies.Deciduous
+        : r < 0.8
+          ? TreeSpecies.Tall
+          : r < 0.9
+            ? TreeSpecies.Bush
+            : TreeSpecies.Conifer;
     case LandKind.ForestConiferous:
-      return r < 0.85 ? TreeSpecies.Conifer : TreeSpecies.Deciduous;
+      return r < 0.82 ? TreeSpecies.Conifer : r < 0.92 ? TreeSpecies.Deciduous : TreeSpecies.Bush;
     case LandKind.ForestMixed:
-      return r < 0.55 ? TreeSpecies.Deciduous : TreeSpecies.Conifer;
+      return r < 0.42
+        ? TreeSpecies.Deciduous
+        : r < 0.78
+          ? TreeSpecies.Conifer
+          : r < 0.9
+            ? TreeSpecies.Tall
+            : TreeSpecies.Bush;
     case LandKind.Orchard:
       return r < 0.45 ? TreeSpecies.Fruit : null;
     case LandKind.Park:
     case LandKind.Cemetery:
-      return r < 0.12 ? TreeSpecies.Deciduous : null;
+      return r < 0.08 ? TreeSpecies.Deciduous : r < 0.12 ? TreeSpecies.Tall : r < 0.16 ? TreeSpecies.Bush : null;
     case LandKind.Residential:
-      return r < 0.05 ? (r < 0.02 ? TreeSpecies.Fruit : TreeSpecies.Deciduous) : null;
+      return r < 0.02 ? TreeSpecies.Fruit : r < 0.04 ? TreeSpecies.Deciduous : r < 0.07 ? TreeSpecies.Bush : null;
     case LandKind.Meadow:
-      return r < 0.015 ? TreeSpecies.Fruit : null;
+      return r < 0.012 ? TreeSpecies.Fruit : r < 0.02 ? TreeSpecies.Bush : null;
     case null:
-      return r < 0.01 ? TreeSpecies.Deciduous : null;
+      return r < 0.008 ? TreeSpecies.Deciduous : r < 0.014 ? TreeSpecies.Bush : null;
     default:
       return null;
   }
+}
+
+/** Farbtönung je Baum: Helligkeit 0,85 … 1,12, leicht gelblicher oder bläulicher Ton. */
+export function treeTint(r1: number, r2: number): [number, number, number] {
+  const b = 0.85 + 0.27 * r1;
+  const warm = (r2 - 0.5) * 0.16;
+  return [b * (1 + warm), b, b * (1 - warm)];
 }
 
 /** Baumpositionen einer Kachel, deterministisch aus der Kachel-ID. */
@@ -114,7 +141,8 @@ export function buildVegetation(tile: TileData, opts: VegetationOptions): Vegeta
   const rand = mulberry32((tile.tx * 73856093) ^ (tile.tz * 19349663) ^ 0x5eed);
   const minDist = 5.5 / Math.sqrt(Math.max(0.05, opts.density));
   const pts = poissonDisk(tile.size, minDist, rand);
-  const lists: number[][] = [[], [], []];
+  const lists: number[][] = Array.from({ length: SPECIES_COUNT }, () => []);
+  const tints: number[][] = Array.from({ length: SPECIES_COUNT }, () => []);
   const lod = tile.lods[Math.min(1, tile.lods.length - 1)];
   for (let i = 0; i < pts.length; i += 2) {
     const x = pts[i],
@@ -123,6 +151,7 @@ export function buildVegetation(tile: TileData, opts: VegetationOptions): Vegeta
     const sp = speciesFor(kind, rand());
     const s = 0.75 + rand() * 0.55;
     const rot = rand() * Math.PI * 2;
+    const tint = treeTint(rand(), rand());
     if (sp === null) continue;
     if (opts.blocked?.(x, z)) continue;
     const y = sampleHeight(tile, lod, x, z) - 0.2;
@@ -130,6 +159,11 @@ export function buildVegetation(tile: TileData, opts: VegetationOptions): Vegeta
       sn = Math.sin(rot) * s;
     // Spaltenweise Matrix (Babylon): Rotation um Y, gleichmäßige Skalierung, Translation
     lists[sp].push(c, 0, -sn, 0, 0, s, 0, 0, sn, 0, c, 0, x, y, z, 1);
+    tints[sp].push(tint[0], tint[1], tint[2], 1);
   }
-  return { matrices: lists.map((l) => new Float32Array(l)), counts: lists.map((l) => l.length / 16) };
+  return {
+    matrices: lists.map((l) => new Float32Array(l)),
+    colors: tints.map((l) => new Float32Array(l)),
+    counts: lists.map((l) => l.length / 16),
+  };
 }

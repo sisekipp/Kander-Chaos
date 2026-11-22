@@ -1,7 +1,7 @@
 import { heightAt, type TileData } from '@kandern/world-format';
 import type { GeometryBuffers } from './GeoBuilder.ts';
 import { LandLookup } from './landLookup.ts';
-import { DEFAULT_GROUND, LAND_COLORS, type RGB } from './palette.ts';
+import { sampleLand } from '../terrain/landBlend.ts';
 
 export interface TerrainOptions {
   lod: number;
@@ -9,11 +9,15 @@ export interface TerrainOptions {
   skirtDepth: number;
   /** Optional vorbereitete Landnutzung (wird sonst erzeugt). */
   land?: LandLookup;
+  /** Eingebackene Verschattung 0 … 1 je Position (Gebäude, Bäume); fehlt = keine. */
+  shade?: (x: number, z: number) => number;
 }
 
 /**
- * Geländegitter einer Kachel in Kachel-lokalen Koordinaten mit glatten Normalen,
- * Vertex-Farben nach Landnutzung (leichtes Farbrauschen gegen Monotonie) und Schürzen.
+ * Geländegitter einer Kachel in Kachel-lokalen Koordinaten mit glatten Normalen, Schürzen und
+ * Vertex-Daten für den Boden-Shader:
+ * - color: weich gemischte Landnutzungsfarbe × eingebackene Verschattung (leichtes Farbrauschen)
+ * - uv: Gewichte Acker-Furchen, Wald;  uv2: Gewicht Siedlung, Furchenrichtung (rad)
  */
 export function buildTerrain(tile: TileData, opts: TerrainOptions): GeometryBuffers {
   const lod = tile.lods[Math.min(opts.lod, tile.lods.length - 1)];
@@ -24,6 +28,9 @@ export function buildTerrain(tile: TileData, opts: TerrainOptions): GeometryBuff
   const positions = new Float32Array(vCount * 3);
   const normals = new Float32Array(vCount * 3);
   const colors = new Float32Array(vCount * 4);
+  const uvs = new Float32Array(vCount * 2);
+  const uvs2 = new Float32Array(vCount * 2);
+  const angles = new Map<number, number>();
   const h = (i: number, j: number) =>
     heightAt(tile, lod, Math.min(n - 1, Math.max(0, i)), Math.min(n - 1, Math.max(0, j)));
 
@@ -42,13 +49,16 @@ export function buildTerrain(tile: TileData, opts: TerrainOptions): GeometryBuff
       normals[k * 3] = -dx / len;
       normals[k * 3 + 1] = 1 / len;
       normals[k * 3 + 2] = -dz / len;
-      const kind = land.kindAt(x, z);
-      const base: RGB = kind === null ? DEFAULT_GROUND : LAND_COLORS[kind];
-      const noise = 0.94 + 0.12 * hashNoise(tile.tx * 1000 + i, tile.tz * 1000 + j);
-      colors[k * 4] = base[0] * noise;
-      colors[k * 4 + 1] = base[1] * noise;
-      colors[k * 4 + 2] = base[2] * noise;
+      const ls = sampleLand(land, x, z, tile.size, angles);
+      const f = (0.96 + 0.08 * hashNoise(tile.tx * 1000 + i, tile.tz * 1000 + j)) * (opts.shade?.(x, z) ?? 1);
+      colors[k * 4] = ls.color[0] * f;
+      colors[k * 4 + 1] = ls.color[1] * f;
+      colors[k * 4 + 2] = ls.color[2] * f;
       colors[k * 4 + 3] = 1;
+      uvs[k * 2] = ls.farm;
+      uvs[k * 2 + 1] = ls.forest;
+      uvs2[k * 2] = ls.settlement;
+      uvs2[k * 2 + 1] = ls.angle;
     }
   }
 
@@ -75,6 +85,8 @@ export function buildTerrain(tile: TileData, opts: TerrainOptions): GeometryBuff
     positions[next * 3 + 2] = positions[src * 3 + 2];
     normals.set(normals.subarray(src * 3, src * 3 + 3), next * 3);
     colors.set(colors.subarray(src * 4, src * 4 + 4), next * 4);
+    uvs.set(uvs.subarray(src * 2, src * 2 + 2), next * 2);
+    uvs2.set(uvs2.subarray(src * 2, src * 2 + 2), next * 2);
     return next++;
   };
   for (const edge of edges) {
@@ -89,7 +101,7 @@ export function buildTerrain(tile: TileData, opts: TerrainOptions): GeometryBuff
       indices.push(a, c, b, b, c, d, a, b, c, b, d, c);
     }
   }
-  return { positions, normals, colors, indices: new Uint32Array(indices) };
+  return { positions, normals, colors, uvs, uvs2, indices: new Uint32Array(indices) };
 }
 
 /** Billiges deterministisches Rauschen [0,1). */

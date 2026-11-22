@@ -44,6 +44,7 @@ export function runMeasurement(
   if (!alreadyRecorded) rec.start(label);
   window.setTimeout(() => {
     if (!alreadyRecorded) rec.stop();
+    rec.extra.uniformBuffers = game.uniformBuffers ? 'an' : 'aus';
     const report = rec.report({
       userAgent: navigator.userAgent,
       renderer: rendererName(game),

@@ -31,9 +31,11 @@ build
   7. Gebäude             Grundriss + Ergänzungsregeln, Zuordnung per Schwerpunkt
   8. Straßen             an Kreuzungen geteilt, an Kacheln geschnitten, Schnitt-Knoten-IDs
   9. Landnutzung/Wasser  an Kacheln zugeschnitten
+ 9b. Details            Straßenattribute, Kreuzungen, Brücken, Zebrastreifen, Kirchtürme (Abschnitt 7)
  10. Ausgabe             region_<rx>_<rz>.<hash>.bin, index.json, attribution.json, places.json
 check
- 11. Hashes, Budget 120 MB, Ortsteil-Abdeckung, Konnektivität Kandern -> Tannenkirch
+ 11. Hashes, Budget 120 MB, Ortsteil-Abdeckung, Konnektivität Kandern -> Tannenkirch,
+     Kreuzungen im Rückfallmodus < 15 %, Brücken ohne Höhensprung, Kirche Kandern hat Turm
 ```
 
 Alle Schritte sind **fortsetzbar**: Vorhandene Dateien in `data/raw` und `data/work` werden wiederverwendet. Um neu zu laden, die betreffende Datei löschen (für frische OSM-Daten etwa `data/raw/osm-data.json` und `data/raw/osm-chunks/`).
@@ -73,6 +75,22 @@ Quelle ist ein zweiter, fortsetzbarer Overpass-Abruf (`data/raw/osm-props-chunks
 3. **Parkpositionen** (`parking.ts`): am Rand von Wohn- und Nebenstraßen alle 6–10 m mit 25 % Wahrscheinlichkeit, mindestens 15 m von echten Kreuzungen und 6 m voneinander entfernt. In Parkplatzflächen als Raster 2,8 × 5,5 m (höchstens 30 je Fläche). Etwa 10 % sind Zweiräder.
 
 Konflikte prüft ein 0,5-m-Raster (`conflicts.ts`) gegen Fahrbahnen, Wege und Gebäude der Kachel **und ihrer Nachbarn**. Gesetzte Objekte belegen ihren Platz. `check` verlangt mindestens 10 Parkpositionen und 3 Prop-Arten im Umkreis von 300 m um den Blumenplatz.
+
+## Darstellungsdetails (Abschnitt 7)
+
+Die Pipeline berechnet Daten, die das Spiel für die Straßen- und Gebäudedarstellung braucht (Module unter `src/roads/` und `src/buildings/`):
+
+- **Straßenattribute** (`roads/attributes.ts`): Fahrstreifen, Einbahn, Gehweg links/rechts, Belag und Ebene aus den OSM-Tags. Ergänzungsregeln:
+  - Haupt-, Neben- und Wohnstraßen **im Ort** (Wohn-, Gewerbe- oder Industriegebiet) ohne Gehweg-Angabe bekommen beidseitig einen Gehweg. Ausnahmen: `sidewalk=no|separate` und verkehrsberuhigte Bereiche.
+  - Ohne `lanes`: Autobahn 2 je Richtung, sonst 2 (Einbahn 1), Zufahrten 1.
+  - Ohne `surface`: Feldwege nach `tracktype`, sonst Schotter; Fußwege im Ort gepflastert; übrige Straßen Asphalt.
+  - Kreisverkehre und Autobahnen sind Einbahnstraßen.
+- **Kreuzungen** (`roads/junctions.ts`, Verfahren wie A/B Street): Knoten mit ≥ 3 Fahrbahn-Armen; Kanten inkl. Gehweg versetzen, benachbarte Kanten schneiden, Arme auf den Polygonrand kürzen (`trimStart`/`trimEnd`). Rückfall auf eine Kreisscheibe bei Armen mit < 15° Abstand, Kürzungen > 40 m oder > 45 % der Armlänge. Die Prüfung verlangt weniger als 15 % Rückfälle.
+- **Brücken** (`roads/bridges.ts`): Zusammenhängende Brückenstücke werden zu Zügen verkettet. Fahrbahn an den Enden auf dem Gelände, dazwischen linear, im Inneren mindestens 0,5 m über dem Gelände, Steigung höchstens 12 %. Die Höhe hängt nur von der Weltposition ab, deshalb passen Teilstücke an Kachelgrenzen nahtlos.
+- **Zebrastreifen** (`roads/crossings.ts`): `highway=crossing` mit Markierung (`crossing=zebra|marked|uncontrolled`, `crossing_ref=zebra`, `crossing:markings=zebra|yes`), auf die nächste Fahrbahn im Umkreis von 4 m gesetzt; Länge = Fahrbahnbreite.
+- **Kirchtürme** (`buildings/churchTower.ts`): Turm aus einem Gebäudeteil (`building:part=tower` o. ä.) im Kirchengrundriss, sonst an der westlichen Schmalseite. Kirchen unter 12 m Länge bekommen keinen Turm.
+
+Zebrastreifen und Gebäudeteile kommen aus dem Props-Abruf. Nach einer Änderung der Abfrage `data/raw/osm-props.json` und `data/raw/osm-props-chunks/` löschen und `fetch` erneut ausführen.
 
 ## Determinismus
 

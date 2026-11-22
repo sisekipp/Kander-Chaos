@@ -14,8 +14,9 @@ import { existsSync } from 'node:fs';
 import { DgmGrid } from './dgm.ts';
 import { rawPaths } from './fetch.ts';
 import { checkProps } from './props/check.ts';
+import { checkDetails } from './roads/check.ts';
 import { config } from './config.ts';
-import { RoadGraph } from './roads.ts';
+import { RoadGraph } from './roads/network.ts';
 import type { Place } from './build.ts';
 
 const ok = (m: string) => console.log(`  ✔ ${m}`);
@@ -100,6 +101,14 @@ export async function runCheck({ determinism }: { determinism: boolean }): Promi
   const pc = checkProps(index, tiles);
   for (const m of pc.messages) console.log(`  ${m.startsWith('✔') || m.startsWith('✘') ? m : `✘ ${m}`}`);
   if (!pc.ok) good = false;
+
+  // 5a. Darstellungsdetails (Kreuzungen, Brücken, Kirchturm)
+  const dc = checkDetails(
+    tiles,
+    places.find((p) => p.name === 'Kandern'),
+  );
+  for (const m of dc.messages) console.log(`  ${m}`);
+  if (!dc.ok) good = false;
 
   // 5b. Höhengenauigkeit am Startpunkt (Blumenplatz) gegen das DGM-Raster
   if (existsSync(rawPaths.dgmGrid())) {

@@ -9,6 +9,8 @@
  * Polygone und Linien liegen in Kachel-lokalen Koordinaten (Ursprung = südwestliche Kachelecke).
  */
 
+import type { TileDetails } from './detailsSection.ts';
+
 export const FORMAT_VERSION = 1;
 
 /** Magische Kennung am Anfang jedes Kachelblocks: "KCT1". */
@@ -195,6 +197,8 @@ export interface TileData {
   props?: Prop[];
   /** Parkpositionen (optionaler Abschnitt 6; ältere Kacheln: leer). */
   parking?: ParkingSpot[];
+  /** Darstellungsdetails (optionaler Abschnitt 7; ältere Kacheln: fehlt). */
+  details?: TileDetails;
 }
 
 /** Eintrag eines Regionspakets im Index. */

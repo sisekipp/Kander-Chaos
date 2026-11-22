@@ -153,13 +153,14 @@ const OSM_QUERY_BODY = `(
 );
 out body geom;`;
 
-/** Straßenmöbel, Barrieren und Parkplätze (dünn gesät -> größere Teilstücke). */
+/** Straßenmöbel, Barrieren, Parkplätze, Übergänge und Gebäudeteile (dünn gesät -> größere Teilstücke). */
 const PROPS_QUERY_BODY = `(
-  node["highway"~"^(street_lamp|traffic_signals|bus_stop)$"];
+  node["highway"~"^(street_lamp|traffic_signals|bus_stop|crossing)$"];
   node["amenity"~"^(waste_basket|bench|bicycle_parking|parking)$"];
   node["traffic_sign"];
   way["barrier"~"^(fence|hedge|wall)$"];
   way["amenity"="parking"]; relation["amenity"="parking"];
   node["leisure"="playground"]; way["leisure"="playground"];
+  way["building:part"]; way["man_made"="tower"]["tower:type"="bell_tower"];
 );
 out body geom;`;

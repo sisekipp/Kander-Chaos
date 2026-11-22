@@ -8,6 +8,9 @@ import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { configureLocalAssets } from './assets.ts';
 import { PerfMonitor } from './perf/PerfMonitor.ts';
 import { AdaptiveResolution } from './perf/AdaptiveResolution.ts';
+import { loadUniformBuffersEnabled } from './renderFlags.ts';
+import { createSkyDome } from '../world/sky/SkyDome.ts';
+import { GROUND_LIGHT, HORIZON, SKY_LIGHT, SUN_COLOR, SUN_DIR } from '../world/sky/skyColors.ts';
 import { QUALITY_PRESETS, loadQuality, saveQuality, type QualityLevel, type QualitySettings } from './quality.ts';
 
 export interface GameOptions {
@@ -24,6 +27,8 @@ export class Game {
   readonly camera: ArcRotateCamera;
   readonly sun: DirectionalLight;
   readonly perf: PerfMonitor;
+  /** Uniform-Buffer aktiv (Testmodus-Schalter, wirksam nach Neuladen). */
+  readonly uniformBuffers: boolean;
   quality: QualitySettings;
   readonly adaptive: AdaptiveResolution;
   private readonly qualityListeners = new Set<(q: QualitySettings) => void>();
@@ -32,6 +37,7 @@ export class Game {
 
   constructor({ canvas }: GameOptions) {
     configureLocalAssets();
+    this.uniformBuffers = loadUniformBuffersEnabled();
     // WebGL2 – Safari 16 hat kein WebGPU. Kein MSAA (Budget), Stencil für spätere Effekte.
     this.engine = new Engine(canvas, false, {
       stencil: true,
@@ -40,12 +46,17 @@ export class Game {
       disableWebGL2Support: false,
       adaptToDeviceRatio: false,
     });
+    // Muss vor dem Erzeugen der Szene gesetzt werden (Szene/Materialien legen sonst UBOs an)
+    this.engine.disableUniformBuffers = !this.uniformBuffers;
     this.scene = new Scene(this.engine);
     this.scene.skipPointerMovePicking = true;
-    this.scene.clearColor = new Color4(0.62, 0.78, 0.92, 1);
+    // Himmelskuppel deckt jedes Pixel ab -> kein Farb-Clear nötig (Tiefe wird weiter gelöscht)
+    this.scene.clearColor = new Color4(HORIZON[0], HORIZON[1], HORIZON[2], 1);
+    this.scene.autoClear = false;
+    this.scene.autoClearDepthAndStencil = true;
     this.scene.ambientColor = new Color3(0.3, 0.3, 0.3);
     this.scene.fogMode = Scene.FOGMODE_LINEAR;
-    this.scene.fogColor = new Color3(0.62, 0.78, 0.92);
+    this.scene.fogColor = new Color3(...HORIZON);
     this.scene.fogStart = 400;
     this.scene.fogEnd = 1500;
 
@@ -57,11 +68,12 @@ export class Game {
     this.camera.attachControl(canvas, true);
 
     const hemi = new HemisphericLight('sky', new Vector3(0, 1, 0), this.scene);
-    hemi.intensity = 0.65;
-    hemi.groundColor = new Color3(0.35, 0.33, 0.28);
-    this.sun = new DirectionalLight('sun', new Vector3(-0.4, -1, 0.3), this.scene);
-    this.sun.intensity = 1.1;
-    this.sun.diffuse = new Color3(1, 0.95, 0.85);
+    // Babylon-Lichter nur noch für Figur, Fahrzeuge und Gegenstände; Welt-Shader haben eigenes Licht
+    hemi.diffuse = new Color3(...SKY_LIGHT);
+    hemi.groundColor = new Color3(...GROUND_LIGHT);
+    this.sun = new DirectionalLight('sun', new Vector3(...SUN_DIR), this.scene);
+    this.sun.diffuse = new Color3(...SUN_COLOR);
+    createSkyDome(this.scene);
 
     this.quality = QUALITY_PRESETS[loadQuality()];
     this.adaptive = new AdaptiveResolution({ base: this.quality.baseRenderScale, min: this.quality.minRenderScale });

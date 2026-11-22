@@ -1,7 +1,7 @@
 import type { Scene } from '@babylonjs/core/scene';
 import type { Mesh } from '@babylonjs/core/Meshes/mesh';
 import type { BuiltTile } from '../protocol.ts';
-import type { WorldMaterials } from '../materials.ts';
+import type { WorldMaterials } from '../worldMaterials.ts';
 import type { TileLayer } from './layers.ts';
 import type { TileState } from './TileState.ts';
 import { meshFromBuffers } from './tileMesh.ts';
@@ -9,7 +9,7 @@ import { meshFromBuffers } from './tileMesh.ts';
 /** Datenschlüssel: Gebäude-Mesh der Kachel (für die Kollision). */
 export const BUILDINGS_MESH = 'geometry.buildings';
 
-/** Gelände, Gebäude und Straßen einer Kachel. */
+/** Gelände und Gebäude einer Kachel (Straßen: `roads/RoadLayer.ts`). */
 export class GeometryLayer implements TileLayer {
   readonly name = 'geometry';
 
@@ -22,7 +22,13 @@ export class GeometryLayer implements TileLayer {
     const steps: (() => void)[] = [
       () =>
         tile.meshes.push(
-          meshFromBuffers(this.scene, `terrain-${b.tileId}`, b.terrain, this.materials.terrain, tile.root),
+          meshFromBuffers(
+            this.scene,
+            `terrain-${b.tileId}`,
+            b.terrain,
+            b.ring === 0 ? this.materials.terrain : this.materials.terrainSimple,
+            tile.root,
+          ),
         ),
     ];
     if (b.buildings) {
@@ -38,12 +44,6 @@ export class GeometryLayer implements TileLayer {
         tile.meshes.push(m);
         tile.data.set(BUILDINGS_MESH, m);
       });
-    }
-    if (b.roads) {
-      const g = b.roads;
-      steps.push(() =>
-        tile.meshes.push(meshFromBuffers(this.scene, `roads-${b.tileId}`, g, this.materials.roads, tile.root)),
-      );
     }
     return steps;
   }

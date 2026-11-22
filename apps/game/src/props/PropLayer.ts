@@ -1,7 +1,7 @@
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
-import { PROP_KIND_COUNT, type PropKind } from '@kandern/world-format';
+import { PROP_KIND_COUNT, PropKind } from '@kandern/world-format';
 import type { Scene } from '@babylonjs/core/scene';
 import type { BuiltTile } from '../world/protocol.ts';
 import type { TileLayer } from '../world/tiles/layers.ts';
@@ -19,6 +19,8 @@ export interface WorldPropRef {
   z: number;
   rot: number;
   scale: number;
+  /** Streckung entlang der lokalen x-Achse (Hecken: länglich entlang der Heckenlinie), Standard 1. */
+  stretch?: number;
   /** Index innerhalb des Instanzpuffers seiner Art. */
   slot: number;
 }
@@ -34,6 +36,9 @@ export interface TileProps {
 }
 
 const KEY = 'props.tile';
+/** Busch-Variante für Heckenfelder und deren Streckung (Feldabstand 1,8 m -> lückenlose Hecke). */
+export const HEDGE_VARIANT = 3;
+export const HEDGE_STRETCH = 1.7;
 
 export const tilePropsOf = (t: TileState): TileProps | undefined => t.data.get(KEY) as TileProps | undefined;
 
@@ -42,7 +47,8 @@ export function writeMatrix(m: Float32Array, slot: number, p: WorldPropRef, visi
   const s = visible ? p.scale : 0;
   const c = Math.cos(p.rot) * s,
     sn = Math.sin(p.rot) * s;
-  m.set([c, 0, -sn, 0, 0, s, 0, 0, sn, 0, c, 0, p.x, p.y, p.z, 1], slot * 16);
+  const k = p.stretch ?? 1;
+  m.set([c * k, 0, -sn * k, 0, 0, s, 0, 0, sn, 0, c, 0, p.x, p.y, p.z, 1], slot * 16);
 }
 
 /**
@@ -70,7 +76,9 @@ export class PropLayer implements TileLayer {
         b.props.forEach((p, index) => {
           const x = tile.originX + p.x,
             z = tile.originZ + p.z;
-          const scale = p.kind === 0 ? 0.8 + (p.variant % 3) * 0.2 : 1; // Buschgrößen
+          // Buschgrößen; Variante 3 = Heckenfeld (aus barrier=hedge), länglich entlang der Heckenlinie
+          const hedge = p.kind === PropKind.Bush && p.variant === HEDGE_VARIANT;
+          const scale = hedge ? 0.95 : p.kind === PropKind.Bush ? 0.8 + (p.variant % 3) * 0.2 : 1;
           const ref: WorldPropRef = {
             index,
             kind: p.kind,
@@ -79,6 +87,7 @@ export class PropLayer implements TileLayer {
             y: this.heightAt(tile, x, z) - 0.05,
             rot: p.rot,
             scale,
+            stretch: hedge ? HEDGE_STRETCH : 1,
             slot: counts[p.kind]++,
           };
           props.push(ref);

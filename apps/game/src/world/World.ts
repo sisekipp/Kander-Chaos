@@ -18,7 +18,7 @@ import type { QualitySettings } from '../engine/quality.ts';
 import { PlayerController } from '../player/PlayerController.ts';
 import { RouteFollower } from '../player/route.ts';
 import { FAST_SPEED } from '../player/constants.ts';
-import { createWorldMaterials, type WorldMaterials } from './materials.ts';
+import { createWorldMaterials, type WorldMaterials } from './worldMaterials.ts';
 import { createTreeBases } from './vegetation/treeMeshes.ts';
 import { TreeLayer } from './vegetation/TreeLayer.ts';
 import { TileManager } from './tiles/TileManager.ts';
@@ -26,6 +26,7 @@ import { GeometryLayer } from './tiles/GeometryLayer.ts';
 import { CollisionLayer } from './tiles/CollisionLayer.ts';
 import { WorkerPool } from './WorkerPool.ts';
 import { createPanorama } from './panorama.ts';
+import { RoadLayer } from './roads/RoadLayer.ts';
 
 export interface Place {
   name: string;
@@ -122,6 +123,7 @@ export class World {
     this.debug.enabled = useGameStore.getState().debugPhysics;
     this.tiles.addLayer(new GeometryLayer(scene, this.materials));
     if (physics) this.tiles.addLayer(new CollisionLayer(scene));
+    this.tiles.addLayer(new RoadLayer(scene, this.materials.roads, physics, this.materials.water));
     this.tiles.addLayer(new TreeLayer(scene, treeBases));
     // Fahrzeuge brauchen Physik (Kollision, Raycasts)
     this.fx = new Particles(scene);
@@ -156,12 +158,8 @@ export class World {
       this.debug.line(from, from.add(v.scale(0.5)), DEBUG_COLORS.velocity);
     }
     this.panorama.follow(p.x, p.z, p.y - 60);
-    this.materials.updateLighting(
-      this.game.sun.direction,
-      this.game.scene.fogStart,
-      this.game.scene.fogEnd,
-      this.game.scene.fogColor,
-    );
+    this.materials.setFog(this.game.scene.fogStart, this.game.scene.fogEnd);
+    this.materials.setTime(performance.now() / 1000);
     this.game.perf.loadedTiles = this.tiles.loadedCount;
     this.game.perf.recorder.extra.maxTileBuildMs = Math.round(this.tiles.maxTileBuildMs);
   }

@@ -3,6 +3,8 @@ import type { LatLon, OsmNode, OsmRelation, OsmWay, OverpassResult } from '../os
 import { assembleRings, stableId, wayRing } from '../osm.ts';
 import type { ParkingLot, WorldProp } from './types.ts';
 import { yawOf } from './rng.ts';
+import { isZebra } from '../roads/crossings.ts';
+import { isTowerPart } from '../buildings/churchTower.ts';
 
 type Project = (p: LatLon) => [number, number];
 
@@ -34,6 +36,10 @@ export interface OsmProps {
   lots: ParkingLot[];
   /** Spielplätze und Bushaltestellen als Ankerpunkte für Bänke/Mülleimer. */
   anchors: { x: number; z: number; kind: 'playground' | 'bus_stop' }[];
+  /** Zebrastreifen-Knoten (werden in der Straßenverarbeitung der Fahrbahn zugeordnet). */
+  zebras: { x: number; z: number }[];
+  /** Turm-Gebäudeteile (Ringe in Weltkoordinaten) für die Lage der Kirchtürme. */
+  towerParts: number[][];
 }
 
 /** Liest Straßenmöbel, Barrieren und Parkplätze aus dem Props-Abruf. */
@@ -41,11 +47,14 @@ export function readOsmProps(data: OverpassResult, project: Project): OsmProps {
   const props: WorldProp[] = [];
   const lots: ParkingLot[] = [];
   const anchors: OsmProps['anchors'] = [];
+  const zebras: OsmProps['zebras'] = [];
+  const towerParts: number[][] = [];
   for (const el of data.elements) {
     const t = el.tags ?? {};
     if (el.type === 'node') {
       const [x, z] = project(el as OsmNode);
-      if (t.highway === 'street_lamp') props.push({ kind: PropKind.Lamp, x, z, rot: 0, variant: 0 });
+      if (isZebra(t)) zebras.push({ x, z });
+      else if (t.highway === 'street_lamp') props.push({ kind: PropKind.Lamp, x, z, rot: 0, variant: 0 });
       else if (t.amenity === 'waste_basket') props.push({ kind: PropKind.Bin, x, z, rot: 0, variant: 0 });
       else if (t.amenity === 'bench') props.push({ kind: PropKind.Bench, x, z, rot: 0, variant: 0 });
       else if (t.highway === 'traffic_signals') props.push({ kind: PropKind.Sign, x, z, rot: 0, variant: 1 });
@@ -61,7 +70,10 @@ export function readOsmProps(data: OverpassResult, project: Project): OsmProps {
         .map(project)
         .flat();
       if (pts.length < 4) continue;
-      if (t.barrier === 'fence' || t.barrier === 'wall') {
+      if (isTowerPart(t)) {
+        const ring = wayRing(w, project);
+        if (ring) towerParts.push(ring.flat());
+      } else if (t.barrier === 'fence' || t.barrier === 'wall') {
         for (const s of lineSegments(pts, 2.5))
           props.push({ kind: PropKind.Fence, x: s.x, z: s.z, rot: s.rot, variant: t.barrier === 'wall' ? 1 : 0 });
       } else if (t.barrier === 'hedge') {
@@ -87,5 +99,5 @@ export function readOsmProps(data: OverpassResult, project: Project): OsmProps {
         lots.push({ id: stableId(el) + k, ring: r.flat() });
     }
   }
-  return { props, lots, anchors };
+  return { props, lots, anchors, zebras, towerParts };
 }

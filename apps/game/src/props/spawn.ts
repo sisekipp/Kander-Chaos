@@ -52,13 +52,14 @@ export function spawnReplacement(ctx: SpawnContext, p: WorldPropRef, vx: number,
   mesh.setEnabled(true);
   mesh.position.set(p.x, p.y, p.z);
   mesh.rotationQuaternion = Quaternion.FromEulerAngles(0, p.rot, 0);
-  mesh.scaling.setAll(p.scale);
+  const k = p.stretch ?? 1;
+  mesh.scaling.set(p.scale * k, p.scale, p.scale);
   mesh.computeWorldMatrix(true);
   const ext = PROP_EXTENTS[p.kind];
   const body = dynamicBody(
     ctx.scene,
     mesh,
-    [ext[0] * p.scale, ext[1] * p.scale, ext[2] * p.scale],
+    [ext[0] * p.scale * k, ext[1] * p.scale, ext[2] * p.scale],
     MASS[p.kind],
     GROUP.PROP,
   );

@@ -52,7 +52,14 @@ export class LandLookup {
   }
 
   kindAt(x: number, z: number): LandKind | null {
-    for (const a of this.areas) {
+    const i = this.areaAt(x, z);
+    return i < 0 ? null : this.areas[i].kind;
+  }
+
+  /** Index der obersten Fläche an (x, z) oder −1 (stabil je Kachel, für Flächen-Identität). */
+  areaAt(x: number, z: number): number {
+    for (let ai = 0; ai < this.areas.length; ai++) {
+      const a = this.areas[ai];
       if (x < a.minX || x > a.maxX || z < a.minZ || z > a.maxZ) continue;
       if (!pointInRing(x, z, a.rings[0])) continue;
       let inHole = false;
@@ -61,8 +68,17 @@ export class LandLookup {
           inHole = true;
           break;
         }
-      if (!inHole) return a.kind;
+      if (!inHole) return ai;
     }
-    return null;
+    return -1;
+  }
+
+  kindOf(area: number): LandKind {
+    return this.areas[area].kind;
+  }
+
+  /** Außenring einer Fläche (Kachel-lokal). */
+  outerRing(area: number): Float32Array {
+    return this.areas[area].rings[0];
   }
 }

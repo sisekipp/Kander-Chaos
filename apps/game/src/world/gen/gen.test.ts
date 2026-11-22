@@ -9,9 +9,16 @@ import {
   type TileData,
 } from '@kandern/world-format';
 import { buildTerrain } from './terrainGen.ts';
-import { buildBuildings } from './buildingGen.ts';
-import { buildRoads } from './roadGen.ts';
-import { buildVegetation, poissonDisk, mulberry32 } from './vegetationGen.ts';
+import { buildBuildings } from './buildings/index.ts';
+import {
+  SPECIES_COUNT,
+  TreeSpecies,
+  buildVegetation,
+  poissonDisk,
+  mulberry32,
+  speciesFor,
+  treeTint,
+} from './vegetationGen.ts';
 import { buildOccupancy } from './occupancy.ts';
 
 function tile(): TileData {
@@ -96,7 +103,9 @@ describe('Gebäude-Generator', () => {
     expect([...a.colors]).toEqual([...b.colors]);
     let maxY = -Infinity;
     for (let i = 1; i < a.positions.length; i += 3) maxY = Math.max(maxY, a.positions[i]);
-    expect(maxY).toBeCloseTo(350 + 7 + 4, 0); // Boden 350 m + Wand + Dach
+    // Boden 350 m + Wand + Dach; ein Schornstein darf bis 0,7 m über den First ragen
+    expect(maxY).toBeGreaterThanOrEqual(350 + 7 + 4 - 0.01);
+    expect(maxY).toBeLessThanOrEqual(350 + 7 + 4 + 0.71);
   });
 
   it('Wände zeigen nach außen (Normale weg vom Schwerpunkt)', () => {
@@ -118,13 +127,6 @@ describe('Gebäude-Generator', () => {
       const ny = g.normals[v * 3 + 1];
       expect(Math.abs(ny) < 0.01 || Math.abs(ny - 1) < 1e-6).toBe(true);
     }
-  });
-});
-
-describe('Straßen', () => {
-  it('Band liegt über dem Gelände', () => {
-    const g = buildRoads(tile())!;
-    for (let i = 1; i < g.positions.length; i += 3) expect(g.positions[i]).toBeGreaterThan(350);
   });
 });
 
@@ -157,5 +159,43 @@ describe('Vegetation', () => {
     expect(inForest).toBeGreaterThan(200);
     const again = buildVegetation(t, { density: 1, blocked: occ });
     expect(again.counts).toEqual(v.counts);
+  });
+
+  it('Formauswahl je Landnutzung: Wälder gemischt mit Unterholz, Acker baumfrei, Obstwiese mit Obstbäumen', () => {
+    const shares = (kind: LandKind | null) => {
+      const c: number[] = Array.from({ length: SPECIES_COUNT }, () => 0);
+      let none = 0;
+      for (let i = 0; i < 1000; i++) {
+        const sp = speciesFor(kind, (i + 0.5) / 1000);
+        if (sp === null) none++;
+        else c[sp]++;
+      }
+      return { c, none };
+    };
+    const conifer = shares(LandKind.ForestConiferous);
+    expect(conifer.c[TreeSpecies.Conifer]).toBeGreaterThan(700);
+    const deciduous = shares(LandKind.ForestDeciduous);
+    expect(deciduous.c[TreeSpecies.Deciduous]).toBeGreaterThan(500);
+    expect(deciduous.c[TreeSpecies.Tall]).toBeGreaterThan(100);
+    expect(deciduous.c[TreeSpecies.Bush]).toBeGreaterThan(50);
+    expect(shares(LandKind.Farmland).none).toBe(1000);
+    const orchard = shares(LandKind.Orchard);
+    expect(orchard.c[TreeSpecies.Fruit]).toBe(450);
+    expect(orchard.c[TreeSpecies.Conifer]).toBe(0);
+    expect(shares(LandKind.Residential).c[TreeSpecies.Conifer]).toBe(0);
+  });
+
+  it('Farbtönung je Baum bleibt im Rahmen', () => {
+    for (const [a, b] of [
+      [0, 0],
+      [1, 1],
+      [0.5, 0.2],
+    ]) {
+      const t = treeTint(a, b);
+      for (const v of t) {
+        expect(v).toBeGreaterThan(0.75);
+        expect(v).toBeLessThan(1.25);
+      }
+    }
   });
 });

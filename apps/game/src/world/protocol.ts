@@ -27,7 +27,11 @@ export interface BuiltTile {
   terrain: GeometryBuffers;
   buildings: GeometryBuffers | null;
   roads: GeometryBuffers | null;
-  trees: { matrices: Float32Array[]; counts: number[] };
+  /** Gewässerbänder und Wasserflächen (eigenes Material). */
+  water: GeometryBuffers | null;
+  /** Brückenfahrbahnen für die Kollision (nur Ring 0). */
+  bridges: GeometryBuffers | null;
+  trees: { matrices: Float32Array[]; colors: Float32Array[]; counts: number[] };
   /** Kleinobjekte und Parkpositionen (nur Ring 0, Kachel-lokal). */
   props: Prop[];
   parking: ParkingSpot[];

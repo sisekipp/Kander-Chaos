@@ -2,6 +2,7 @@
  * Physik-Budget (reine Logik): zählt dynamische Körper und entscheidet, was ausgeblendet, eingefroren
  * oder entfernt wird. Spec destructible-props: höchstens 80 dynamische Körper, höchstens 60 Trümmer;
  * Trümmer und umgestoßene Objekte verschwinden nach 8 s Ruhe, Fahrzeugteile nach 10 s, Wracks nach 20 s.
+ * Fahrzeugteile, die nie ganz zur Ruhe kommen (z. B. langsames Rutschen am Hang), spätestens nach 15 s.
  */
 export type BodyKind = 'vehicle' | 'prop' | 'debris' | 'part' | 'wreck';
 
@@ -12,12 +13,15 @@ export interface BudgetOptions {
   maxDebris: number;
   /** Ruhezeit (ms) bis zum Ausblenden je Art; Wracks zählen ab Erstellung. */
   fadeAfterMs: Record<Exclude<BodyKind, 'vehicle'>, number>;
+  /** Höchstlebensdauer (ms) ab Erstellung, auch ohne Ruhe. */
+  maxAgeMs?: Partial<Record<BodyKind, number>>;
 }
 
 export const DEFAULT_BUDGET: BudgetOptions = {
   maxBodies: 80,
   maxDebris: 60,
   fadeAfterMs: { prop: 8000, debris: 8000, part: 10000, wreck: 20000 },
+  maxAgeMs: { part: 15000 },
 };
 
 interface Entry {
@@ -74,7 +78,8 @@ export class BodyBudget {
       if (e.leaving || e.kind === 'vehicle') continue;
       const after = this.o.fadeAfterMs[e.kind];
       const since = e.kind === 'wreck' ? e.createdAt : e.restingSince;
-      if (since !== null && now - since >= after) {
+      const maxAge = this.o.maxAgeMs?.[e.kind];
+      if ((since !== null && now - since >= after) || (maxAge !== undefined && now - e.createdAt >= maxAge)) {
         e.leaving = true;
         out.push({ id: e.id, action: 'fade' });
       }

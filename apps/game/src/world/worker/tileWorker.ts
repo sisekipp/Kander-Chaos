@@ -3,12 +3,14 @@ import { decodeTile, heightAt } from '@kandern/world-format';
 import { gunzipSync } from 'fflate';
 import type { BuildRequest, BuiltTile, WorkerResponse } from '../protocol.ts';
 import { buildTerrain } from '../gen/terrainGen.ts';
-import { buildBuildings } from '../gen/buildingGen.ts';
-import { buildRoads } from '../gen/roadGen.ts';
+import { buildBuildings } from '../gen/buildings/index.ts';
+import { buildRoadGeometry } from '../roads/roadGeometry.ts';
+import { buildWaterGeometry } from '../water/waterGeometry.ts';
 import { buildVegetation } from '../gen/vegetationGen.ts';
 import { buildOccupancy } from '../gen/occupancy.ts';
 import { LandLookup } from '../gen/landLookup.ts';
 import { transferablesOf } from '../gen/GeoBuilder.ts';
+import { createShadeSampler } from '../terrain/bakedShade.ts';
 
 declare const self: DedicatedWorkerGlobalScope;
 
@@ -35,11 +37,13 @@ async function build(req: BuildRequest): Promise<BuiltTile> {
   const tile = decodeTile(await decompress(await fetchRange(req.packUrl, req.offset, req.length)));
   const t1 = performance.now();
   const land = new LandLookup(tile.land);
-  const terrain = buildTerrain(tile, { lod: req.ring, skirtDepth: req.ring === 0 ? 3 : 8, land });
-  const buildings = req.ring <= 1 ? buildBuildings(tile, { simple: req.ring === 1 }) : null;
-  const roads = req.ring === 0 ? buildRoads(tile) : null;
   const density = req.vegetationDensity * (req.ring === 0 ? 1 : req.ring === 1 ? 0.6 : 0.25);
   const trees = buildVegetation(tile, { density, land, blocked: req.ring === 0 ? buildOccupancy(tile) : undefined });
+  // Verschattung nur in Ring 0/1 (in Ring 2 bei 9 Stützpunkten nicht sichtbar)
+  const shade = req.ring <= 1 ? createShadeSampler(tile.buildings, trees.matrices) : undefined;
+  const terrain = buildTerrain(tile, { lod: req.ring, skirtDepth: req.ring === 0 ? 3 : 8, land, shade });
+  const buildings = req.ring <= 1 ? buildBuildings(tile, { simple: req.ring === 1 }) : null;
+  const roadGeo = req.ring === 0 ? buildRoadGeometry(tile, { simple: false }) : null;
   let heightfield: BuiltTile['heightfield'] = null;
   if (req.ring === 0) {
     const lod = tile.lods[0];
@@ -58,7 +62,9 @@ async function build(req: BuildRequest): Promise<BuiltTile> {
     size: tile.size,
     terrain,
     buildings,
-    roads,
+    roads: roadGeo?.roads ?? null,
+    bridges: roadGeo?.bridges ?? null,
+    water: req.ring <= 1 ? buildWaterGeometry(tile) : null,
     trees,
     props: req.ring === 0 ? (tile.props ?? []) : [],
     parking: req.ring === 0 ? (tile.parking ?? []) : [],
@@ -80,7 +86,10 @@ self.onmessage = async (ev: MessageEvent<BuildRequest>) => {
       ...transferablesOf(res.terrain),
       ...transferablesOf(res.buildings),
       ...transferablesOf(res.roads),
+      ...transferablesOf(res.bridges),
+      ...transferablesOf(res.water),
       ...res.trees.matrices.map((m) => m.buffer as ArrayBuffer),
+      ...res.trees.colors.map((m) => m.buffer as ArrayBuffer),
       ...(res.heightfield ? [res.heightfield.heights.buffer as ArrayBuffer] : []),
     ];
     self.postMessage(res satisfies WorkerResponse, transfer);

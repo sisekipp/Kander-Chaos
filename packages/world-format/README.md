@@ -95,6 +95,20 @@ Kleinobjekte und Parkpositionen. Der Abschnitt steht **hinter** allen anderen un
 
 `u32 anzahlParkpositionen`, je Position: `f64 id` (stabil), `u8 kind` (`VehicleKind`: 0 Auto, 1 Fahrrad, 2 Motorrad), `f32 x`, `f32 z`, `f32 heading`.
 
+### 7 – Details (optional)
+
+Darstellungsdaten für Straßen und Gebäude. Steht hinter Abschnitt 6 und fehlt, wenn es nichts zu speichern gibt. Leser ohne Kenntnis überspringen ihn.
+
+`u32 anzahlStraßen` (0 oder gleich der Anzahl im Straßenabschnitt, gleicher Index), je Straße: `u8 lanes`, `u8 flags` (1 Einbahn, 2 Gehweg links, 4 Gehweg rechts, 8 Teil eines Kreisverkehrs), `u8 surface` (`Surface`: 0 Asphalt, 1 Pflaster, 2 Schotter, 3 Erde, 4 Gras, 5 Beton), `i8 layer`, `f32 trimStart`, `f32 trimEnd` (Kürzung in m an Kreuzungen), `f32 deckStart`, `f32 deckEnd` (Brückenhöhe in m, NaN = keine Brücke).
+
+`u32 anzahlKreuzungen`, je Kreuzung: `f64 node`, `u8 fallback` (1 = Kreisscheibe), `f32[] ring` (CCW, Kachel-lokal).
+
+`u32 anzahlZebrastreifen`, je Zebrastreifen: `f32 x`, `f32 z`, `f32 dirX`, `f32 dirZ` (Laufrichtung, normiert), `f32 length`.
+
+`u32 anzahlKirchtürme`, je Turm: `f64 buildingId`, `f32 x`, `f32 z`, `f32 size` (Kantenlänge), `f32 rot`.
+
+`u32 anzahlKreisverkehre`, je Kreisverkehr: `f32 x`, `f32 z` (Mitte), `f32 radius` (Fahrbahnmitte), `f32 width`. Ältere Abschnitte enden vor dieser Liste; Leser prüfen die Restlänge.
+
 ## Versionierung
 
 - `FORMAT_VERSION` wird erhöht, sobald sich bestehende Abschnitte inkompatibel ändern. Ältere Spiele lehnen neuere Kacheln mit einer klaren Fehlermeldung ab.
