@@ -99,6 +99,14 @@ Der Spiel-Build (Budget-Plugin aus Phase 0) zählt `models/` mit. Das Asset-Mani
 
 `graphics-assets` setzt auf den Licht- und Nebel-Bausteinen aus `graphics-world` auf (D6 dort). Deshalb wird `graphics-world` zuerst umgesetzt. Modell-Pipeline und Registry (D2, D3) können parallel entstehen, weil sie keine Welt-Shader brauchen.
 
+### D9a Weitere Kleinobjekte (Erweiterung)
+
+- **Neue Arten** in `PropKind` (Kachelformat, gleiche u8-Kodierung): Briefkasten, Hydrant, Poller, Fahrradbügel, Litfaßsäule, Blumenkübel. Ältere Spielstände sind nicht betroffen (Props werden nicht gespeichert).
+- **Formen:** Die Zuordnung Art + Variante → sichtbare Form (`PropShape`) liegt in `@kandern/world-format`, damit Pipeline (Prüfung) und Spiel (Instanzpuffer) dieselbe Tabelle nutzen. Schilder: Variante aus `traffic_sign` – `DE:205`/`DE:206` Dreieck bzw. Stopp als Dreiecksform, `DE:350` blaues Quadrat, `highway=bus_stop` Haltestellenschild, `highway=traffic_signals` Ampel, sonst rundes Schild.
+- **Draw Calls:** eine Form = ein Draw Call je Kachel; Grenze 12. `check` zählt die Formen je Kachel und meldet Überschreitungen.
+- **Verhalten:** Briefkasten fliegt weg (schwer, Schwelle 20 km/h); Hydrant, Poller und Litfaßsäule kippen (Schwellen 30/25/35 km/h, halten Fußgänger auf); Fahrradbügel und Blumenkübel zerbrechen (15/12 km/h).
+- **Modelle:** selbst gebaut mit der Blender-Kommandozeile (`tools/asset-pipeline/blender/props.py`), Regeln wie bei allen Modellen (≤ 600 Dreiecke, kein Text, keine Logos).
+
 ### D9 Modulstruktur (Zusammenfassung)
 
 ```

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useGameStore } from '../state/store.ts';
 import { ensureWorld, requestPersistence } from '../offline/worldDownloader.ts';
+import { loadModelsOnce } from '../assets/loadModels.ts';
 
 /**
  * Erster Start: lädt alle Weltdaten mit Fortschritt und meldet "Bereit zum Offline-Spielen".
@@ -11,9 +12,12 @@ export function LoadingScreen() {
   const setDownload = useGameStore((s) => s.setDownload);
   const setScreen = useGameStore((s) => s.setScreen);
   const setStorage = useGameStore((s) => s.setStorage);
+  const models = useGameStore((s) => s.models);
 
   const run = () => {
     setDownload({ phase: 'checking', message: 'Weltdaten werden geprüft …' });
+    // Modelle (Fahrzeuge, Figur, Gegenstände) parallel laden – sie liegen in der App-Shell (offline)
+    const modelsReady = loadModelsOnce().catch(() => undefined);
     let sawDownload = false;
     ensureWorld((p) => {
       sawDownload = sawDownload || p.totalBytes > 0;
@@ -33,7 +37,10 @@ export function LoadingScreen() {
         setStorage(await requestPersistence());
         setDownload({ phase: 'ready', fraction: 1, message: sawDownload ? 'Bereit zum Offline-Spielen' : '' });
         if (st.updatePending) useGameStore.getState().setUpdateReady(true);
-        if (!sawDownload) setScreen('menu');
+        if (!sawDownload) {
+          await modelsReady;
+          if (useGameStore.getState().models.ready) setScreen('menu');
+        }
       })
       .catch((e) =>
         setDownload({
@@ -71,9 +78,32 @@ export function LoadingScreen() {
         <>
           <p className="big ok">✔ {d.message}</p>
           <div className="stack">
-            <button onClick={() => setScreen('menu')}>Los geht’s</button>
+            <button disabled={!models.ready} onClick={() => setScreen('menu')}>
+              Los geht’s
+            </button>
           </div>
         </>
+      )}
+      {!models.ready && !models.error && models.total > 0 && (
+        <div className="models-progress">
+          <p className="status">Modelle werden geladen …</p>
+          <div
+            className="progress"
+            role="progressbar"
+            aria-label="Modelle"
+            aria-valuenow={models.loaded}
+            aria-valuemin={0}
+            aria-valuemax={models.total}
+          >
+            <div className="progress-bar" style={{ width: `${((models.loaded / models.total) * 100).toFixed(0)}%` }} />
+          </div>
+        </div>
+      )}
+      {models.error && (
+        <div className="stack">
+          <p>Modelle konnten nicht geladen werden: {models.error}</p>
+          <button onClick={() => void loadModelsOnce().catch(() => undefined)}>Erneut versuchen</button>
+        </div>
       )}
       {(d.phase === 'error' || d.phase === 'needs-network') && (
         <>

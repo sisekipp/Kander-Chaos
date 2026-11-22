@@ -149,9 +149,24 @@ export enum PropKind {
   Sign = 3,
   Lamp = 4,
   Bench = 5,
+  PostBox = 6,
+  Hydrant = 7,
+  Bollard = 8,
+  BikeRack = 9,
+  AdColumn = 10,
+  Planter = 11,
 }
 
-export const PROP_KIND_COUNT = 6;
+export const PROP_KIND_COUNT = 12;
+
+/** Schild-Varianten (Prop.variant bei PropKind.Sign). */
+export const enum SignVariant {
+  Round = 0,
+  TrafficLight = 1,
+  BusStop = 2,
+  Triangle = 3,
+  BlueSquare = 4,
+}
 
 export interface Prop {
   kind: PropKind;

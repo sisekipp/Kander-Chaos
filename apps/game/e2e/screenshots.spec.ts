@@ -46,7 +46,10 @@ test('Screenshots für die Sichtprüfung: Blumenplatz, Hauptstraße, Feldweg, Ki
       g.camera.alpha = s.alpha;
     }, s);
     await page.waitForTimeout(1200);
-    const png = await page.locator('canvas').first().screenshot({ path: info.outputPath(`${s.name}.png`) });
+    const png = await page
+      .locator('canvas')
+      .first()
+      .screenshot({ path: info.outputPath(`${s.name}.png`) });
     await info.attach(s.name, { body: png, contentType: 'image/png' });
     expect(png.length, s.name).toBeGreaterThan(20_000);
   }

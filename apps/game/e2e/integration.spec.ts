@@ -75,7 +75,9 @@ test('offline: Einsteigen, Fahren, Kleinobjekt umfahren, Aussteigen – ohne fre
     const ang = pick.ang,
       sx = pick.sx,
       sz = pick.sz;
-    car.sim.teleport(new V(sx, pick.gy + 0.8, sz), ang);
+    // auf Ruhehöhe des Modells setzen (Mittelpunkt über Boden), nicht fest 0,8 m
+    const rest = -car.sim.spec.wheels[0].y + car.sim.spec.suspension.rest;
+    car.sim.teleport(new V(sx, pick.gy + rest, sz), ang);
     await new Promise((r) => setTimeout(r, 1200));
     const before = w.props.triggered;
     const h0 = car.health;

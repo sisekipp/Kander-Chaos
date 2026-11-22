@@ -19,6 +19,12 @@ const MASS: Record<PropKind, number> = {
   [PropKind.Sign]: 6,
   [PropKind.Lamp]: 60,
   [PropKind.Bench]: 25,
+  [PropKind.PostBox]: 30,
+  [PropKind.Hydrant]: 80,
+  [PropKind.Bollard]: 40,
+  [PropKind.BikeRack]: 15,
+  [PropKind.AdColumn]: 400,
+  [PropKind.Planter]: 50,
 };
 
 /** Dynamischer Körper mit Box-Shape (Mitte auf halber Höhe über dem Fußpunkt). */
@@ -48,18 +54,18 @@ export interface SpawnContext {
 
 /** Mülleimer/Bank fliegen weg, Laterne kippt: Ersatzkörper mit dem Grundmodell. */
 export function spawnReplacement(ctx: SpawnContext, p: WorldPropRef, vx: number, vz: number): void {
-  const mesh = ctx.bases[p.kind].clone(`prop-free-${p.kind}`, null, true, false) as Mesh;
+  const mesh = ctx.bases[p.shape].clone(`prop-free-${p.kind}`, null, true, false) as Mesh;
   mesh.setEnabled(true);
   mesh.position.set(p.x, p.y, p.z);
   mesh.rotationQuaternion = Quaternion.FromEulerAngles(0, p.rot, 0);
   const k = p.stretch ?? 1;
-  mesh.scaling.set(p.scale * k, p.scale, p.scale);
+  mesh.scaling.set(p.scale, p.scale, p.scale * k);
   mesh.computeWorldMatrix(true);
   const ext = PROP_EXTENTS[p.kind];
   const body = dynamicBody(
     ctx.scene,
     mesh,
-    [ext[0] * p.scale * k, ext[1] * p.scale, ext[2] * p.scale],
+    [ext[0] * p.scale, ext[1] * p.scale, ext[2] * p.scale * k],
     MASS[p.kind],
     GROUP.PROP,
   );

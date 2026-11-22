@@ -1,12 +1,14 @@
 import type { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import type { Scene } from '@babylonjs/core/scene';
-import { PROP_KIND_COUNT, PropKind } from '@kandern/world-format';
+import { PropKind } from '@kandern/world-format';
+import type { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import type { PhysicsBudget } from '../engine/physics/budget/index.ts';
 import type { Particles } from '../engine/fx/particles.ts';
 import { createVertexColorMaterial } from '../engine/procedural/PartKit.ts';
 import type { TileState } from '../world/tiles/TileState.ts';
-import { buildPropMesh } from './models/index.ts';
+import { buildShapeMesh } from './models/index.ts';
+import { PROP_SHAPE_COUNT, type PropShape } from './models/shapes.ts';
 import { PropColliders } from './PropColliders.ts';
 import { PropLayer, writeMatrix, type TileProps } from './PropLayer.ts';
 import { spawnDebris, spawnReplacement, type SpawnContext } from './spawn.ts';
@@ -30,6 +32,7 @@ export class PropSystem {
   readonly colliders: PropColliders;
   private readonly tiles = new Map<string, TileProps>();
   private readonly bases: Mesh[] = [];
+  private readonly propMaterial: StandardMaterial;
   private readonly ctx: SpawnContext;
   private readonly hits: GridProp[] = [];
   /** Ausgelöste Objekte insgesamt (für Tests/Anzeige). */
@@ -41,7 +44,10 @@ export class PropSystem {
     private readonly fx: Particles,
     heightAt: (t: TileState, x: number, z: number) => number,
   ) {
-    for (let k = 0; k < PROP_KIND_COUNT; k++) this.bases.push(buildPropMesh(scene, k));
+    // Grundmodelle je Form (aus der Modell-Registry, sonst prozedural), ein gemeinsames Material
+    const material = createVertexColorMaterial(scene, 'props-mat');
+    this.propMaterial = material;
+    for (let s = 0; s < PROP_SHAPE_COUNT; s++) this.bases.push(buildShapeMesh(scene, s as PropShape, material));
     this.ctx = { scene, budget, bases: this.bases, debrisMaterial: createVertexColorMaterial(scene, 'debris-mat') };
     this.colliders = new PropColliders(scene);
     this.layer = new PropLayer(scene, this.bases, heightAt, {
@@ -91,8 +97,8 @@ export class PropSystem {
 
   private setVisible(t: TileProps, index: number, visible: boolean): void {
     const p = t.props[index];
-    const m = t.matrices[p.kind],
-      mesh = t.meshes[p.kind];
+    const m = t.matrices[p.shape],
+      mesh = t.meshes[p.shape];
     if (!m || !mesh || mesh.isDisposed()) return;
     writeMatrix(m, p.slot, p, visible);
     mesh.thinInstanceBufferUpdated('matrix');
@@ -101,6 +107,7 @@ export class PropSystem {
   dispose(): void {
     this.colliders.dispose();
     for (const b of this.bases) b.dispose();
+    this.propMaterial.dispose();
     this.ctx.debrisMaterial.dispose();
     this.tiles.clear();
   }

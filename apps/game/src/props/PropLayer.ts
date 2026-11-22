@@ -1,7 +1,8 @@
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
-import { PROP_KIND_COUNT, PropKind } from '@kandern/world-format';
+import { PropKind } from '@kandern/world-format';
+import { PROP_SHAPE_COUNT, propShape, type PropShape } from './models/shapes.ts';
 import type { Scene } from '@babylonjs/core/scene';
 import type { BuiltTile } from '../world/protocol.ts';
 import type { TileLayer } from '../world/tiles/layers.ts';
@@ -18,10 +19,12 @@ export interface WorldPropRef {
   y: number;
   z: number;
   rot: number;
+  /** Sichtbare Form (Grundmodell und Instanzpuffer), siehe `models/shapes.ts`. */
+  shape: PropShape;
   scale: number;
-  /** Streckung entlang der lokalen x-Achse (Hecken: länglich entlang der Heckenlinie), Standard 1. */
+  /** Streckung entlang der lokalen z-Achse = Linienrichtung (Hecken: länglich entlang der Heckenlinie), Standard 1. */
   stretch?: number;
-  /** Index innerhalb des Instanzpuffers seiner Art. */
+  /** Index innerhalb des Instanzpuffers seiner Form. */
   slot: number;
 }
 
@@ -48,11 +51,11 @@ export function writeMatrix(m: Float32Array, slot: number, p: WorldPropRef, visi
   const c = Math.cos(p.rot) * s,
     sn = Math.sin(p.rot) * s;
   const k = p.stretch ?? 1;
-  m.set([c * k, 0, -sn * k, 0, 0, s, 0, 0, sn, 0, c, 0, p.x, p.y, p.z, 1], slot * 16);
+  m.set([c, 0, -sn, 0, 0, s, 0, 0, sn * k, 0, c * k, 0, p.x, p.y, p.z, 1], slot * 16);
 }
 
 /**
- * Lädt Kleinobjekte als Thin Instances je Art (höchstens 6 Draw Calls je Kachel). Wie bei den Bäumen:
+ * Lädt Kleinobjekte als Thin Instances je Form (höchstens 8 Draw Calls je Kachel). Wie bei den Bäumen:
  * eigene Geometrie-Kopie je Mesh, kein Elternknoten, Weltkoordinaten in den Matrizen.
  */
 export class PropLayer implements TileLayer {
@@ -71,7 +74,7 @@ export class PropLayer implements TileLayer {
     return [
       () => {
         const props: WorldPropRef[] = [];
-        const counts: number[] = Array.from({ length: PROP_KIND_COUNT }, () => 0);
+        const counts: number[] = Array.from({ length: PROP_SHAPE_COUNT }, () => 0);
         const grid = new HitGrid();
         b.props.forEach((p, index) => {
           const x = tile.originX + p.x,
@@ -79,6 +82,7 @@ export class PropLayer implements TileLayer {
           // Buschgrößen; Variante 3 = Heckenfeld (aus barrier=hedge), länglich entlang der Heckenlinie
           const hedge = p.kind === PropKind.Bush && p.variant === HEDGE_VARIANT;
           const scale = hedge ? 0.95 : p.kind === PropKind.Bush ? 0.8 + (p.variant % 3) * 0.2 : 1;
+          const shape = propShape(p.kind, p.variant);
           const ref: WorldPropRef = {
             index,
             kind: p.kind,
@@ -86,23 +90,24 @@ export class PropLayer implements TileLayer {
             z,
             y: this.heightAt(tile, x, z) - 0.05,
             rot: p.rot,
+            shape,
             scale,
             stretch: hedge ? HEDGE_STRETCH : 1,
-            slot: counts[p.kind]++,
+            slot: counts[shape]++,
           };
           props.push(ref);
           grid.add({ index, x, z, radius: PROP_RULES[p.kind].radius * scale });
         });
         const meshes: (Mesh | null)[] = [],
           matrices: (Float32Array | null)[] = [];
-        for (let k = 0; k < PROP_KIND_COUNT; k++) {
+        for (let k = 0; k < PROP_SHAPE_COUNT; k++) {
           if (!counts[k]) {
             meshes.push(null);
             matrices.push(null);
             continue;
           }
           const m = new Float32Array(counts[k] * 16);
-          for (const p of props) if (p.kind === k) writeMatrix(m, p.slot, p, true);
+          for (const p of props) if (p.shape === k) writeMatrix(m, p.slot, p, true);
           const mesh = new Mesh(`props${k}-${tile.id}`, this.scene);
           (this.vertexData[k] ??= VertexData.ExtractFromMesh(this.bases[k], true, true)).applyToMesh(mesh, true);
           mesh.material = this.bases[k].material;

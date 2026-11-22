@@ -44,7 +44,13 @@ export function pwaPlugin(opts: PwaPluginOptions): Plugin {
       };
       for (const f of shell)
         add(
-          f.endsWith('.wasm') ? 'WASM' : f.startsWith('assets/') ? 'App-Bundles' : 'Sonstiges (HTML, Icons, Manifest)',
+          f.endsWith('.wasm')
+            ? 'WASM'
+            : f.startsWith('models/')
+              ? '3D-Modelle'
+              : f.startsWith('assets/')
+                ? 'App-Bundles'
+                : 'Sonstiges (HTML, Icons, Manifest)',
           f,
         );
       for (const f of worldFiles) add(f.endsWith('.bin') ? 'Weltpakete' : 'Welt-Metadaten', f);

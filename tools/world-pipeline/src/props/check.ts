@@ -1,4 +1,4 @@
-import type { TileData, WorldIndex } from '@kandern/world-format';
+import { MAX_SHAPES_PER_TILE, countShapes, type TileData, type WorldIndex } from '@kandern/world-format';
 
 export interface PropsCheck {
   ok: boolean;
@@ -31,6 +31,22 @@ export function checkProps(index: WorldIndex, tiles: TileData[], radius = 300): 
   if (kinds.size >= 3) messages.push(`✔ ${kinds.size} Arten von Kleinobjekten in der Kernstadt`);
   else {
     messages.push(`✘ nur ${kinds.size} Arten von Kleinobjekten in der Kernstadt (< 3)`);
+    ok = false;
+  }
+  // Draw Calls: höchstens 12 verschiedene Formen je Kachel (Spec destructible-props)
+  let worst = 0,
+    worstTile = '';
+  for (const t of tiles) {
+    const n = countShapes(t.props ?? []);
+    if (n > worst) {
+      worst = n;
+      worstTile = `${t.tx},${t.tz}`;
+    }
+  }
+  if (worst <= MAX_SHAPES_PER_TILE)
+    messages.push(`✔ höchstens ${worst} Prop-Formen je Kachel (≤ ${MAX_SHAPES_PER_TILE})`);
+  else {
+    messages.push(`✘ Kachel ${worstTile}: ${worst} Prop-Formen > ${MAX_SHAPES_PER_TILE}`);
     ok = false;
   }
   return { ok, messages };

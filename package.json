@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "ready": "vp check && vp run typecheck && vp test run && vp run -r build",
-    "typecheck": "tsc -p packages/world-format && tsc -p tools/world-pipeline && tsc -p apps/game",
+    "typecheck": "tsc -p packages/world-format && tsc -p tools/world-pipeline && tsc -p tools/asset-pipeline && tsc -p apps/game",
     "dev": "vp run @kandern/game#dev",
     "pipeline": "vp run @kandern/world-pipeline#pipeline"
   },

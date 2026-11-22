@@ -19,12 +19,14 @@ if (import.meta.env.DEV || new URLSearchParams(location.search).has('debug')) {
     import('./engine/gameInstance.ts'),
     import('./world/worldInstance.ts'),
     import('./player/input.ts'),
-  ]).then(([g, w, i]) => {
+    import('./assets/ModelRegistry.ts'),
+  ]).then(([g, w, i, m]) => {
     (window as unknown as Record<string, unknown>).__kc = {
       getGame: g.getGame,
       getWorld: w.getWorld,
       store: useGameStore,
       input: i.input,
+      getModels: m.getModels,
     };
   });
 }

@@ -27,4 +27,22 @@ describe('Auslöse-Regeln', () => {
     expect(v.vy).toBeGreaterThan(0);
     expect(v.vz).toBe(0);
   });
+
+  it('Erweiterung: Briefkasten fliegt, Hydrant/Poller/Litfaßsäule kippen und halten Fußgänger auf, Bügel und Kübel zerbrechen', () => {
+    expect(PROP_RULES[PropKind.PostBox].reaction).toBe('fly');
+    for (const k of [PropKind.Hydrant, PropKind.Bollard, PropKind.AdColumn]) {
+      expect(PROP_RULES[k].reaction).toBe('topple');
+      expect(PROP_RULES[k].blocksWalker).toBe(true);
+      expect(triggers(k, 18)).toBe(false); // zu Fuß (18 km/h) nicht umzuwerfen
+    }
+    for (const k of [PropKind.BikeRack, PropKind.Planter]) {
+      expect(PROP_RULES[k].reaction).toBe('shatter');
+      expect(triggers(k, 18)).toBe(true);
+    }
+  });
+
+  it('Poller mit 40 km/h: knickt um und bremst deutlich (stärker als ein Mülleimer)', () => {
+    expect(triggers(PropKind.Bollard, 40)).toBe(true);
+    expect(PROP_RULES[PropKind.Bollard].slowdown).toBeGreaterThan(PROP_RULES[PropKind.Bin].slowdown * 3);
+  });
 });

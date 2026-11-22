@@ -24,17 +24,21 @@ async function takeCar(page: Page, at?: { x: number; z: number; heading: number 
   return page.evaluate(async (at) => {
     const w = (window as any).__kc.getWorld();
     const p = w.player.position;
-    const car = [...w.vehicles.all()]
-      .filter((v: any) => v.kind === 0 && !v.wrecked)
-      .sort(
-        (a: any, b: any) =>
-          Math.hypot(a.position.x - p.x, a.position.z - p.z) - Math.hypot(b.position.x - p.x, b.position.z - p.z),
-      )[0];
+    // Beim Versetzen an die Wand das kürzeste Modell nehmen: die Stelle ist für ein ~4-m-Auto gewählt,
+    // ein Transporter (4,9 m) stäke dort in der Hauswand und würde von der Physik herausgedrückt
+    const dist = (v: any) => Math.hypot(v.position.x - p.x, v.position.z - p.z);
+    const cars = [...w.vehicles.all()].filter((v: any) => v.kind === 0 && !v.wrecked);
+    const shortest = Math.min(...cars.map((v: any) => v.sim.spec.box[2]));
+    const car = cars
+      .filter((v: any) => !at || v.sim.spec.box[2] <= shortest + 0.01)
+      .sort((a: any, b: any) => dist(a) - dist(b))[0];
     w.player.enter(car);
     await new Promise((r) => setTimeout(r, 300));
     if (at) {
       const B = car.sim.position.constructor;
-      car.sim.teleport(new B(at.x, (w.tiles.heightAt(at.x, at.z) ?? car.position.y) + 0.8, at.z), at.heading);
+      // auf Ruhehöhe des Modells setzen (Mittelpunkt über Boden), nicht fest 0,8 m
+      const rest = -car.sim.spec.wheels[0].y + car.sim.spec.suspension.rest;
+      car.sim.teleport(new B(at.x, (w.tiles.heightAt(at.x, at.z) ?? car.position.y) + rest, at.z), at.heading);
       await new Promise((r) => setTimeout(r, 1200));
     }
     (window as any).__car = car;

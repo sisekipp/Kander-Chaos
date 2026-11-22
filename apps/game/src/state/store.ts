@@ -44,6 +44,9 @@ export interface GameState {
   debugPhysics: boolean;
   setDebugPhysics(v: boolean): void;
   setStorage(s: GameState['storage']): void;
+  /** Laden der 3D-Modelle beim Start (Fortschritt im Ladebildschirm). */
+  models: { loaded: number; total: number; ready: boolean; error: string };
+  setModels(m: Partial<GameState['models']>): void;
 }
 
 function readSimple(): boolean {
@@ -85,4 +88,6 @@ export const useGameStore = create<GameState>((set) => ({
   debugPhysics: false,
   setDebugPhysics: (debugPhysics) => set({ debugPhysics }),
   setStorage: (storage) => set({ storage }),
+  models: { loaded: 0, total: 0, ready: false, error: '' },
+  setModels: (m) => set((s) => ({ models: { ...s.models, ...m } })),
 }));

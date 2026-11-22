@@ -1,0 +1,338 @@
+{
+  "version": 1,
+  "models": [
+    {
+      "id": "ad-column",
+      "kind": "prop",
+      "file": "ad-column.glb",
+      "bytes": 13304,
+      "triangles": 600,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "bench-park",
+      "kind": "prop",
+      "file": "bench-park.glb",
+      "bytes": 6048,
+      "triangles": 108,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "bike-rack",
+      "kind": "prop",
+      "file": "bike-rack.glb",
+      "bytes": 4540,
+      "triangles": 160,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "bin-street",
+      "kind": "prop",
+      "file": "bin-street.glb",
+      "bytes": 5020,
+      "triangles": 120,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "bollard",
+      "kind": "prop",
+      "file": "bollard.glb",
+      "bytes": 7748,
+      "triangles": 204,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "bush-round",
+      "kind": "prop",
+      "file": "bush-round.glb",
+      "bytes": 8308,
+      "triangles": 120,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "bush-tall",
+      "kind": "prop",
+      "file": "bush-tall.glb",
+      "bytes": 6492,
+      "triangles": 100,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "car-compact",
+      "kind": "vehicle",
+      "file": "car-compact.glb",
+      "bytes": 48232,
+      "triangles": 2032,
+      "zones": ["paint"],
+      "parts": ["detach_bumper_front", "detach_bumper_back", "detach_door_left", "detach_door_right"],
+      "vehicle": {
+        "vehicleKind": 0,
+        "type": "Kompaktwagen",
+        "wheels": [
+          {
+            "name": "wheel-front-left",
+            "x": 0.497,
+            "y": 0.378,
+            "z": 1.089,
+            "radius": 0.378
+          },
+          {
+            "name": "wheel-front-right",
+            "x": -0.497,
+            "y": 0.378,
+            "z": 1.089,
+            "radius": 0.378
+          },
+          {
+            "name": "wheel-back-left",
+            "x": 0.497,
+            "y": 0.378,
+            "z": -1.089,
+            "radius": 0.378
+          },
+          {
+            "name": "wheel-back-right",
+            "x": -0.497,
+            "y": 0.378,
+            "z": -1.089,
+            "radius": 0.378
+          }
+        ],
+        "box": [1.755, 1.449, 4.207],
+        "center": [0, 0.913, -0.041]
+      }
+    },
+    {
+      "id": "car-estate",
+      "kind": "vehicle",
+      "file": "car-estate.glb",
+      "bytes": 43740,
+      "triangles": 2086,
+      "zones": ["paint"],
+      "parts": ["detach_bumper_front", "detach_bumper_back", "detach_door_left", "detach_door_right"],
+      "vehicle": {
+        "vehicleKind": 0,
+        "type": "Kombi",
+        "wheels": [
+          {
+            "name": "wheel-front-left",
+            "x": 0.51,
+            "y": 0.39,
+            "z": 1.272,
+            "radius": 0.39
+          },
+          {
+            "name": "wheel-front-right",
+            "x": -0.51,
+            "y": 0.39,
+            "z": 1.272,
+            "radius": 0.39
+          },
+          {
+            "name": "wheel-back-left",
+            "x": 0.51,
+            "y": 0.39,
+            "z": -1.115,
+            "radius": 0.39
+          },
+          {
+            "name": "wheel-back-right",
+            "x": -0.51,
+            "y": 0.39,
+            "z": -1.115,
+            "radius": 0.39
+          }
+        ],
+        "box": [1.8, 1.527, 4.475],
+        "center": [0, 0.926, 0.039]
+      }
+    },
+    {
+      "id": "car-small",
+      "kind": "vehicle",
+      "file": "car-small.glb",
+      "bytes": 48544,
+      "triangles": 2088,
+      "zones": ["paint"],
+      "parts": ["detach_bumper_front", "detach_bumper_back", "detach_door_left", "detach_door_right"],
+      "vehicle": {
+        "vehicleKind": 0,
+        "type": "Kleinwagen",
+        "wheels": [
+          {
+            "name": "wheel-front-left",
+            "x": 0.548,
+            "y": 0.39,
+            "z": 1.077,
+            "radius": 0.39
+          },
+          {
+            "name": "wheel-front-right",
+            "x": -0.548,
+            "y": 0.39,
+            "z": 1.077,
+            "radius": 0.39
+          },
+          {
+            "name": "wheel-back-left",
+            "x": 0.548,
+            "y": 0.39,
+            "z": -1.077,
+            "radius": 0.39
+          },
+          {
+            "name": "wheel-back-right",
+            "x": -0.548,
+            "y": 0.39,
+            "z": -1.077,
+            "radius": 0.39
+          }
+        ],
+        "box": [1.677, 1.235, 3.791],
+        "center": [0, 0.812, -0.033]
+      }
+    },
+    {
+      "id": "fence-garden",
+      "kind": "prop",
+      "file": "fence-garden.glb",
+      "bytes": 7316,
+      "triangles": 246,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "hydrant",
+      "kind": "prop",
+      "file": "hydrant.glb",
+      "bytes": 7212,
+      "triangles": 244,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "lamp-street",
+      "kind": "prop",
+      "file": "lamp-street.glb",
+      "bytes": 5036,
+      "triangles": 64,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "planter",
+      "kind": "prop",
+      "file": "planter.glb",
+      "bytes": 13384,
+      "triangles": 204,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "postbox",
+      "kind": "prop",
+      "file": "postbox.glb",
+      "bytes": 4400,
+      "triangles": 80,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "sign-busstop",
+      "kind": "prop",
+      "file": "sign-busstop.glb",
+      "bytes": 7452,
+      "triangles": 224,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "sign-crossing",
+      "kind": "prop",
+      "file": "sign-crossing.glb",
+      "bytes": 5324,
+      "triangles": 48,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "sign-stvo",
+      "kind": "prop",
+      "file": "sign-stvo.glb",
+      "bytes": 6024,
+      "triangles": 212,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "sign-triangle",
+      "kind": "prop",
+      "file": "sign-triangle.glb",
+      "bytes": 4816,
+      "triangles": 44,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "traffic-light",
+      "kind": "prop",
+      "file": "traffic-light.glb",
+      "bytes": 6620,
+      "triangles": 172,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "van-delivery",
+      "kind": "vehicle",
+      "file": "van-delivery.glb",
+      "bytes": 46620,
+      "triangles": 2082,
+      "zones": ["paint"],
+      "parts": ["detach_bumper_front", "detach_bumper_back", "detach_door_left", "detach_door_right"],
+      "vehicle": {
+        "vehicleKind": 0,
+        "type": "Kleintransporter",
+        "wheels": [
+          {
+            "name": "wheel-front-left",
+            "x": 0.54,
+            "y": 0.45,
+            "z": 1.353,
+            "radius": 0.45
+          },
+          {
+            "name": "wheel-front-right",
+            "x": -0.54,
+            "y": 0.45,
+            "z": 1.353,
+            "radius": 0.45
+          },
+          {
+            "name": "wheel-back-left",
+            "x": 0.54,
+            "y": 0.45,
+            "z": -1.353,
+            "radius": 0.45
+          },
+          {
+            "name": "wheel-back-right",
+            "x": -0.54,
+            "y": 0.45,
+            "z": -1.353,
+            "radius": 0.45
+          }
+        ],
+        "box": [1.905, 1.8, 4.895],
+        "center": [0, 1.125, -0.044]
+      }
+    }
+  ]
+}

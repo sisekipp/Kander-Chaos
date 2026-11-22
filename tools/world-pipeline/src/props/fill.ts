@@ -147,6 +147,72 @@ export function fillProps({ tile, map, anchors }: FillInput): WorldProp[] {
       0.4,
       true,
     );
+    // Blumenkübel neben Bank und Mülleimer (Plätze, Haltestellen, Parks)
+    place(
+      {
+        kind: PropKind.Planter,
+        x: a.x + Math.cos(ang - 0.9) * 3,
+        z: a.z + Math.sin(ang - 0.9) * 3,
+        rot: ang,
+        variant: 0,
+      },
+      0.6,
+      true,
+    );
+  }
+
+  // Fußgängerbereiche (breite Fußwege, z. B. Plätze in der Altstadt): Blumenkübel alle 18 m abwechselnd links/rechts;
+  // eine Litfaßsäule am Anfang längerer Bereiche (in OSM selten eingetragen)
+  for (const road of tile.roads) {
+    if (road.kind !== RoadKind.Footway || road.width < 4) continue;
+    const pts = road.points;
+    let total = 0;
+    for (let k = 2; k < pts.length; k += 2) total += Math.hypot(pts[k] - pts[k - 2], pts[k + 1] - pts[k - 1]);
+    if (total > 40) {
+      const ux = pts[2] - pts[0],
+        uz = pts[3] - pts[1];
+      const l = Math.hypot(ux, uz) || 1;
+      const off = road.width / 2 + 1;
+      place(
+        {
+          kind: PropKind.AdColumn,
+          x: ox + pts[0] + (-uz / l) * off,
+          z: oz + pts[1] + (ux / l) * off,
+          rot: 0,
+          variant: 0,
+        },
+        0.9,
+        true,
+      );
+    }
+    let d = 9,
+      side = 1;
+    for (let k = 2; k < pts.length; k += 2) {
+      const ax = ox + pts[k - 2],
+        az = oz + pts[k - 1],
+        bx = ox + pts[k],
+        bz = oz + pts[k + 1];
+      const len = Math.hypot(bx - ax, bz - az);
+      if (len < 0.01) continue;
+      const ux = (bx - ax) / len,
+        uz = (bz - az) / len;
+      for (; d < len; d += 18) {
+        const off = road.width / 2 - 0.8;
+        place(
+          {
+            kind: PropKind.Planter,
+            x: ax + ux * d - uz * off * side,
+            z: az + uz * d + ux * off * side,
+            rot: yawOf(ux, uz),
+            variant: 0,
+          },
+          0.6,
+          true,
+        );
+        side = -side;
+      }
+      d -= len;
+    }
   }
   return out;
 }

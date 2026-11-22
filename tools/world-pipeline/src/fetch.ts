@@ -156,7 +156,8 @@ out body geom;`;
 /** Straßenmöbel, Barrieren, Parkplätze, Übergänge und Gebäudeteile (dünn gesät -> größere Teilstücke). */
 const PROPS_QUERY_BODY = `(
   node["highway"~"^(street_lamp|traffic_signals|bus_stop|crossing)$"];
-  node["amenity"~"^(waste_basket|bench|bicycle_parking|parking)$"];
+  node["amenity"~"^(waste_basket|bench|bicycle_parking|parking|post_box)$"];
+  node["emergency"="fire_hydrant"]; node["barrier"="bollard"]; node["advertising"="column"];
   node["traffic_sign"];
   way["barrier"~"^(fence|hedge|wall)$"];
   way["amenity"="parking"]; relation["amenity"="parking"];

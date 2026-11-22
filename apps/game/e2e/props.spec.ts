@@ -17,7 +17,10 @@ async function setup(page: Page) {
   );
 }
 
-/** Nächstes Kleinobjekt einer Art zum Startpunkt (kind: 0 Busch, 1 Mülleimer, 2 Zaun, 3 Schild, 4 Laterne, 5 Bank). */
+/**
+ * Nächstes Kleinobjekt einer Art zum Startpunkt (kind: 0 Busch, 1 Mülleimer, 2 Zaun, 3 Schild, 4 Laterne, 5 Bank,
+ * 6 Briefkasten, 7 Hydrant, 8 Poller, 9 Fahrradbügel, 10 Litfaßsäule, 11 Blumenkübel).
+ */
 async function findProp(page: Page, kind: number) {
   return page.evaluate((kind) => {
     const w = (window as any).__kc.getWorld();
@@ -43,7 +46,7 @@ const destroyed = (page: Page, tileId: string, index: number) =>
     { tileId, index },
   );
 
-test('Kleinobjekte: ≥ 3 Arten nahe der Kernstadt, ≤ 8 Draw Calls je Kachel', async ({ page }) => {
+test('Kleinobjekte: ≥ 3 Arten nahe der Kernstadt, ≤ 12 Draw Calls je Kachel', async ({ page }) => {
   await setup(page);
   const r = await page.evaluate(() => {
     const w = (window as any).__kc.getWorld();
@@ -56,7 +59,7 @@ test('Kleinobjekte: ≥ 3 Arten nahe der Kernstadt, ≤ 8 Draw Calls je Kachel',
     return { id, propMeshes: meshes.length, kinds: kinds.size };
   });
   console.log(JSON.stringify(r));
-  expect(r.propMeshes).toBeLessThanOrEqual(8);
+  expect(r.propMeshes).toBeLessThanOrEqual(12);
   expect(r.kinds).toBeGreaterThanOrEqual(3);
 });
 
@@ -81,7 +84,9 @@ test('Auto mit 30 km/h gegen Mülleimer: Mülleimer fliegt weg, Auto fährt weit
     const V = car.sim.position.constructor;
     const sx = bin.x - Math.sin(h) * 14,
       sz = bin.z - Math.cos(h) * 14;
-    car.sim.teleport(new V(sx, (w.tiles.heightAt(sx, sz) ?? bin.y) + 0.8, sz), h);
+    // auf Ruhehöhe des Modells setzen (Mittelpunkt über Boden), nicht fest 0,8 m
+    const rest = -car.sim.spec.wheels[0].y + car.sim.spec.suspension.rest;
+    car.sim.teleport(new V(sx, (w.tiles.heightAt(sx, sz) ?? bin.y) + rest, sz), h);
     await new Promise((r) => setTimeout(r, 1200));
     const v = car.sim;
     const before = w.props.triggered;
@@ -101,6 +106,50 @@ test('Auto mit 30 km/h gegen Mülleimer: Mülleimer fliegt weg, Auto fährt weit
   expect(await destroyed(page, bin.tileId, bin.index)).toBe(true);
   expect(r.flying).toBeGreaterThanOrEqual(1);
   expect(r.kmhAtEnd).toBeGreaterThan(15);
+});
+
+test('Auto mit 40 km/h gegen einen Poller: Poller knickt um, Auto wird deutlich abgebremst', async ({ page }) => {
+  await setup(page);
+  const bollard = await findProp(page, 8);
+  expect(bollard).not.toBeNull();
+  const r = await page.evaluate(async (b) => {
+    const kc = (window as any).__kc,
+      w = kc.getWorld();
+    const p0 = w.player.position;
+    const car = [...w.vehicles.all()]
+      .filter((c: any) => c.kind === 0)
+      .sort(
+        (a: any, c: any) =>
+          Math.hypot(a.position.x - p0.x, a.position.z - p0.z) - Math.hypot(c.position.x - p0.x, c.position.z - p0.z),
+      )[0];
+    w.player.enter(car);
+    await new Promise((res) => setTimeout(res, 300));
+    // 5 m vor dem Poller auf Ruhehöhe setzen und mit 40 km/h auf ihn zu schieben (Reaktion isoliert prüfen)
+    const h = 0.3;
+    const V = car.sim.position.constructor;
+    const sx = b.x - Math.sin(h) * 5,
+      sz = b.z - Math.cos(h) * 5;
+    const rest = -car.sim.spec.wheels[0].y + car.sim.spec.suspension.rest;
+    car.sim.teleport(new V(sx, (w.tiles.heightAt(sx, sz) ?? b.y) + rest, sz), h);
+    await new Promise((res) => setTimeout(res, 400));
+    const v0 = 40 / 3.6;
+    car.sim.body.setLinearVelocity(new V(Math.sin(h) * v0, 0, Math.cos(h) * v0));
+    const before = w.props.triggered;
+    let kmhBefore = 0,
+      kmhAfter = 0;
+    for (let i = 0; i < 40 && w.props.triggered === before; i++) {
+      kmhBefore = car.sim.forwardSpeed * 3.6;
+      await new Promise((res) => setTimeout(res, 25));
+    }
+    await new Promise((res) => setTimeout(res, 60));
+    kmhAfter = car.sim.forwardSpeed * 3.6;
+    return { triggered: w.props.triggered - before, kmhBefore, kmhAfter, toppled: w.budget.countOf('prop') };
+  }, bollard);
+  console.log(JSON.stringify(r));
+  expect(r.triggered).toBeGreaterThanOrEqual(1);
+  expect(await destroyed(page, bollard.tileId, bollard.index)).toBe(true);
+  expect(r.toppled).toBeGreaterThanOrEqual(1);
+  expect(r.kmhAfter).toBeLessThan(r.kmhBefore * 0.9);
 });
 
 test('Fahrrad mit 20 km/h durch einen Busch: zerfällt in Teile, Rad wird nur leicht abgebremst', async ({ page }) => {

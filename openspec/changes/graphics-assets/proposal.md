@@ -19,6 +19,7 @@ Spielfigur, Fahrzeuge und Kleinobjekte sind heute im Code aus Kapseln und Quader
   - keine US-typischen Fahrzeuge, keine echten Markenlogos
   - lösbare Teile für den Schaden bleiben erhalten
 - **Kleinobjekte im deutschen Stil:** Mülleimer, Parkbank, Straßenlaterne, Verkehrsschilder in StVO-Formen (ohne Text bzw. nur mit Symbolen), Gartenzaun, Büsche. Dazu passende Trümmerteile.
+- **Weitere Kleinobjekte (Erweiterung):** Briefkasten, Hydrant, Poller, Fahrradbügel, Litfaßsäule und Blumenkübel als neue zerstörbare Arten, dazu weitere StVO-Schilder (Vorfahrt gewähren, Fußgängerüberweg) und das Haltestellenschild. Positionen kommen aus OSM (bzw. für Blumenkübel aus Ergänzungsregeln). Die Grenze der Draw Calls für Kleinobjekte steigt dafür von 8 auf 12 je Kachel.
 - **Figuren-Baukasten für NPCs:** mindestens 8 unterschiedliche Erwachsenen- und Kinderfiguren mit denselben Animationen, vorbereitet für viele gleichzeitige Figuren (gebackene Vertex-Animation). Das Verhalten der NPCs folgt im nächsten Change.
 - **Wahrzeichen:** Mechanismus, der ein OSM-Gebäude anhand seiner ID durch ein eigenes Modell ersetzt. Erste Wahrzeichen: evangelische Kirche und Rathaus in Kandern. Modelle für Wahrzeichen werden selbst erstellt, z. B. in Blender. Basler Wahrzeichen (Roche-Türme, Badischer Bahnhof, Bahnhof SBB) folgen mit der Welterweiterung.
 
@@ -41,6 +42,7 @@ Spielfigur, Fahrzeuge und Kleinobjekte sind heute im Code aus Kapseln und Quader
 - `vehicles`: neue Anforderung an das Aussehen der Fahrzeuge (europäische Modelle, Vielfalt, keine Markenlogos).
 - `destructible-props`: neue Anforderung an das Aussehen der Kleinobjekte (deutscher Stil) und ihrer Trümmer.
 - `vehicle-damage`: neue Anforderung, dass Fahrzeugmodelle ihre lösbaren Teile kennzeichnen.
+- `destructible-props` (Erweiterung): neue Arten von Kleinobjekten mit eigenem Verhalten beim Anfahren, Draw-Call-Grenze 12 statt 8 je Kachel.
 
 ## Impact
 
@@ -49,6 +51,7 @@ Spielfigur, Fahrzeuge und Kleinobjekte sind heute im Code aus Kapseln und Quader
   - Laden von glTF/GLB über `@babylonjs/loaders` mit lokalem meshopt-Decoder
   - Modell-Registry, Austausch der prozeduralen Modelle in `vehicles/models`, `props/models`, `player/figure`
   - neue Animationssteuerung der Figur
+- **Kachelformat:** neue Werte für `PropKind` (abwärtskompatibel, gleiche Kodierung); die Zuordnung Art/Variante → sichtbare Form liegt in `@kandern/world-format`, damit Pipeline und Spiel dieselbe Tabelle nutzen. Die Props-Abfrage wird erweitert, die Props-Teilstücke werden neu abgerufen und die Welt neu gebaut.
 - **Abhängigkeiten:** `@babylonjs/loaders`, `@gltf-transform/core|extensions|functions`, `meshoptimizer` (Decoder lokal ausgeliefert).
 - **Größe:** Modelle zusammen höchstens 15 MB im Build (Prüfung im Build). Das Gesamtbudget von 300 MB gilt weiter.
 - **Leistung:**

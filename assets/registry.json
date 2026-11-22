@@ -1,0 +1,550 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "car-compact",
+      "kind": "vehicle",
+      "source": "https://kenney.nl/assets/car-kit",
+      "package": "Kenney Car Kit 3.1 (sedan.glb)",
+      "license": "CC0-1.0",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "generischer Kompaktwagen, keine Markenmerkmale, keine Blaulicht-/Taxiaufbauten"
+      },
+      "changes": "Paletten-Textur in Vertex-Farben eingebacken, Lack als Farbzone, Stoßstangen und Türen als lösbare Teile abgetrennt, auf reale Maße skaliert",
+      "status": "accepted"
+    },
+    {
+      "id": "car-small",
+      "kind": "vehicle",
+      "source": "https://kenney.nl/assets/car-kit",
+      "package": "Kenney Car Kit 3.1 (hatchback-sports.glb)",
+      "license": "CC0-1.0",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "generischer Kleinwagen, keine Markenmerkmale, keine Blaulicht-/Taxiaufbauten"
+      },
+      "changes": "Paletten-Textur in Vertex-Farben eingebacken, Lack als Farbzone, Stoßstangen und Türen als lösbare Teile abgetrennt, auf reale Maße skaliert",
+      "status": "accepted"
+    },
+    {
+      "id": "car-estate",
+      "kind": "vehicle",
+      "source": "https://kenney.nl/assets/car-kit",
+      "package": "Kenney Car Kit 3.1 (suv-luxury.glb)",
+      "license": "CC0-1.0",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "generischer Kombi, keine Markenmerkmale, keine Blaulicht-/Taxiaufbauten"
+      },
+      "changes": "Paletten-Textur in Vertex-Farben eingebacken, Lack als Farbzone, Stoßstangen und Türen als lösbare Teile abgetrennt, auf reale Maße skaliert",
+      "status": "accepted"
+    },
+    {
+      "id": "van-delivery",
+      "kind": "vehicle",
+      "source": "https://kenney.nl/assets/car-kit",
+      "package": "Kenney Car Kit 3.1 (van.glb)",
+      "license": "CC0-1.0",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "generischer Kleintransporter, keine Markenmerkmale, keine Blaulicht-/Taxiaufbauten"
+      },
+      "changes": "Paletten-Textur in Vertex-Farben eingebacken, Lack als Farbzone, Stoßstangen und Türen als lösbare Teile abgetrennt, auf reale Maße skaliert",
+      "status": "accepted"
+    },
+    {
+      "id": "kenney-police",
+      "kind": "vehicle",
+      "source": "https://kenney.nl/assets/car-kit",
+      "package": "Kenney Car Kit 3.1 (police.glb)",
+      "license": "CC0-1.0",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": false,
+        "noLogos": true,
+        "notes": "US-Polizeifahrzeug"
+      },
+      "changes": "keine (nicht übernommen)",
+      "status": "rejected"
+    },
+    {
+      "id": "kenney-taxi",
+      "kind": "vehicle",
+      "source": "https://kenney.nl/assets/car-kit",
+      "package": "Kenney Car Kit 3.1 (taxi.glb)",
+      "license": "CC0-1.0",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": false,
+        "noLogos": true,
+        "notes": "US-Taxi"
+      },
+      "changes": "keine (nicht übernommen)",
+      "status": "rejected"
+    },
+    {
+      "id": "kenney-truck",
+      "kind": "vehicle",
+      "source": "https://kenney.nl/assets/car-kit",
+      "package": "Kenney Car Kit 3.1 (truck.glb)",
+      "license": "CC0-1.0",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": false,
+        "noLogos": true,
+        "notes": "Pickup (US-typisch)"
+      },
+      "changes": "keine (nicht übernommen)",
+      "status": "rejected"
+    },
+    {
+      "id": "kenney-ambulance",
+      "kind": "vehicle",
+      "source": "https://kenney.nl/assets/car-kit",
+      "package": "Kenney Car Kit 3.1 (ambulance.glb)",
+      "license": "CC0-1.0",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": false,
+        "noLogos": true,
+        "notes": "US-Rettungswagen"
+      },
+      "changes": "keine (nicht übernommen)",
+      "status": "rejected"
+    },
+    {
+      "id": "kenney-firetruck",
+      "kind": "vehicle",
+      "source": "https://kenney.nl/assets/car-kit",
+      "package": "Kenney Car Kit 3.1 (firetruck.glb)",
+      "license": "CC0-1.0",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": false,
+        "noLogos": true,
+        "notes": "US-Feuerwehr"
+      },
+      "changes": "keine (nicht übernommen)",
+      "status": "rejected"
+    },
+    {
+      "id": "kenney-garbage-truck",
+      "kind": "vehicle",
+      "source": "https://kenney.nl/assets/car-kit",
+      "package": "Kenney Car Kit 3.1 (garbage-truck.glb)",
+      "license": "CC0-1.0",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": false,
+        "noLogos": true,
+        "notes": "US-Müllwagen"
+      },
+      "changes": "keine (nicht übernommen)",
+      "status": "rejected"
+    },
+    {
+      "id": "kenney-sedan-sports",
+      "kind": "vehicle",
+      "source": "https://kenney.nl/assets/car-kit",
+      "package": "Kenney Car Kit 3.1 (sedan-sports.glb)",
+      "license": "CC0-1.0",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": false,
+        "noLogos": true,
+        "notes": "Sportwagen mit Spoiler"
+      },
+      "changes": "keine (nicht übernommen)",
+      "status": "rejected"
+    },
+    {
+      "id": "kenney-race",
+      "kind": "vehicle",
+      "source": "https://kenney.nl/assets/car-kit",
+      "package": "Kenney Car Kit 3.1 (race.glb)",
+      "license": "CC0-1.0",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": false,
+        "noLogos": true,
+        "notes": "Rennwagen"
+      },
+      "changes": "keine (nicht übernommen)",
+      "status": "rejected"
+    },
+    {
+      "id": "kenney-tractor",
+      "kind": "vehicle",
+      "source": "https://kenney.nl/assets/car-kit",
+      "package": "Kenney Car Kit 3.1 (tractor.glb)",
+      "license": "CC0-1.0",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": false,
+        "noLogos": true,
+        "notes": "braucht eigene Fahrphysik (nicht in diesem Change)"
+      },
+      "changes": "keine (nicht übernommen)",
+      "status": "rejected"
+    },
+    {
+      "id": "bike-city",
+      "kind": "vehicle",
+      "source": "eigenes Modell (Blender-Kommandozeile, tools/asset-pipeline)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Stadtrad"
+      },
+      "changes": "selbst zu bauen (kein passendes CC0-Modell im Car Kit)",
+      "status": "planned"
+    },
+    {
+      "id": "bike-mtb",
+      "kind": "vehicle",
+      "source": "eigenes Modell (Blender-Kommandozeile, tools/asset-pipeline)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Mountainbike"
+      },
+      "changes": "selbst zu bauen (kein passendes CC0-Modell im Car Kit)",
+      "status": "planned"
+    },
+    {
+      "id": "scooter",
+      "kind": "vehicle",
+      "source": "eigenes Modell (Blender-Kommandozeile, tools/asset-pipeline)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Motorroller"
+      },
+      "changes": "selbst zu bauen (kein passendes CC0-Modell im Car Kit)",
+      "status": "planned"
+    },
+    {
+      "id": "motorbike",
+      "kind": "vehicle",
+      "source": "eigenes Modell (Blender-Kommandozeile, tools/asset-pipeline)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Motorrad (generisch)"
+      },
+      "changes": "selbst zu bauen (kein passendes CC0-Modell im Car Kit)",
+      "status": "planned"
+    },
+    {
+      "id": "landmark-church-kandern",
+      "kind": "landmark",
+      "source": "eigenes Modell (Blender-Kommandozeile, tools/asset-pipeline)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Evangelische Kirche Kandern (stilisiert)"
+      },
+      "changes": "selbst zu bauen (kein passendes CC0-Modell im Car Kit)",
+      "status": "planned"
+    },
+    {
+      "id": "landmark-townhall-kandern",
+      "kind": "landmark",
+      "source": "eigenes Modell (Blender-Kommandozeile, tools/asset-pipeline)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Rathaus Kandern (stilisiert)"
+      },
+      "changes": "selbst zu bauen (kein passendes CC0-Modell im Car Kit)",
+      "status": "planned"
+    },
+    {
+      "id": "bush-round",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "runder Busch"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "bush-tall",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "hoher Busch (Hecken-/Zierstrauch)"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "bin-street",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Mülleimer am Pfosten (wie in deutschen Orten)"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "fence-garden",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Holzlattenzaun"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "sign-stvo",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "stvo": true,
+        "notes": "rundes StVO-Schild (weiß mit rotem Rand), ohne Text"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "traffic-light",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "stvo": true,
+        "notes": "Fußgänger-/Verkehrsampel ohne Beschriftung"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "lamp-street",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Mastleuchte (deutsche Straßenlaterne)"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "bench-park",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Parkbank mit Betonfüßen"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "sign-triangle",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "stvo": true,
+        "notes": "„Vorfahrt gewähren“ (StVO 205), ohne Text"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "sign-crossing",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "stvo": true,
+        "notes": "„Fußgängerüberweg“ (StVO 350), vereinfachtes Symbol, ohne Text"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "sign-busstop",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "stvo": true,
+        "notes": "Haltestellenschild (gelb-grün, ohne Buchstaben)"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "postbox",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "gelber Briefkasten ohne Schriftzug/Logo"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "hydrant",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Überflurhydrant"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "bollard",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Poller mit Reflexstreifen"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "bike-rack",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Fahrradbügel"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "ad-column",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Litfaßsäule mit Plakatbändern ohne Schrift"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "planter",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/props.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Blumenkübel aus Beton"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    }
+  ]
+}

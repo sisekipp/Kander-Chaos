@@ -1,4 +1,4 @@
-import { PropKind } from '@kandern/world-format';
+import { PropKind, SignVariant } from '@kandern/world-format';
 import type { LatLon, OsmNode, OsmRelation, OsmWay, OverpassResult } from '../osm.ts';
 import { assembleRings, stableId, wayRing } from '../osm.ts';
 import type { ParkingLot, WorldProp } from './types.ts';
@@ -7,6 +7,24 @@ import { isZebra } from '../roads/crossings.ts';
 import { isTowerPart } from '../buildings/churchTower.ts';
 
 type Project = (p: LatLon) => [number, number];
+
+/**
+ * Schildtyp aus `traffic_sign` (mehrere Zeichen durch „;“ oder „,“ getrennt): Vorfahrt gewähren / Stopp als
+ * Dreieck, Fußgängerüberweg als blaues Quadrat, sonst rundes Schild.
+ */
+export function signVariant(trafficSign: string): number {
+  const codes = trafficSign
+    .toUpperCase()
+    .split(/[;,]/)
+    .map((c) => c.trim());
+  if (codes.some((c) => c.startsWith('DE:205') || c.startsWith('DE:206'))) return SignVariant.Triangle;
+  if (codes.some((c) => c.startsWith('DE:350'))) return SignVariant.BlueSquare;
+  return SignVariant.Round;
+}
+
+/** Hydrant über der Erde (Unterflurhydranten liegen im Boden und werden nicht dargestellt). */
+const pillarHydrant = (t: Record<string, string>) =>
+  t.emergency === 'fire_hydrant' && t['fire_hydrant:type'] !== 'underground' && t['fire_hydrant:type'] !== 'wall';
 
 /** Teilt eine Linie in gleich lange Felder und liefert je Feld Mittelpunkt und Ausrichtung. */
 export function lineSegments(coords: number[], segLen: number): { x: number; z: number; rot: number }[] {
@@ -57,11 +75,18 @@ export function readOsmProps(data: OverpassResult, project: Project): OsmProps {
       else if (t.highway === 'street_lamp') props.push({ kind: PropKind.Lamp, x, z, rot: 0, variant: 0 });
       else if (t.amenity === 'waste_basket') props.push({ kind: PropKind.Bin, x, z, rot: 0, variant: 0 });
       else if (t.amenity === 'bench') props.push({ kind: PropKind.Bench, x, z, rot: 0, variant: 0 });
-      else if (t.highway === 'traffic_signals') props.push({ kind: PropKind.Sign, x, z, rot: 0, variant: 1 });
+      else if (t.highway === 'traffic_signals')
+        props.push({ kind: PropKind.Sign, x, z, rot: 0, variant: SignVariant.TrafficLight });
       else if (t.highway === 'bus_stop') {
-        props.push({ kind: PropKind.Sign, x, z, rot: 0, variant: 2 });
+        props.push({ kind: PropKind.Sign, x, z, rot: 0, variant: SignVariant.BusStop });
         anchors.push({ x, z, kind: 'bus_stop' });
-      } else if (t.traffic_sign) props.push({ kind: PropKind.Sign, x, z, rot: 0, variant: 0 });
+      } else if (t.traffic_sign)
+        props.push({ kind: PropKind.Sign, x, z, rot: 0, variant: signVariant(t.traffic_sign) });
+      else if (t.amenity === 'post_box') props.push({ kind: PropKind.PostBox, x, z, rot: 0, variant: 0 });
+      else if (pillarHydrant(t)) props.push({ kind: PropKind.Hydrant, x, z, rot: 0, variant: 0 });
+      else if (t.barrier === 'bollard') props.push({ kind: PropKind.Bollard, x, z, rot: 0, variant: 0 });
+      else if (t.amenity === 'bicycle_parking') props.push({ kind: PropKind.BikeRack, x, z, rot: 0, variant: 0 });
+      else if (t.advertising === 'column') props.push({ kind: PropKind.AdColumn, x, z, rot: 0, variant: 0 });
       else if (t.leisure === 'playground') anchors.push({ x, z, kind: 'playground' });
     } else if (el.type === 'way') {
       const w = el as OsmWay;

@@ -91,7 +91,7 @@ Straßen werden an Kachelgrenzen geschnitten. Am Schnittpunkt erhalten beide Tei
 
 Kleinobjekte und Parkpositionen. Der Abschnitt steht **hinter** allen anderen und fehlt bei Kacheln ohne Inhalt, die dadurch bytegleich zum alten Format bleiben. Leser ohne Kenntnis des Abschnitts überspringen ihn, deshalb gibt es keine neue Formatversion.
 
-`u32 anzahlProps`, je Prop: `u8 kind` (`PropKind`: 0 Busch, 1 Mülleimer, 2 Zaunfeld, 3 Schild, 4 Laterne, 5 Bank), `u8 variant`, `f32 x`, `f32 z` (Kachel-lokal), `f32 rot` (Gierwinkel).
+`u32 anzahlProps`, je Prop: `u8 kind` (`PropKind`: 0 Busch, 1 Mülleimer, 2 Zaunfeld, 3 Schild, 4 Laterne, 5 Bank, 6 Briefkasten, 7 Hydrant, 8 Poller, 9 Fahrradbügel, 10 Litfaßsäule, 11 Blumenkübel), `u8 variant` (Busch: 0–2 Größen, 1 hoch, 3 Heckenfeld; Zaun: 0 Holz, 1 Mauer; Schild `SignVariant`: 0 rund, 1 Ampel, 2 Haltestelle, 3 Dreieck, 4 blaues Quadrat), `f32 x`, `f32 z` (Kachel-lokal), `f32 rot` (Gierwinkel).
 
 `u32 anzahlParkpositionen`, je Position: `f64 id` (stabil), `u8 kind` (`VehicleKind`: 0 Auto, 1 Fahrrad, 2 Motorrad), `f32 x`, `f32 z`, `f32 heading`.
 
@@ -108,6 +108,8 @@ Darstellungsdaten für Straßen und Gebäude. Steht hinter Abschnitt 6 und fehlt
 `u32 anzahlKirchtürme`, je Turm: `f64 buildingId`, `f32 x`, `f32 z`, `f32 size` (Kantenlänge), `f32 rot`.
 
 `u32 anzahlKreisverkehre`, je Kreisverkehr: `f32 x`, `f32 z` (Mitte), `f32 radius` (Fahrbahnmitte), `f32 width`. Ältere Abschnitte enden vor dieser Liste; Leser prüfen die Restlänge.
+
+Die sichtbare Form je Art und Variante (`propShape`, `PropShape`) liegt in `propShapes.ts`. Jede Form kostet je Kachel einen Draw Call; die Pipeline prüft höchstens `MAX_SHAPES_PER_TILE` = 12 Formen je Kachel.
 
 ## Versionierung
 
