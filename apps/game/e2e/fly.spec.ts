@@ -46,7 +46,9 @@ const detail = (page: Page) =>
     const w = (window as any).__kc.getWorld();
     let ring0 = 0;
     for (const t of w.tiles.tiles) if (t.ring === 0) ring0++;
-    return { ring0, props: w.props.tileCount, vehicles: w.vehicles?.count ?? 0 };
+    // verschobene Autos (moved) merkt sich die Welt, solange irgendeine Kachel unter ihnen liegt – nur geparkte zählen
+    const parked = [...(w.vehicles?.all() ?? [])].filter((v: any) => !v.moved).length;
+    return { ring0, props: w.props.tileCount, vehicles: parked };
   });
 
 test('Flug: in 200 m Höhe keine volle Detailstufe, beim Sinken kommt sie zurück', async ({ page }) => {
@@ -56,6 +58,12 @@ test('Flug: in 200 m Höhe keine volle Detailstufe, beim Sinken kommt sie zurüc
   await placeCamera(page, null, null, 200);
   await page.waitForTimeout(500);
   await settled(page);
+  // Fahrzeugauswahl läuft alle 400 ms: kurz nach den Kacheln sind auch die Autos weg
+  await page
+    .waitForFunction(() => ![...(window as any).__kc.getWorld().vehicles.all()].some((v: any) => !v.moved), null, {
+      timeout: 5_000,
+    })
+    .catch(() => {});
   const high = await detail(page);
   await placeCamera(page, null, null, 30);
   await page.waitForTimeout(500);

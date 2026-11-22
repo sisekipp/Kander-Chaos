@@ -22,7 +22,7 @@ Für alle Aufgaben gilt die Codestruktur aus Design D7: höchstens 300 Zeilen je
 ## 4. Tests und Messung
 
 - [x] 4.1 E2E: Losfliegen, Steigen auf 200 m → keine Ring-0-Kacheln/Kleinobjekte/Fahrzeuge mehr, Sinken → Ring 0 wieder da; „Zurück“ → Figur steht am Startpunkt und läuft; „Hier landen“ in Wollbach → Figur steht dort am Boden; beim Fahren kein Knopf „Fliegen“; unter der Kamera ist während eines Schnellflugs immer Gelände geladen
-- [ ] 4.2 Messroute „Flug“ im Testmodus (Kernstadt in 100 m Höhe, Schnellflug nach Wollbach, Tiefflug zurück) mit Messbericht; Desktop-Wert in `docs/perf/README.md`
+- [x] 4.2 Messroute „Flug“ im Testmodus (Kernstadt in 100 m Höhe, Schnellflug nach Wollbach, Tiefflug zurück) mit Messbericht; Desktop-Wert in `docs/perf/README.md`
 - [ ] 4.3 Messung auf dem iPad Pro 1. Gen (Ziel Ø ≥ 30 fps, 1-%-Low ≥ 20 fps), Ergebnis in `docs/perf/<datum>-flug.md`
 
 ## Workflow follow-up

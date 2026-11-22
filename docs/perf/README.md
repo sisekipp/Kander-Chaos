@@ -56,7 +56,7 @@ Menü → **Testmodus** (Qualität „Niedrig“):
 2. Während des Flugs auf Löcher im Gelände unter und vor der Kamera achten (es darf keine geben) und auf die Kachelzahl in der Leistungsanzeige.
 3. Ziel: Ø ≥ 30 fps, 1-%-Low ≥ 20 fps (`summary.avgFps`, `summary.p1LowFps`). Ergebnis in `docs/perf/<datum>-flug.md` eintragen.
 
-**Desktop-Vergleich** (Playwright-WebKit, keine Abnahme): wird nach dem ersten Lauf von `e2e/fly.spec.ts` nachgetragen.
+**Desktop-Vergleich** (Playwright-WebKit, keine Abnahme): Die Messroute dauerte 357 s und lief mit Ø 99,7 fps, 1-%-Low 90,9 fps und max. 120 ms je Bild (1 Bild > 100 ms). Unter der Kamera gab es in 1748 Stichproben kein Loch im Gelände, die dichteste Kachel brauchte 1055 ms.
 
 ## Ziele (Spec `performance-budget`)
 
