@@ -42,7 +42,8 @@ async function build(req: BuildRequest): Promise<BuiltTile> {
   // Verschattung nur in Ring 0/1 (in Ring 2 bei 9 Stützpunkten nicht sichtbar)
   const shade = req.ring <= 1 ? createShadeSampler(tile.buildings, trees.matrices) : undefined;
   const terrain = buildTerrain(tile, { lod: req.ring, skirtDepth: req.ring === 0 ? 3 : 8, land, shade });
-  const buildings = req.ring <= 1 ? buildBuildings(tile, { simple: req.ring === 1 }) : null;
+  const skip = req.skipBuildings?.length ? new Set(req.skipBuildings) : undefined;
+  const buildings = req.ring <= 1 ? buildBuildings(tile, { simple: req.ring === 1, skip }) : null;
   const roadGeo = req.ring === 0 ? buildRoadGeometry(tile, { simple: false }) : null;
   let heightfield: BuiltTile['heightfield'] = null;
   if (req.ring === 0) {

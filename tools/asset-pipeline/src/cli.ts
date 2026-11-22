@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { existsSync } from 'node:fs';
-import { readFile, readdir } from 'node:fs/promises';
-import path from 'node:path';
+import { readFile } from 'node:fs/promises';
 import { paths } from './paths.ts';
+import { loadRecipes } from './build.ts';
 import { checkModels, validateRegistry, type Registry } from './registry.ts';
 import { buildModels } from './build.ts';
 
@@ -17,7 +17,7 @@ async function loadRegistry(): Promise<Registry> {
 /** Modell-IDs aller Rezepte (Dateiname ohne .json). */
 async function recipeIds(): Promise<string[]> {
   if (!existsSync(paths.recipes)) return [];
-  return (await readdir(paths.recipes)).filter((f) => f.endsWith('.json')).map((f) => path.basename(f, '.json'));
+  return (await loadRecipes()).map((r) => r.id);
 }
 
 async function check(): Promise<boolean> {

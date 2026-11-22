@@ -1,0 +1,60 @@
+{
+  "$comment": "Wahrzeichen: besondere Gebäude bekommen ein eigenes Modell (tools/asset-pipeline/blender/landmarks.py). Auswahl automatisch nach OSM-Art (Kirche, Rathaus, Schule …); hier Namen, Stil-Überschreibungen und handgebaute Varianten (detail). Extras ohne OSM-Gebäude mit Koordinaten.",
+  "overrides": {
+    "276120836": {
+      "id": "kandern-stadtkirche",
+      "name": "Ev. Stadtkirche St. Clemens",
+      "style": "church",
+      "detail": "stadtkirche"
+    },
+    "547935471": {
+      "id": "kandern-st-franz",
+      "name": "Kath. Kirche St. Franz von Sales",
+      "style": "church",
+      "detail": "st-franz"
+    },
+    "181397361": {
+      "id": "kandern-rathaus",
+      "name": "Altes Rathaus Kandern",
+      "style": "townhall",
+      "detail": "rathaus-kandern"
+    },
+    "181397340": {
+      "id": "kandern-bahnhof",
+      "name": "Bahnhof Kandern",
+      "style": "station",
+      "detail": "bahnhof-kandern"
+    },
+    "181397346": { "id": "kandern-gueterhalle", "name": "Güterhalle Bahnhof Kandern", "style": "goods_shed" },
+    "276413779": {
+      "id": "kandern-museum",
+      "name": "Heimat- und Keramikmuseum",
+      "style": "museum",
+      "detail": "museum-kandern"
+    },
+    "431078966": {
+      "id": "kandern-forsthaus",
+      "name": "Markgräfliches Forsthaus",
+      "style": "manor",
+      "detail": "forsthaus-kandern"
+    },
+    "88856734": { "id": "kandern-august-macke-schule", "name": "August-Macke-Schule", "style": "school" },
+    "511853859": { "id": "kandern-bfa", "name": "Black Forest Academy", "style": "school", "detail": "bfa" },
+    "511853857": { "id": "kandern-bfa-2", "name": "Black Forest Academy", "style": "school" },
+    "511853861": { "id": "kandern-bfa-3", "name": "Black Forest Academy", "style": "school" },
+    "511853863": { "id": "kandern-bfa-kapelle", "name": "Black Forest Academy Kapelle", "style": "chapel" },
+    "89581954": { "id": "kandern-penny", "name": "Discounter", "style": "supermarket", "detail": "discounter" },
+    "224417274": { "id": "kandern-hieber", "name": "Supermarkt", "style": "supermarket", "detail": "frischemarkt" }
+  },
+  "extras": [
+    {
+      "id": "sausenburg",
+      "name": "Ruine Sausenburg",
+      "style": "ruin",
+      "detail": "sausenburg",
+      "lat": 47.737889,
+      "lon": 7.689167,
+      "size": [30, 50]
+    }
+  ]
+}

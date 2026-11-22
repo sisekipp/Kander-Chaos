@@ -22,6 +22,9 @@ import { createWorldMaterials, type WorldMaterials } from './worldMaterials.ts';
 import { createTreeBases } from './vegetation/treeMeshes.ts';
 import { TreeLayer } from './vegetation/TreeLayer.ts';
 import { TileManager } from './tiles/TileManager.ts';
+import { LandmarkLayer } from './landmarks/LandmarkLayer.ts';
+import type { LandmarkInfo } from './landmarks/placement.ts';
+import { getModels } from '../assets/ModelRegistry.ts';
 import { GeometryLayer } from './tiles/GeometryLayer.ts';
 import { CollisionLayer } from './tiles/CollisionLayer.ts';
 import { WorkerPool } from './WorkerPool.ts';
@@ -39,15 +42,19 @@ export interface Place {
 
 export const WORLD_URL = new URL(`${BASE_URL}world/`, location.href).href;
 
-export async function loadWorldIndex(): Promise<{ index: WorldIndex; places: Place[] }> {
-  const [index, places] = await Promise.all([
+export async function loadWorldIndex(): Promise<{ index: WorldIndex; places: Place[]; landmarks: LandmarkInfo[] }> {
+  const [index, places, landmarks] = await Promise.all([
     fetch(`${WORLD_URL}index.json`).then((r) => {
       if (!r.ok) throw new Error(`Weltindex fehlt (HTTP ${r.status}) – Pipeline "build" ausführen`);
       return r.json() as Promise<WorldIndex>;
     }),
     fetch(`${WORLD_URL}places.json`).then((r) => (r.ok ? (r.json() as Promise<Place[]>) : [])),
+    // Wahrzeichen sind optional: fehlen sie (alter Cache, offline), bleibt es bei den generierten Gebäuden
+    fetch(`${WORLD_URL}landmarks.json`)
+      .then((r) => (r.ok ? r.json().then((j) => j.landmarks as LandmarkInfo[]) : []))
+      .catch(() => [] as LandmarkInfo[]),
   ]);
-  return { index, places };
+  return { index, places, landmarks };
 }
 
 /** Verbindet Streaming, Spielfigur, Physik und Qualitätsstufen zur spielbaren Welt. */
@@ -63,6 +70,7 @@ export class World {
   readonly vehicles: VehicleManager | null;
   readonly fx: Particles;
   readonly props: PropSystem | null;
+  readonly landmarks: LandmarkLayer;
   private fxaa: FxaaPostProcess | null = null;
   private shadows: ShadowGenerator | null = null;
 
@@ -74,7 +82,7 @@ export class World {
       save?: { x: number; z: number; worldVersion: string };
     } = {},
   ): Promise<World> {
-    const { index, places } = await loadWorldIndex();
+    const { index, places, landmarks } = await loadWorldIndex();
     let physics = opts.physics ?? true;
     if (physics) {
       try {
@@ -88,7 +96,7 @@ export class World {
     // Spielstand-Position nur bei gleichem Datenstand übernehmen (neue Gebäude könnten im Weg stehen)
     const fromSave =
       opts.save && opts.save.worldVersion === index.buildVersion ? { x: opts.save.x, z: opts.save.z } : undefined;
-    return new World(game, index, places, physics, opts.start ?? fromSave ?? index.spawn);
+    return new World(game, index, places, physics, opts.start ?? fromSave ?? index.spawn, landmarks);
   }
 
   private constructor(
@@ -97,13 +105,16 @@ export class World {
     readonly places: Place[],
     readonly physics: boolean,
     start: { x: number; z: number },
+    landmarkList: LandmarkInfo[] = [],
   ) {
     const scene = game.scene;
     this.materials = createWorldMaterials(scene);
     const treeBases = createTreeBases(scene, this.materials.trees);
     this.pool = new WorkerPool();
     const q = game.quality;
+    const usable = LandmarkLayer.usable(landmarkList, getModels());
     this.tiles = new TileManager({
+      skipBuildings: usable.flatMap((l) => (l.buildingId === null ? [] : [l.buildingId])),
       scene,
       index,
       worldUrl: WORLD_URL,
@@ -124,6 +135,8 @@ export class World {
     this.unsubs.push(useGameStore.subscribe((st) => (this.debug.enabled = st.debugPhysics)));
     this.debug.enabled = useGameStore.getState().debugPhysics;
     this.tiles.addLayer(new GeometryLayer(scene, this.materials));
+    this.landmarks = new LandmarkLayer(scene, getModels()!, usable, index.tileSize, physics);
+    if (usable.length) this.tiles.addLayer(this.landmarks);
     if (physics) this.tiles.addLayer(new CollisionLayer(scene));
     this.tiles.addLayer(new RoadLayer(scene, this.materials.roads, physics, this.materials.water));
     this.tiles.addLayer(new TreeLayer(scene, treeBases));
@@ -269,6 +282,7 @@ export class World {
     this.player.dispose();
     this.vehicles?.dispose();
     this.props?.dispose();
+    this.landmarks.dispose();
     this.fx.dispose();
     this.budget.dispose();
     this.debug.dispose();

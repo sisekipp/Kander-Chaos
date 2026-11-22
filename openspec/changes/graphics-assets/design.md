@@ -91,10 +91,10 @@ Der Spiel-Build (Budget-Plugin aus Phase 0) zählt `models/` mit. Das Asset-Mani
 
 ### D7 Wahrzeichen
 
-- `assets/landmarks/<id>.glb` mit Rezept: OSM-ID, Ankerpunkt, Ausrichtung, Skalierung.
-- Pipeline (Welt): Gebäude mit Wahrzeichen-ID werden in den Kacheldaten als `landmark` markiert. Das ist ein neues Flag-Bit, abwärtskompatibel. Der Gebäude-Generator lässt sie aus.
-- Spiel: `world/landmarks/LandmarkLayer.ts` (TileLayer) setzt das Modell auf Gelände und Grundrissmitte, die Kollision nutzt das Modell-Mesh (statisch). Licht kommt aus denselben Shader-Bausteinen wie die Welt (aus `graphics-world`).
-- Erste Wahrzeichen: evangelische Kirche Kandern, Rathaus Kandern. Modelliert in Blender nach öffentlich zugänglichen Fotos und den OSM-Grundrissen, stilisiert, ≤ 8.000 Dreiecke.
+- **Auswahl** (Welt-Pipeline, `landmarks/select.ts`): besondere Gebäude in allen Ortsteilen und Nachbargemeinden automatisch nach OSM-Art (Kirche, Kapelle, Rathaus, Schule, Kita, Bahnhof, Supermarkt, Feuerwehr, Museum, Schloss, Halle, öffentlicher Bau, Gasthaus). `assets/landmarks/config.json` vergibt Namen, Stil und Handarbeit je OSM-ID und ergänzt Wahrzeichen ohne OSM-Gebäude (Ruine Sausenburg, Koordinaten aus der Recherche).
+- **Ausgabe**: `world/landmarks.json` (Spiel) und `assets/landmarks/footprints.json` (Blender) mit Mitte, Längsachse, Grundriss im Modellsystem, Höhen und Art. Das Kachelformat bleibt unverändert (kein Flag-Bit): Der Worker bekommt die Gebäude-IDs der Wahrzeichen und lässt sie nur in Ring 0 aus; in Ring 1/2 bleibt der einfache Block.
+- **Modelle** (`blender/landmarks.py`, `landmark_styles.py`, `lmkit.py`): je Gebäude aus dem echten Grundriss nach Bauvorlage der Art; Kanderner Wahrzeichen (Stadtkirche, St. Franz von Sales, Altes Rathaus, Bahnhof, Heimat- und Keramikmuseum, Forsthaus, Sausenburg) als Handarbeit nach Fotos (Wikimedia Commons) und der Kulturdenkmal-Liste. Supermärkte ohne Logos und Schriftzüge. ≤ 8.000 Dreiecke, ein Material (Vertex-Farben). Das Skript schreibt `assets/recipes/landmarks.json` und die Registereinträge.
+- **Spiel**: `world/landmarks/LandmarkLayer.ts` (TileLayer, Ring 0) setzt das Modell auf Grundrissmitte, Längsachse und tiefste Geländehöhe (Sockel reicht 2 m in den Boden); Kollision als statisches Mesh in Weltlage. `placement.ts` enthält die Rechnung (Drehung, Weltlage, Bodenhöhe).
 
 ### D8 Reihenfolge zu `graphics-world`
 

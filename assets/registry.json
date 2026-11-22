@@ -62,141 +62,6 @@
       "status": "accepted"
     },
     {
-      "id": "kenney-police",
-      "kind": "vehicle",
-      "source": "https://kenney.nl/assets/car-kit",
-      "package": "Kenney Car Kit 3.1 (police.glb)",
-      "license": "CC0-1.0",
-      "retrieved": "2026-11-22",
-      "style": {
-        "european": false,
-        "noLogos": true,
-        "notes": "US-Polizeifahrzeug"
-      },
-      "changes": "keine (nicht übernommen)",
-      "status": "rejected"
-    },
-    {
-      "id": "kenney-taxi",
-      "kind": "vehicle",
-      "source": "https://kenney.nl/assets/car-kit",
-      "package": "Kenney Car Kit 3.1 (taxi.glb)",
-      "license": "CC0-1.0",
-      "retrieved": "2026-11-22",
-      "style": {
-        "european": false,
-        "noLogos": true,
-        "notes": "US-Taxi"
-      },
-      "changes": "keine (nicht übernommen)",
-      "status": "rejected"
-    },
-    {
-      "id": "kenney-truck",
-      "kind": "vehicle",
-      "source": "https://kenney.nl/assets/car-kit",
-      "package": "Kenney Car Kit 3.1 (truck.glb)",
-      "license": "CC0-1.0",
-      "retrieved": "2026-11-22",
-      "style": {
-        "european": false,
-        "noLogos": true,
-        "notes": "Pickup (US-typisch)"
-      },
-      "changes": "keine (nicht übernommen)",
-      "status": "rejected"
-    },
-    {
-      "id": "kenney-ambulance",
-      "kind": "vehicle",
-      "source": "https://kenney.nl/assets/car-kit",
-      "package": "Kenney Car Kit 3.1 (ambulance.glb)",
-      "license": "CC0-1.0",
-      "retrieved": "2026-11-22",
-      "style": {
-        "european": false,
-        "noLogos": true,
-        "notes": "US-Rettungswagen"
-      },
-      "changes": "keine (nicht übernommen)",
-      "status": "rejected"
-    },
-    {
-      "id": "kenney-firetruck",
-      "kind": "vehicle",
-      "source": "https://kenney.nl/assets/car-kit",
-      "package": "Kenney Car Kit 3.1 (firetruck.glb)",
-      "license": "CC0-1.0",
-      "retrieved": "2026-11-22",
-      "style": {
-        "european": false,
-        "noLogos": true,
-        "notes": "US-Feuerwehr"
-      },
-      "changes": "keine (nicht übernommen)",
-      "status": "rejected"
-    },
-    {
-      "id": "kenney-garbage-truck",
-      "kind": "vehicle",
-      "source": "https://kenney.nl/assets/car-kit",
-      "package": "Kenney Car Kit 3.1 (garbage-truck.glb)",
-      "license": "CC0-1.0",
-      "retrieved": "2026-11-22",
-      "style": {
-        "european": false,
-        "noLogos": true,
-        "notes": "US-Müllwagen"
-      },
-      "changes": "keine (nicht übernommen)",
-      "status": "rejected"
-    },
-    {
-      "id": "kenney-sedan-sports",
-      "kind": "vehicle",
-      "source": "https://kenney.nl/assets/car-kit",
-      "package": "Kenney Car Kit 3.1 (sedan-sports.glb)",
-      "license": "CC0-1.0",
-      "retrieved": "2026-11-22",
-      "style": {
-        "european": false,
-        "noLogos": true,
-        "notes": "Sportwagen mit Spoiler"
-      },
-      "changes": "keine (nicht übernommen)",
-      "status": "rejected"
-    },
-    {
-      "id": "kenney-race",
-      "kind": "vehicle",
-      "source": "https://kenney.nl/assets/car-kit",
-      "package": "Kenney Car Kit 3.1 (race.glb)",
-      "license": "CC0-1.0",
-      "retrieved": "2026-11-22",
-      "style": {
-        "european": false,
-        "noLogos": true,
-        "notes": "Rennwagen"
-      },
-      "changes": "keine (nicht übernommen)",
-      "status": "rejected"
-    },
-    {
-      "id": "kenney-tractor",
-      "kind": "vehicle",
-      "source": "https://kenney.nl/assets/car-kit",
-      "package": "Kenney Car Kit 3.1 (tractor.glb)",
-      "license": "CC0-1.0",
-      "retrieved": "2026-11-22",
-      "style": {
-        "european": false,
-        "noLogos": true,
-        "notes": "braucht eigene Fahrphysik (nicht in diesem Change)"
-      },
-      "changes": "keine (nicht übernommen)",
-      "status": "rejected"
-    },
-    {
       "id": "bike-city",
       "kind": "vehicle",
       "source": "eigenes Modell: tools/asset-pipeline/blender/vehicles.py (Blender-Kommandozeile)",
@@ -255,36 +120,6 @@
       },
       "changes": "Grundfarben in Vertex-Farben eingebacken, Rahmen/Karosserie als Lackzone, Lenkung als eigener Knoten",
       "status": "accepted"
-    },
-    {
-      "id": "landmark-church-kandern",
-      "kind": "landmark",
-      "source": "eigenes Modell (Blender-Kommandozeile, tools/asset-pipeline)",
-      "package": "Kandern Chaos – eigene Modelle",
-      "license": "own",
-      "retrieved": "2026-11-22",
-      "style": {
-        "european": true,
-        "noLogos": true,
-        "notes": "Evangelische Kirche Kandern (stilisiert)"
-      },
-      "changes": "selbst zu bauen (kein passendes CC0-Modell im Car Kit)",
-      "status": "planned"
-    },
-    {
-      "id": "landmark-townhall-kandern",
-      "kind": "landmark",
-      "source": "eigenes Modell (Blender-Kommandozeile, tools/asset-pipeline)",
-      "package": "Kandern Chaos – eigene Modelle",
-      "license": "own",
-      "retrieved": "2026-11-22",
-      "style": {
-        "european": true,
-        "noLogos": true,
-        "notes": "Rathaus Kandern (stilisiert)"
-      },
-      "changes": "selbst zu bauen (kein passendes CC0-Modell im Car Kit)",
-      "status": "planned"
     },
     {
       "id": "bush-round",
@@ -619,6 +454,726 @@
         "notes": "Pickup mit Laderaumabdeckung, Kennzeichen ohne Schrift, keine Markenmerkmale"
       },
       "changes": "Grundfarben in Vertex-Farben eingebacken, Karosserie als Lackzone, Stoßfänger, Türen und Spiegel als lösbare Teile",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-church-277927901",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-church-431224179",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-church-evangelische-kirche-holzen",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-church-evangelische-kirche-sitzenkirch",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-church-evangelische-pfarrkirche-wollbach",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-church-johanniter-kirche",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-church-matthiaskirche",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-church-sankt-nikolaus",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-civic-436214915",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-civic-554351961",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-civic-kandertalhalle",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-fire_station-30483984",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-fire_station-freiwillige-feuerwehr-kandern",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-fire_station-freiwillige-feuerwehr-mappach",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-fire_station-freiwillige-feuerwehr-sitzenkirch",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-inn-668713560",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-inn-blessings-dorfmitte",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-inn-gasthaus-hirschen",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-inn-gasthaus-zum-engel",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-inn-landgasthof-krone",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-inn-pfaffen-keller",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-inn-zur-schnecke",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-august-macke-schule",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-bahnhof",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-bfa",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-bfa-2",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-bfa-3",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-bfa-kapelle",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-forsthaus",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-gueterhalle",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-hieber",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-museum",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-penny",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-rathaus",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-st-franz",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kandern-stadtkirche",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kindergarten-30483982",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kindergarten-431078930",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-kindergarten-668713576",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-manor-schloss-buergeln",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-sausenburg",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-school-christliche-schule-kandern",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-school-grundschule-kandern",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-station-347879101",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-townhall-30483981",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-townhall-ehemaliges-rathaus",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-townhall-rathaus",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "landmark-townhall-rathaus-sitzenkirch",
+      "kind": "landmark",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/landmarks.py nach OSM-Grundriss und Fotos",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-22",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Wahrzeichen, stilisiert, ohne Schrift und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken",
       "status": "accepted"
     }
   ]

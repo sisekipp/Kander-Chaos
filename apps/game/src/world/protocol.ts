@@ -14,6 +14,8 @@ export interface BuildRequest {
   length: number;
   ring: Ring;
   vegetationDensity: number;
+  /** Gebäude-IDs, die in Ring 0 nicht generiert werden (dort steht ein Wahrzeichen-Modell). */
+  skipBuildings?: number[];
 }
 
 export interface BuiltTile {

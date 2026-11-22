@@ -570,6 +570,438 @@
       "parts": []
     },
     {
+      "id": "landmark-church-277927901",
+      "kind": "landmark",
+      "file": "landmark-church-277927901.glb",
+      "bytes": 21596,
+      "triangles": 744,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-church-431224179",
+      "kind": "landmark",
+      "file": "landmark-church-431224179.glb",
+      "bytes": 21688,
+      "triangles": 720,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-church-evangelische-kirche-holzen",
+      "kind": "landmark",
+      "file": "landmark-church-evangelische-kirche-holzen.glb",
+      "bytes": 21036,
+      "triangles": 784,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-church-evangelische-kirche-sitzenkirch",
+      "kind": "landmark",
+      "file": "landmark-church-evangelische-kirche-sitzenkirch.glb",
+      "bytes": 21256,
+      "triangles": 704,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-church-evangelische-pfarrkirche-wollbach",
+      "kind": "landmark",
+      "file": "landmark-church-evangelische-pfarrkirche-wollbach.glb",
+      "bytes": 21636,
+      "triangles": 724,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-church-johanniter-kirche",
+      "kind": "landmark",
+      "file": "landmark-church-johanniter-kirche.glb",
+      "bytes": 19400,
+      "triangles": 672,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-church-matthiaskirche",
+      "kind": "landmark",
+      "file": "landmark-church-matthiaskirche.glb",
+      "bytes": 22444,
+      "triangles": 768,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-church-sankt-nikolaus",
+      "kind": "landmark",
+      "file": "landmark-church-sankt-nikolaus.glb",
+      "bytes": 22092,
+      "triangles": 784,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-civic-436214915",
+      "kind": "landmark",
+      "file": "landmark-civic-436214915.glb",
+      "bytes": 23788,
+      "triangles": 1240,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-civic-554351961",
+      "kind": "landmark",
+      "file": "landmark-civic-554351961.glb",
+      "bytes": 18328,
+      "triangles": 768,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-civic-kandertalhalle",
+      "kind": "landmark",
+      "file": "landmark-civic-kandertalhalle.glb",
+      "bytes": 51536,
+      "triangles": 3568,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-fire_station-30483984",
+      "kind": "landmark",
+      "file": "landmark-fire_station-30483984.glb",
+      "bytes": 9960,
+      "triangles": 196,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-fire_station-freiwillige-feuerwehr-kandern",
+      "kind": "landmark",
+      "file": "landmark-fire_station-freiwillige-feuerwehr-kandern.glb",
+      "bytes": 13696,
+      "triangles": 528,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-fire_station-freiwillige-feuerwehr-mappach",
+      "kind": "landmark",
+      "file": "landmark-fire_station-freiwillige-feuerwehr-mappach.glb",
+      "bytes": 11276,
+      "triangles": 308,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-fire_station-freiwillige-feuerwehr-sitzenkirch",
+      "kind": "landmark",
+      "file": "landmark-fire_station-freiwillige-feuerwehr-sitzenkirch.glb",
+      "bytes": 10296,
+      "triangles": 224,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-inn-668713560",
+      "kind": "landmark",
+      "file": "landmark-inn-668713560.glb",
+      "bytes": 19820,
+      "triangles": 924,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-inn-blessings-dorfmitte",
+      "kind": "landmark",
+      "file": "landmark-inn-blessings-dorfmitte.glb",
+      "bytes": 33564,
+      "triangles": 2204,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-inn-gasthaus-hirschen",
+      "kind": "landmark",
+      "file": "landmark-inn-gasthaus-hirschen.glb",
+      "bytes": 26636,
+      "triangles": 1628,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-inn-gasthaus-zum-engel",
+      "kind": "landmark",
+      "file": "landmark-inn-gasthaus-zum-engel.glb",
+      "bytes": 30008,
+      "triangles": 2020,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-inn-landgasthof-krone",
+      "kind": "landmark",
+      "file": "landmark-inn-landgasthof-krone.glb",
+      "bytes": 17560,
+      "triangles": 732,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-inn-pfaffen-keller",
+      "kind": "landmark",
+      "file": "landmark-inn-pfaffen-keller.glb",
+      "bytes": 19352,
+      "triangles": 860,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-inn-zur-schnecke",
+      "kind": "landmark",
+      "file": "landmark-inn-zur-schnecke.glb",
+      "bytes": 33904,
+      "triangles": 2236,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-august-macke-schule",
+      "kind": "landmark",
+      "file": "landmark-kandern-august-macke-schule.glb",
+      "bytes": 96284,
+      "triangles": 6876,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-bahnhof",
+      "kind": "landmark",
+      "file": "landmark-kandern-bahnhof.glb",
+      "bytes": 24976,
+      "triangles": 1032,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-bfa",
+      "kind": "landmark",
+      "file": "landmark-kandern-bfa.glb",
+      "bytes": 35288,
+      "triangles": 2772,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-bfa-2",
+      "kind": "landmark",
+      "file": "landmark-kandern-bfa-2.glb",
+      "bytes": 38860,
+      "triangles": 3356,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-bfa-3",
+      "kind": "landmark",
+      "file": "landmark-kandern-bfa-3.glb",
+      "bytes": 41156,
+      "triangles": 3348,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-bfa-kapelle",
+      "kind": "landmark",
+      "file": "landmark-kandern-bfa-kapelle.glb",
+      "bytes": 13952,
+      "triangles": 572,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-forsthaus",
+      "kind": "landmark",
+      "file": "landmark-kandern-forsthaus.glb",
+      "bytes": 24344,
+      "triangles": 1544,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-gueterhalle",
+      "kind": "landmark",
+      "file": "landmark-kandern-gueterhalle.glb",
+      "bytes": 6864,
+      "triangles": 64,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-hieber",
+      "kind": "landmark",
+      "file": "landmark-kandern-hieber.glb",
+      "bytes": 10488,
+      "triangles": 288,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-museum",
+      "kind": "landmark",
+      "file": "landmark-kandern-museum.glb",
+      "bytes": 20856,
+      "triangles": 1036,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-penny",
+      "kind": "landmark",
+      "file": "landmark-kandern-penny.glb",
+      "bytes": 10004,
+      "triangles": 228,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-rathaus",
+      "kind": "landmark",
+      "file": "landmark-kandern-rathaus.glb",
+      "bytes": 35976,
+      "triangles": 2204,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-st-franz",
+      "kind": "landmark",
+      "file": "landmark-kandern-st-franz.glb",
+      "bytes": 19688,
+      "triangles": 824,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kandern-stadtkirche",
+      "kind": "landmark",
+      "file": "landmark-kandern-stadtkirche.glb",
+      "bytes": 24408,
+      "triangles": 1124,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kindergarten-30483982",
+      "kind": "landmark",
+      "file": "landmark-kindergarten-30483982.glb",
+      "bytes": 23048,
+      "triangles": 1508,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kindergarten-431078930",
+      "kind": "landmark",
+      "file": "landmark-kindergarten-431078930.glb",
+      "bytes": 17904,
+      "triangles": 1028,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-kindergarten-668713576",
+      "kind": "landmark",
+      "file": "landmark-kindergarten-668713576.glb",
+      "bytes": 32176,
+      "triangles": 2516,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-manor-schloss-buergeln",
+      "kind": "landmark",
+      "file": "landmark-manor-schloss-buergeln.glb",
+      "bytes": 42456,
+      "triangles": 3504,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-sausenburg",
+      "kind": "landmark",
+      "file": "landmark-sausenburg.glb",
+      "bytes": 12388,
+      "triangles": 572,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-school-christliche-schule-kandern",
+      "kind": "landmark",
+      "file": "landmark-school-christliche-schule-kandern.glb",
+      "bytes": 25496,
+      "triangles": 1812,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-school-grundschule-kandern",
+      "kind": "landmark",
+      "file": "landmark-school-grundschule-kandern.glb",
+      "bytes": 38628,
+      "triangles": 2980,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-station-347879101",
+      "kind": "landmark",
+      "file": "landmark-station-347879101.glb",
+      "bytes": 18028,
+      "triangles": 660,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-townhall-30483981",
+      "kind": "landmark",
+      "file": "landmark-townhall-30483981.glb",
+      "bytes": 34712,
+      "triangles": 2012,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-townhall-ehemaliges-rathaus",
+      "kind": "landmark",
+      "file": "landmark-townhall-ehemaliges-rathaus.glb",
+      "bytes": 21304,
+      "triangles": 928,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-townhall-rathaus",
+      "kind": "landmark",
+      "file": "landmark-townhall-rathaus.glb",
+      "bytes": 19480,
+      "triangles": 756,
+      "zones": [],
+      "parts": []
+    },
+    {
+      "id": "landmark-townhall-rathaus-sitzenkirch",
+      "kind": "landmark",
+      "file": "landmark-townhall-rathaus-sitzenkirch.glb",
+      "bytes": 28512,
+      "triangles": 1384,
+      "zones": [],
+      "parts": []
+    },
+    {
       "id": "motorbike",
       "kind": "vehicle",
       "file": "motorbike.glb",

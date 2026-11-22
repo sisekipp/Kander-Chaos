@@ -25,6 +25,7 @@ import { landKind, landPerTile, waterwayKind, waterwaysPerTile, type RawArea, ty
 import { buildTerrainLods } from './terrain.ts';
 import { buildAttribution } from './attribution.ts';
 import { addPropsToTiles, readOsmProps } from './props/index.ts';
+import { buildLandmarks, writeLandmarks } from './landmarks/index.ts';
 
 const log = (...a: unknown[]) => console.log('[build]', ...a);
 
@@ -135,10 +136,12 @@ export async function runBuild(outDir = config.paths.out): Promise<BuildResult> 
 
   // Je Kachel verteilen
   const buildingsByTile = new Map<string, TileData['buildings']>();
+  const placedById = new Map<number, TileData['buildings'][number]>();
   let estimated = 0;
   for (const pb of placeBuildings(rawBuildings, config.tileSize, coreFactorAt)) {
     const key = tileId(pb.tx, pb.tz);
     if (!included.has(key)) continue;
+    placedById.set(pb.building.id, pb.building);
     if (pb.building.estimated) estimated++;
     let list = buildingsByTile.get(key);
     if (!list) buildingsByTile.set(key, (list = []));
@@ -214,6 +217,11 @@ export async function runBuild(outDir = config.paths.out): Promise<BuildResult> 
     spawn: { x: Math.round(spawnPlace.x * 10) / 10, z: Math.round(spawnPlace.z * 10) / 10 },
   });
   await writeFile(path.join(outDir, 'index.json'), JSON.stringify(index));
+  const landmarks = await buildLandmarks(rawBuildings, placedById, projectToWorld, (x, z) =>
+    included.has(tileId(Math.floor(x / config.tileSize), Math.floor(z / config.tileSize))),
+  );
+  await writeLandmarks(landmarks, outDir);
+  log(`${landmarks.length} Wahrzeichen`);
   await writeFile(path.join(outDir, 'attribution.json'), JSON.stringify(buildAttribution(osmDate, osmDate), null, 2));
   await writeFile(
     path.join(outDir, 'places.json'),

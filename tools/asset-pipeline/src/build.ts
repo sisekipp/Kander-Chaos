@@ -13,9 +13,14 @@ import { scaleScene, vehicleDims } from './vehicleDims.ts';
 export async function loadRecipes(): Promise<Recipe[]> {
   if (!existsSync(paths.recipes)) return [];
   const files = (await readdir(paths.recipes)).filter((f) => f.endsWith('.json')).sort();
-  return Promise.all(
-    files.map(async (f) => parseRecipe(JSON.parse(await readFile(path.join(paths.recipes, f), 'utf8')), f)),
+  // Eine Datei enthält ein Rezept oder eine Liste (z. B. die erzeugten Wahrzeichen-Rezepte)
+  const lists = await Promise.all(
+    files.map(async (f) => {
+      const json: unknown = JSON.parse(await readFile(path.join(paths.recipes, f), 'utf8'));
+      return (Array.isArray(json) ? json : [json]).map((r) => parseRecipe(r, f));
+    }),
   );
+  return lists.flat();
 }
 
 function sourcePath(r: Recipe): string {

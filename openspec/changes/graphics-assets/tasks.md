@@ -49,9 +49,9 @@ Für alle Aufgaben gilt die Codestruktur aus Design D9 bzw. Projektregeln: höch
 
 ## 7. Wahrzeichen
 
-- [ ] 7.1 Welt-Pipeline: Gebäude mit Wahrzeichen-Zuordnung (OSM-ID) als `landmark` markieren; Unit-Test; Welt neu bauen, `check --determinism` grün
-- [ ] 7.2 `world/landmarks/LandmarkLayer.ts` + `placement.ts` (Position, Ausrichtung, Geländehöhe, Kollision); Unit-Test für die Platzierung; E2E-Test: Figur kann nicht durch das Wahrzeichen laufen
-- [ ] 7.3 Modelle evangelische Kirche und Rathaus Kandern (Blender, ≤ 8.000 Dreiecke, ≤ 2 Materialien), Grenzwertprüfung im Build; Sichtprüfung per Screenshot und durch dich
+- [x] 7.1 Welt-Pipeline: Wahrzeichen automatisch nach OSM-Art auswählen plus Konfiguration (Namen, Handarbeit, Extras wie die Sausenburg), Ausgabe `landmarks.json`/`footprints.json`, Worker lässt die Gebäude in Ring 0 aus; Unit-Test; Welt neu bauen, `check --determinism` grün
+- [x] 7.2 `world/landmarks/LandmarkLayer.ts` + `placement.ts` (Position, Ausrichtung, Geländehöhe, Kollision); Unit-Test für die Platzierung; E2E-Test: Wahrzeichen auf dem Grundriss, Figur kann nicht durch die Stadtkirche laufen
+- [ ] 7.3 Modelle (Blender, ≤ 8.000 Dreiecke, 1 Material): 48 Wahrzeichen nach Bauvorlage, Kanderner Wahrzeichen als Handarbeit nach Fotos; Grenzwertprüfung im Build; Sichtprüfung per Screenshot und durch dich
 
 ## 8. Integration und Messung
 

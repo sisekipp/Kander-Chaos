@@ -18,6 +18,8 @@ import { addChurchTower, naveRoofHeight, towerHeight } from './church.ts';
 export interface BuildingGenOptions {
   /** true = vereinfachte Blöcke für Ring 1 (flache Kappe, keine Dachform). */
   simple: boolean;
+  /** Gebäude, die ausgelassen werden (Wahrzeichen-Modell steht an ihrer Stelle). */
+  skip?: Set<number>;
 }
 
 function roofColor(b: Building): RGB {
@@ -39,7 +41,8 @@ export function buildBuildings(tile: TileData, opts: BuildingGenOptions): Geomet
   const ground = (x: number, z: number) =>
     sampleHeight(tile, lod, Math.min(tile.size, Math.max(0, x)), Math.min(tile.size, Math.max(0, z)));
   const towers = new Map((tile.details?.churchTowers ?? []).map((t) => [t.buildingId, t]));
-  for (const b of tile.buildings) addBuilding(g, b, ground, opts, tile.roads, towers.get(b.id));
+  for (const b of tile.buildings)
+    if (!opts.skip?.has(b.id)) addBuilding(g, b, ground, opts, tile.roads, towers.get(b.id));
   return g.build();
 }
 

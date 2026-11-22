@@ -3,7 +3,7 @@ import { BASE_URL } from '../engine/assets.ts';
 
 /** Gleicher Name wie im Service Worker. */
 export const WORLD_CACHE = 'kc-world';
-const META_FILES = ['places.json', 'attribution.json'] as const;
+const META_FILES = ['places.json', 'attribution.json', 'landmarks.json'] as const;
 const worldPath = (f: string) => `${BASE_URL}world/${f}`;
 const pendingPath = (f: string) => `${BASE_URL}world/pending/${f}`;
 
