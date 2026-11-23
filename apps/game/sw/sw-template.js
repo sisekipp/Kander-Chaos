@@ -76,7 +76,12 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       (async () => {
         const cache = await caches.open(SHELL_CACHE);
-        return (await cache.match(BASE + 'index.html')) || fetch(req);
+        const cached = await cache.match(BASE + 'index.html');
+        if (!cached) return fetch(req);
+        // Cloudflare leitet /index.html auf / um: eine umgeleitete Antwort darf respondWith() bei
+        // Seitenaufrufen nicht liefern -> als frische Antwort ohne Umleitungs-Markierung zurückgeben
+        if (!cached.redirected) return cached;
+        return new Response(await cached.blob(), { status: 200, headers: cached.headers });
       })(),
     );
     return;
