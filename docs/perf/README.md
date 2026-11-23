@@ -133,3 +133,5 @@ Route: Landeplatz Kandern → Lörrach → Basel Innenstadt → Landeplatz EuroA
 | Stichproben ohne Gelände unter dem Hubschrauber | 0 von 1025 |
 
 Auch hier begrenzt die Bildwiederholrate (100 fps); maßgeblich ist die Messung auf dem iPad Pro 1. Gen (Ziel Ø ≥ 30 fps, 1-%-Low ≥ 20 fps). Screenshots von Piste und Autobahn legt `e2e/airport.spec.ts` unter `apps/game/test-results/` ab.
+
+**iPad Pro 1. Gen (23.11.2026):** Flug über Basel und Messroute „Heli Basel“ mit Netz-Nachladen auf dem Gerät geprüft – flüssig, vom Tester als ausreichend bestätigt (keine Einzelwerte notiert).

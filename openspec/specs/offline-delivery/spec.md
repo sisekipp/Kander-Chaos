@@ -14,7 +14,7 @@ Das Spiel SHALL ausschließlich aus statischen Dateien bestehen, die über Cloud
 - **THEN** startet und läuft das Spiel ohne Fehler
 
 ### Requirement: Vollständiges Vorladen beim ersten Besuch
-Beim ersten Besuch SHALL die App alle Dateien laden und lokal speichern, die zum Spielen nötig sind (Code, Weltkacheln für die ganze Gemeinde, Texturen, Modelle, Audio). Der Fortschritt MUST sichtbar sein, und die App MUST melden, wann sie vollständig offline spielbar ist.
+Beim ersten Besuch SHALL die App alle Dateien laden und lokal speichern, die zum Spielen in der Kernregion nötig sind (Code, Weltkacheln der Kernregion, Texturen, Modelle, Audio). Nachladeregionen gehören nicht dazu. Der Fortschritt MUST sichtbar sein, und die App MUST melden, wann die Kernregion vollständig offline spielbar ist.
 
 #### Scenario: Fortschrittsanzeige beim ersten Laden
 - **WHEN** ein Gerät die App zum ersten Mal öffnet
@@ -55,11 +55,15 @@ Ist online eine neue Version verfügbar, SHALL die App sie im Hintergrund laden 
 - **THEN** ist der Spielstand weiterhin ladbar
 
 ### Requirement: Speicher-Budget
-Die gesamte lokal gespeicherte Datenmenge der App SHALL höchstens 300 MB betragen. Der Build MUST fehlschlagen, wenn das Budget überschritten wird.
+Die vorgeladene Datenmenge der App (Code, Kernregion, Assets) SHALL höchstens 300 MB betragen. Der Build MUST fehlschlagen, wenn dieses Budget überschritten wird. Zusätzlich darf der Zwischenspeicher für Nachladeregionen höchstens 400 MB belegen, sodass die App insgesamt unter 700 MB bleibt.
 
 #### Scenario: Budget überschritten
 - **WHEN** ein Build mehr als 300 MB an vorzuladenden Dateien erzeugt
 - **THEN** bricht der Build mit einer Meldung ab, welche Dateigruppen wie viel Platz belegen
+
+#### Scenario: Gesamtspeicher auf dem Gerät
+- **WHEN** der Spieler viele Regionen besucht hat
+- **THEN** belegt die App insgesamt höchstens 700 MB
 
 ### Requirement: Lokale Spielstände
 Die App SHALL Spielstände ausschließlich lokal auf dem Gerät speichern und automatisch in regelmäßigen Abständen sowie beim Verlassen des Spiels sichern.

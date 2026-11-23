@@ -39,7 +39,7 @@ Für alle Aufgaben gilt: höchstens 300 Zeilen je Datei, Rechenlogik ohne Babylo
 
 ## 6. Hubschrauber
 
-- [ ] 6.1 Früher Messpunkt: Flugmodus-Flug über die Basler Innenstadt auf Desktop und (durch dich) auf dem iPad; Ergebnis entscheidet über Ring-1-Radius im Flug (`docs/perf/<datum>-basel.md`)
+- [x] 6.1 Früher Messpunkt: Flugmodus-Flug über die Basler Innenstadt auf Desktop und (durch dich) auf dem iPad; Ergebnis entscheidet über Ring-1-Radius im Flug (`docs/perf/<datum>-basel.md`)
 - [x] 6.2 `blender/helicopter.py`: Modell (Rumpf-Loft, Kabinenglas, Kufen, Heckausleger, Leitwerk, Rotoren `rotor-main`/`rotor-tail`, Lichter, `detach_*`-Türen, Lackzonen `paint`/`stripe`), Rezept und Register; Build-Grenzwerte (≤ 6.000 Dreiecke, ≤ 4 Materialien); Render-Vorschau zur Sichtprüfung
 - [x] 6.3 `blender` Landeplatz-Prop `helipad`, `assets/helipads.json` und `vehicles/helicopter/helipads.ts` (OSM-Helipads + feste Liste Kandern, Lörrach, Basel, EuroAirport); Unit-Test
 - [x] 6.4 `heliMath.ts`: Flugschritt (Schwebeflug, Neigung, Kurvenlage, Höhengrenzen 1–600 m, Tempo nach Höhe mit Hysterese); Unit-Tests je Regel
@@ -51,8 +51,8 @@ Für alle Aufgaben gilt: höchstens 300 Zeilen je Datei, Rechenlogik ohne Babylo
 ## 7. Messung und Abschluss
 
 - [x] 7.1 Messroute „Hubschrauber Basel“ (Kandern → Lörrach → Basel Innenstadt → Flughafen) im Testmodus, E2E-Test: läuft durch, keine Löcher unter dem Hubschrauber, Desktop-Wert in `docs/perf/README.md`
-- [ ] 7.2 Messung auf dem iPad Pro 1. Gen (Ziel Ø ≥ 30 fps, 1-%-Low ≥ 20 fps) mit Netz-Nachladen; Ergebnis in `docs/perf/<datum>-hubschrauber.md`
-- [ ] 7.3 Commit inkl. `world-remote/`, Push und Deployment über den Cloudflare-Build aus GitHub nach Freigabe durch dich
+- [x] 7.2 Messung auf dem iPad Pro 1. Gen (Ziel Ø ≥ 30 fps, 1-%-Low ≥ 20 fps) mit Netz-Nachladen; Ergebnis in `docs/perf/<datum>-hubschrauber.md`
+- [x] 7.3 Commit inkl. `world-remote/`, Push und Deployment über den Cloudflare-Build aus GitHub nach Freigabe durch dich
 
 ## Workflow follow-up
 
