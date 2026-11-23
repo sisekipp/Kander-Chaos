@@ -1,0 +1,33 @@
+{
+  "$comment": "Landeplätze mit bereitstehendem Hubschrauber (Spec helicopter). Freie, ebene Bodenflächen (keine Dach-Landeplätze); Koordinaten WGS84.",
+  "helipads": [
+    {
+      "id": "kandern",
+      "name": "Landeplatz Kandern (Sportplatz)",
+      "lat": 47.70653,
+      "lon": 7.65504,
+      "heading": 0
+    },
+    {
+      "id": "loerrach",
+      "name": "Landeplatz Lörrach (Sportplatz)",
+      "lat": 47.61112,
+      "lon": 7.65772,
+      "heading": 0
+    },
+    {
+      "id": "basel",
+      "name": "Landeplatz Basel (Kasernenhof)",
+      "lat": 47.56309,
+      "lon": 7.59112,
+      "heading": 0
+    },
+    {
+      "id": "euroairport",
+      "name": "Landeplatz EuroAirport",
+      "lat": 47.6026,
+      "lon": 7.52411,
+      "heading": 0
+    }
+  ]
+}

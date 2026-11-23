@@ -1,5 +1,11 @@
 import { LandKind, RoadKind, Surface, pointInRing } from '@kandern/world-format';
 
+/** Gleisanzahl aus `tracks` (1 … 8, Standard 1). */
+export function trackCount(tags: Record<string, string>): number {
+  const t = parseInt(tags.tracks ?? '', 10);
+  return Number.isFinite(t) && t > 0 && t <= 8 ? t : 1;
+}
+
 /** Darstellungsattribute einer Straße aus OSM-Tags plus Ergänzungsregeln. */
 export interface RoadAttributes {
   lanes: number;
@@ -107,11 +113,14 @@ export function roadAttributes(tags: Record<string, string>, kind: RoadKind, inS
     tags.junction === 'roundabout' ||
     (kind === RoadKind.Motorway && tags.oneway !== 'no');
   const lanesTag = parseInt(tags.lanes ?? '', 10);
+  // Bei Bahnstrecken steht die Gleisanzahl im Feld der Fahrstreifen
   const lanes = CARRIAGEWAY.has(kind)
     ? Number.isFinite(lanesTag) && lanesTag > 0 && lanesTag < 10
       ? lanesTag
       : defaultLanes(kind, oneway)
-    : 0;
+    : kind === RoadKind.Rail
+      ? trackCount(tags)
+      : 0;
   const [sidewalkLeft, sidewalkRight] = CARRIAGEWAY.has(kind) ? sidewalks(tags, kind, inSettlement) : [false, false];
   const surface =
     SURFACE[tags.surface ?? ''] ??

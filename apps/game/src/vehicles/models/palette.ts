@@ -1,11 +1,11 @@
-import { VehicleKind } from '@kandern/world-format';
+import { VehicleKind, type GroundVehicleKind } from '@kandern/world-format';
 
 export type RGB = [number, number, number];
 
 const hex = (h: number): RGB => [((h >> 16) & 255) / 255, ((h >> 8) & 255) / 255, (h & 255) / 255];
 
 /** Kindgerechte, kräftige Lackfarben je Fahrzeugart. */
-export const PAINTS: Record<VehicleKind, RGB[]> = {
+export const PAINTS: Record<GroundVehicleKind, RGB[]> = {
   [VehicleKind.Car]: [0xe8443a, 0x2f7de1, 0xf2c230, 0x3fb56a, 0xf08a24, 0x8e5ad6, 0xf4f1ea, 0x30b7c4, 0xe25c9b].map(
     hex,
   ),
@@ -19,7 +19,7 @@ export function paintFor(kind: VehicleKind, id: number): RGB {
   h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
   h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
   h = (h ^ (h >>> 16)) >>> 0;
-  const list = PAINTS[kind];
+  const list = PAINTS[kind as GroundVehicleKind];
   return list[h % list.length];
 }
 

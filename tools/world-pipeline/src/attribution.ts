@@ -15,7 +15,12 @@ export interface AttributionFile {
   sources: AttributionSource[];
 }
 
-export function buildAttribution(osmDate: string, dgmDate: string): AttributionFile {
+/** Quellenangaben; Höhenquellen der Schweiz und Frankreichs nur, wenn sie im Build verwendet wurden. */
+export function buildAttribution(
+  osmDate: string,
+  dgmDate: string,
+  extra: { swisstopo?: string; ign?: string } = {},
+): AttributionFile {
   return {
     generatedFor: 'Kandern Chaos – Weltdaten',
     sources: [
@@ -39,6 +44,34 @@ export function buildAttribution(osmDate: string, dgmDate: string): AttributionF
         retrieved: dgmDate,
         note: 'Höhendaten, auf 2-m-Raster gemittelt.',
       },
+      ...(extra.swisstopo
+        ? [
+            {
+              id: 'swisstopo-swissalti3d',
+              name: 'swissALTI3D, Bundesamt für Landestopografie swisstopo',
+              attribution: 'Quelle: Bundesamt für Landestopografie swisstopo',
+              license: 'Nutzungsbedingungen für kostenlose Geodaten und Geodienste (OGD) von swisstopo',
+              licenseUrl: 'https://www.swisstopo.admin.ch/de/nutzungsbedingungen-kostenlose-geodaten-und-geodienste',
+              url: 'https://www.swisstopo.admin.ch/de/hoehenmodell-swissalti3d',
+              retrieved: extra.swisstopo,
+              note: 'Höhendaten der Schweiz (2 m), nach UTM 32N umgerechnet.',
+            },
+          ]
+        : []),
+      ...(extra.ign
+        ? [
+            {
+              id: 'ign-rgealti',
+              name: 'RGE ALTI®, Institut national de l’information géographique et forestière (IGN)',
+              attribution: 'IGN – RGE ALTI®',
+              license: 'Licence Ouverte / Open Licence 2.0 (Etalab)',
+              licenseUrl: 'https://www.etalab.gouv.fr/licence-ouverte-open-licence/',
+              url: 'https://geoservices.ign.fr/rgealti',
+              retrieved: extra.ign,
+              note: 'Höhendaten Frankreichs über die Géoplateforme, nach UTM 32N umgerechnet.',
+            },
+          ]
+        : []),
     ],
   };
 }

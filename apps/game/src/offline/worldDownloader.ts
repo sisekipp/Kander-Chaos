@@ -3,7 +3,14 @@ import { BASE_URL } from '../engine/assets.ts';
 
 /** Gleicher Name wie im Service Worker. */
 export const WORLD_CACHE = 'kc-world';
-const META_FILES = ['places.json', 'attribution.json', 'landmarks.json'] as const;
+const META_FILES = [
+  'places.json',
+  'attribution.json',
+  'landmarks.json',
+  'helipads.json',
+  'skyline.json',
+  'farterrain.bin',
+] as const;
 const worldPath = (f: string) => `${BASE_URL}world/${f}`;
 const pendingPath = (f: string) => `${BASE_URL}world/pending/${f}`;
 
@@ -37,7 +44,8 @@ async function downloadPacks(
   onProgress: (p: DownloadProgress) => void,
 ): Promise<void> {
   const missing = [];
-  for (const p of index.packs) if (!(await cache.match(worldPath(p.file)))) missing.push(p);
+  // Nur der Kern wird vorgeladen; Nachladeregionen kommen bei Bedarf aus Cloudflare (Region-Cache)
+  for (const p of index.packs) if (!p.remote && !(await cache.match(worldPath(p.file)))) missing.push(p);
   const totalBytes = missing.reduce((s, p) => s + p.bytes, 0);
   let loadedBytes = 0;
   onProgress({ fraction: totalBytes ? 0 : 1, loadedBytes, totalBytes, file: '' });
@@ -159,7 +167,7 @@ export async function ensureWorld(onProgress: (p: DownloadProgress) => void): Pr
 }
 
 async function allPacksPresent(cache: Cache, index: WorldIndex): Promise<boolean> {
-  for (const p of index.packs) if (!(await cache.match(worldPath(p.file)))) return false;
+  for (const p of index.packs) if (!p.remote && !(await cache.match(worldPath(p.file)))) return false;
   return true;
 }
 

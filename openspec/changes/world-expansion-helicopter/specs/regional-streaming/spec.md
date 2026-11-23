@@ -7,7 +7,7 @@ Regelt, wie das große regionale Spielgebiet ausgeliefert wird: Die Kernregion u
 ## ADDED Requirements
 
 ### Requirement: Kern- und Nachladeregionen
-Die Welt SHALL in eine Kernregion und Nachladeregionen eingeteilt sein. Die Kernregion MUST die Gemeinde Kandern mit einem Randstreifen von mindestens 500 m umfassen und wird wie bisher beim ersten Besuch vollständig vorgeladen. Alle übrigen Regionen MUST vom Cloudflare-Speicher (R2) über HTTPS abrufbar sein und sind nicht Teil des Vorladens.
+Die Welt SHALL in eine Kernregion und Nachladeregionen eingeteilt sein. Die Kernregion MUST die Gemeinde Kandern mit einem Randstreifen von mindestens 500 m umfassen und wird wie bisher beim ersten Besuch vollständig vorgeladen. Alle übrigen Regionen MUST als statische Dateien mit dem Spiel bei Cloudflare über HTTPS abrufbar sein und sind nicht Teil des Vorladens.
 
 #### Scenario: Erster Besuch
 - **WHEN** die App zum ersten Mal geöffnet wird

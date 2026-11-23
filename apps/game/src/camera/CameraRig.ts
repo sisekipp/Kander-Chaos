@@ -13,6 +13,8 @@ export class CameraRig {
   mode: CameraMode = 'walk';
   private idle = 0;
   private walkRadius = 9;
+  /** Verfolgerabstand nach Tempo (m); der Hubschrauber nutzt einen größeren Bereich. */
+  zoom = { min: 7, max: 14 };
 
   constructor(private readonly camera: ArcRotateCamera) {
     camera.radius = this.walkRadius;
@@ -47,7 +49,8 @@ export class CameraRig {
     this.idle = swiping ? 0 : this.idle + dt;
     if (this.mode === 'chase') {
       this.camera.alpha = chaseAlpha(this.camera.alpha, heading, dt, this.idle);
-      this.camera.radius += (zoomForSpeed(speed) - this.camera.radius) * smoothFactor(2, dt);
+      this.camera.radius +=
+        (zoomForSpeed(speed, this.zoom.min, this.zoom.max) - this.camera.radius) * smoothFactor(2, dt);
     } else if (Math.abs(this.camera.radius - this.walkRadius) > 0.01) {
       // z. B. nach dem Flug (Radius 0,5 m): sanft zurück auf den Laufabstand
       this.camera.radius += (this.walkRadius - this.camera.radius) * smoothFactor(4, dt);

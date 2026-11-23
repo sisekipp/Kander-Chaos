@@ -13,49 +13,28 @@ import { VehicleManager } from '../vehicles/VehicleManager.ts';
 import { Particles } from '../engine/fx/particles.ts';
 import { PropSystem } from '../props/PropSystem.ts';
 import { collectPropActors } from './propActors.ts';
-import { BASE_URL } from '../engine/assets.ts';
 import type { QualitySettings } from '../engine/quality.ts';
 import { PlayerController } from '../player/PlayerController.ts';
 import { RouteFollower } from '../player/route.ts';
 import { FAST_SPEED } from '../player/constants.ts';
 import { createWorldMaterials, type WorldMaterials } from './worldMaterials.ts';
-import { createTreeBases } from './vegetation/treeMeshes.ts';
-import { TreeLayer } from './vegetation/TreeLayer.ts';
 import { TileManager } from './tiles/TileManager.ts';
 import { LandmarkLayer } from './landmarks/LandmarkLayer.ts';
 import type { LandmarkInfo } from './landmarks/placement.ts';
-import { getModels } from '../assets/ModelRegistry.ts';
-import { GeometryLayer } from './tiles/GeometryLayer.ts';
-import { CollisionLayer } from './tiles/CollisionLayer.ts';
 import { WorkerPool } from './WorkerPool.ts';
 import { createPanorama } from './panorama.ts';
-import { RoadLayer } from './roads/RoadLayer.ts';
 import { flightRoute } from '../fly/autopilot.ts';
 import { FlySession } from '../fly/FlySession.ts';
 
-export interface Place {
-  name: string;
-  kind: string;
-  x: number;
-  z: number;
-}
-
-export const WORLD_URL = new URL(`${BASE_URL}world/`, location.href).href;
-
-export async function loadWorldIndex(): Promise<{ index: WorldIndex; places: Place[]; landmarks: LandmarkInfo[] }> {
-  const [index, places, landmarks] = await Promise.all([
-    fetch(`${WORLD_URL}index.json`).then((r) => {
-      if (!r.ok) throw new Error(`Weltindex fehlt (HTTP ${r.status}) – Pipeline "build" ausführen`);
-      return r.json() as Promise<WorldIndex>;
-    }),
-    fetch(`${WORLD_URL}places.json`).then((r) => (r.ok ? (r.json() as Promise<Place[]>) : [])),
-    // Wahrzeichen sind optional: fehlen sie (alter Cache, offline), bleibt es bei den generierten Gebäuden
-    fetch(`${WORLD_URL}landmarks.json`)
-      .then((r) => (r.ok ? r.json().then((j) => j.landmarks as LandmarkInfo[]) : []))
-      .catch(() => [] as LandmarkInfo[]),
-  ]);
-  return { index, places, landmarks };
-}
+export { WORLD_URL, loadWorldIndex, type Place } from './worldSetup.ts';
+import { createTiles, loadWorldIndex, WORLD_URL, type Place } from './worldSetup.ts';
+import { createPackSource } from '../offline/regions.ts';
+import { RegionBorder } from './regionBorder.ts';
+import { FarView } from './far/FarView.ts';
+import type { PackSource } from '../offline/packSource.ts';
+import { HeliSystem, type HelipadInfo } from '../vehicles/helicopter/HeliSystem.ts';
+import { getModels } from '../assets/ModelRegistry.ts';
+import { consumeAction, input } from '../player/input.ts';
 
 /** Verbindet Streaming, Spielfigur, Physik und Qualitätsstufen zur spielbaren Welt. */
 export class World {
@@ -82,7 +61,7 @@ export class World {
       save?: { x: number; z: number; worldVersion: string };
     } = {},
   ): Promise<World> {
-    const { index, places, landmarks } = await loadWorldIndex();
+    const { index, places, landmarks, helipads } = await loadWorldIndex();
     let physics = opts.physics ?? true;
     if (physics) {
       try {
@@ -96,7 +75,8 @@ export class World {
     // Spielstand-Position nur bei gleichem Datenstand übernehmen (neue Gebäude könnten im Weg stehen)
     const fromSave =
       opts.save && opts.save.worldVersion === index.buildVersion ? { x: opts.save.x, z: opts.save.z } : undefined;
-    return new World(game, index, places, physics, opts.start ?? fromSave ?? index.spawn, landmarks);
+    const packs = await createPackSource(index, WORLD_URL).catch(() => null);
+    return new World(game, index, places, physics, opts.start ?? fromSave ?? index.spawn, landmarks, helipads, packs);
   }
 
   private constructor(
@@ -106,40 +86,25 @@ export class World {
     readonly physics: boolean,
     start: { x: number; z: number },
     landmarkList: LandmarkInfo[] = [],
+    helipads: HelipadInfo[] = [],
+    packs: PackSource | null = null,
   ) {
     const scene = game.scene;
     this.materials = createWorldMaterials(scene);
-    const treeBases = createTreeBases(scene, this.materials.trees);
     this.pool = new WorkerPool();
-    const q = game.quality;
-    const usable = LandmarkLayer.usable(landmarkList, getModels());
-    this.tiles = new TileManager({
-      skipBuildings: usable.flatMap((l) => (l.buildingId === null ? [] : [l.buildingId])),
-      scene,
+    ({ tiles: this.tiles, landmarks: this.landmarks } = createTiles(
+      game,
       index,
-      worldUrl: WORLD_URL,
-      pool: this.pool,
-      viewDistance: q.viewDistance,
-      vegetationDensity: q.vegetationDensity,
+      this.pool,
+      this.materials,
       physics,
-      onTileBuilt: (t) => {
-        if (t.ring === 0) {
-          const rec = game.perf.recorder.extra;
-          rec.maxTileGenMs = Math.max(Number(rec.maxTileGenMs ?? 0), Math.round(t.stats.genMs));
-          rec.maxTileBuildings = Math.max(Number(rec.maxTileBuildings ?? 0), t.stats.buildings);
-        }
-      },
-    });
+      landmarkList,
+      packs,
+    ));
     this.debug = new DebugLines(scene);
     if (physics) this.unsubs.push(enableFixedPhysicsSteps(scene));
     this.unsubs.push(useGameStore.subscribe((st) => (this.debug.enabled = st.debugPhysics)));
     this.debug.enabled = useGameStore.getState().debugPhysics;
-    this.tiles.addLayer(new GeometryLayer(scene, this.materials));
-    this.landmarks = new LandmarkLayer(scene, getModels()!, usable, index.tileSize, physics);
-    if (usable.length) this.tiles.addLayer(this.landmarks);
-    if (physics) this.tiles.addLayer(new CollisionLayer(scene));
-    this.tiles.addLayer(new RoadLayer(scene, this.materials.roads, physics, this.materials.water));
-    this.tiles.addLayer(new TreeLayer(scene, treeBases));
     // Fahrzeuge brauchen Physik (Kollision, Raycasts)
     this.fx = new Particles(scene);
     this.vehicles = physics ? new VehicleManager(scene, this.tiles, this.debug, this.budget, this.fx) : null;
@@ -150,28 +115,40 @@ export class World {
     game.camera.detachControl();
     game.camera.maxZ = 2600;
     this.panorama = createPanorama(scene, scene.fogColor);
+    void FarView.load(scene, WORLD_URL).then((f) => (this.disposedFar ? f?.dispose() : (this.far = f)));
     this.player = new PlayerController(scene, game.camera, this.tiles, new Vector3(start.x, 0, start.z), physics);
     this.player.vehicles = this.vehicles;
     this.unsubs.push(useGameStore.subscribe((st) => (this.player.simpleDriving = st.simpleDriving)));
     this.player.simpleDriving = useGameStore.getState().simpleDriving;
+    this.heli = new HeliSystem(scene, this.tiles, this.player, getModels(), helipads, this.worldBounds());
+    if (packs)
+      this.border = new RegionBorder(this.tiles, index.tileSize, this.player, this.heli, () =>
+        this.fly?.flying ? this.fly.controllerState : null,
+      );
     // Höhe beim Start: so hoch, bis die erste Kachel da ist
     this.unsubs.push(game.onFrame((dt) => this.update(dt)));
     this.unsubs.push(game.onQualityChange((qq) => this.applyQuality(qq)));
   }
 
   private fly: FlySession | null = null;
+  private border: RegionBorder | null = null;
+  /** Fernsicht im Flug (öffentlich für Tests). */
+  far: FarView | null = null;
+  private disposedFar = false;
+  /** Hubschrauber auf Landeplätzen (Spec helicopter). */
+  readonly heli: HeliSystem;
 
-  /** Flugmodus starten (nur zu Fuß). */
-  startFlying(): boolean {
-    if (this.fly?.flying || this.player.state.kind !== 'walking') return false;
+  /** Weltgrenzen in m (aus dem Kachelindex). */
+  private worldBounds() {
     const b = this.index.bounds,
       s = this.index.tileSize;
-    this.fly = new FlySession(this.game.scene, this.game.camera, this.tiles, this.player, {
-      minX: b.minTx * s,
-      minZ: b.minTz * s,
-      maxX: (b.maxTx + 1) * s,
-      maxZ: (b.maxTz + 1) * s,
-    });
+    return { minX: b.minTx * s, minZ: b.minTz * s, maxX: (b.maxTx + 1) * s, maxZ: (b.maxTz + 1) * s };
+  }
+
+  /** Flugmodus starten (nur zu Fuß, nicht im Hubschrauber). */
+  startFlying(): boolean {
+    if (this.fly?.flying || this.heli.flying || this.player.state.kind !== 'walking') return false;
+    this.fly = new FlySession(this.game.scene, this.game.camera, this.tiles, this.player, this.worldBounds());
     useGameStore.getState().setFlying(true);
     return true;
   }
@@ -198,14 +175,19 @@ export class World {
   }
 
   private update(dt: number): void {
-    const focus = this.fly?.update(dt) ?? null;
+    const focus = this.fly?.update(dt) ?? this.heli.update(dt);
     if (this.fly && !this.fly.active) this.fly = null;
     const p = this.player.position;
     const v = this.player.velocity;
     if (focus) this.tiles.update(focus.x, focus.z, focus.vx, focus.vz, focus.fullDetail);
     else this.tiles.update(p.x, p.z, v.x, v.z);
     this.fly?.checkLanding();
+    if (input.action && this.heli.canEnter) {
+      consumeAction();
+      this.heli.enter();
+    }
     this.player.update(dt);
+    this.border?.update(dt);
     this.vehicles?.update(p.x, p.z);
     this.props?.update(collectPropActors(this.player, this.vehicles), p.x, p.z, this.player.state.kind === 'walking');
     this.publishPlayState();
@@ -214,6 +196,7 @@ export class World {
       const from = p.add(new Vector3(0, 1, 0));
       this.debug.line(from, from.add(v.scale(0.5)), DEBUG_COLORS.velocity);
     }
+    this.far?.frame(dt, focus, (x, z) => this.tiles.tileAt(x, z)?.ring ?? null, this.game, this.panorama.mesh);
     if (focus) this.panorama.follow(focus.x, focus.z, focus.y - 60);
     else this.panorama.follow(p.x, p.z, p.y - 60);
     this.materials.setFog(this.game.scene.fogStart, this.game.scene.fogEnd);
@@ -232,7 +215,7 @@ export class World {
     const v = this.player.vehicle;
     useGameStore.getState().setPlay({
       mode: v ? 'driving' : 'walking',
-      canEnter: this.player.canEnter,
+      canEnter: this.player.canEnter || this.heli.canEnter,
       vehicleHealth: v ? Math.round(v.health * 100) / 100 : 1,
       speedKmh: v ? Math.round(Math.abs(v.sim.forwardSpeed) * 3.6) : 0,
     });
@@ -273,7 +256,7 @@ export class World {
   }
 
   get routeActive(): boolean {
-    return this.player.route !== null || !!this.fly?.controllerState?.routeActive;
+    return this.player.route !== null || !!this.fly?.controllerState?.routeActive || this.heli.routeActive;
   }
 
   dispose(): void {
@@ -282,6 +265,7 @@ export class World {
     this.player.dispose();
     this.vehicles?.dispose();
     this.props?.dispose();
+    this.heli.dispose();
     this.landmarks.dispose();
     this.fx.dispose();
     this.budget.dispose();
@@ -289,6 +273,8 @@ export class World {
     this.tiles.dispose();
     this.pool.dispose();
     this.panorama.dispose();
+    this.disposedFar = true;
+    this.far?.dispose();
     this.materials.dispose();
     this.fxaa?.dispose(this.game.camera);
     this.shadows?.dispose();

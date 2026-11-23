@@ -33,7 +33,13 @@ export function pwaPlugin(opts: PwaPluginOptions): Plugin {
     },
     closeBundle() {
       const files = walk(outDir).filter(
-        (f) => f !== 'sw.js' && !f.startsWith('world/') && f !== '_headers' && !f.endsWith('.map'),
+        (f) =>
+          f !== 'sw.js' &&
+          !f.startsWith('world/') &&
+          // Nachladeregionen: nur bei Bedarf geladen, eigener Speicher (Region-Cache, 400 MB)
+          !f.startsWith('world-remote/') &&
+          f !== '_headers' &&
+          !f.endsWith('.map'),
       );
       const shell = files.sort();
       const worldFiles = walk(outDir).filter((f) => f.startsWith('world/'));

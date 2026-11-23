@@ -1,0 +1,14 @@
+{
+  "id": "helicopter",
+  "kind": "vehicle",
+  "source": "own/helicopter.glb",
+  "colorZones": {
+    "paint": ["paint"],
+    "stripe": ["stripe"]
+  },
+  "vehicle": {
+    "vehicleKind": 3,
+    "type": "Hubschrauber",
+    "wheels": ["rotor-main", "rotor-tail"]
+  }
+}

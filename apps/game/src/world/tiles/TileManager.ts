@@ -2,7 +2,9 @@ import type { Scene } from '@babylonjs/core/scene';
 import type { WorldIndex } from '@kandern/world-format';
 import type { BuiltTile, Ring } from '../protocol.ts';
 import type { WorkerPool } from '../WorkerPool.ts';
+import type { PackSource } from '../../offline/packSource.ts';
 import { StreamingPlanner } from './StreamingPlanner.ts';
+import { lookAheadTiles } from './blockedRegions.ts';
 import { UploadQueue } from './UploadQueue.ts';
 import { LayerRegistry, type TileLayer } from './layers.ts';
 import { TileState } from './TileState.ts';
@@ -23,6 +25,8 @@ export interface TileManagerOptions {
   onTileBuilt?: (t: BuiltTile) => void;
   /** Gebäude-IDs mit Wahrzeichen-Modell: in Ring 0 und 1 nicht generieren (dort steht das Modell). */
   skipBuildings?: number[];
+  /** Quelle für Nachladeregionen (ohne: alle Pakete liegen unter `worldUrl`). */
+  packs?: PackSource;
 }
 
 /**
@@ -50,6 +54,15 @@ export class TileManager {
       (tx, tz) => `${tx},${tz}` in tiles,
     );
     this.vegetationDensity = o.vegetationDensity;
+    // Paket fertig oder gesperrt -> sofort neu planen
+    if (o.packs) o.packs.onChange = () => (this.lastPlan = -Infinity);
+  }
+
+  /** Liegt (x, z) in einer Kachel, deren Nachladeregion gerade nicht ladbar ist? */
+  isBlocked(x: number, z: number): boolean {
+    const s = this.o.index.tileSize;
+    const loc = this.o.index.tiles[`${Math.floor(x / s)},${Math.floor(z / s)}`];
+    return !!loc && !!this.o.packs?.isBlocked(loc[0]);
   }
 
   /** Registriert eine Ebene. Reihenfolge = Upload-Reihenfolge innerhalb einer Kachel. */
@@ -118,7 +131,19 @@ export class TileManager {
   }
 
   private replan(x: number, z: number, vx: number, vz: number, fullDetail: boolean): void {
-    const plan = this.planner.plan(x, z, vx, vz, fullDetail);
+    const packs = this.o.packs;
+    // Kacheln gesperrter Nachladeregionen nicht einplanen (sonst wird die Welt nie „fertig“)
+    const plan = this.planner
+      .plan(x, z, vx, vz, fullDetail)
+      .filter((t) => !packs?.isBlocked(this.o.index.tiles[t.id][0]));
+    if (packs) {
+      // Vorausladen: Regionspakete auf dem Weg der nächsten 20 s mit niedriger Priorität anfordern
+      const ahead = lookAheadTiles(x, z, vx, vz, { seconds: 20, radius: 500, tileSize: this.o.index.tileSize });
+      for (const [k, id] of ahead.entries()) {
+        const loc = this.o.index.tiles[id];
+        if (loc && packs.isRemote(loc[0])) packs.request(loc[0], 1e6 + k);
+      }
+    }
     this.desired.clear();
     for (const t of plan) this.desired.set(t.id, t.ring);
     for (const [id, t] of this.loaded) {
@@ -137,26 +162,35 @@ export class TileManager {
       if (this.inFlight.size >= maxInFlight) break;
       if (this.loaded.get(t.id)?.ring === t.ring) continue;
       if (this.inFlight.has(t.id) || this.queue.has(t.id, t.ring)) continue;
-      this.request(t.id, t.ring);
+      this.request(t.id, t.ring, t.priority);
     }
   }
 
-  private request(id: string, ring: Ring): void {
+  private request(id: string, ring: Ring, priority: number): void {
     const loc = this.o.index.tiles[id];
     if (!loc) return;
+    const packs = this.o.packs;
+    if (packs?.isRemote(loc[0]) && packs.state(loc[0]) !== 'ready') {
+      packs.request(loc[0], priority);
+      return;
+    }
     const pack = this.o.index.packs[loc[0]];
     this.inFlight.set(id, ring);
     const t0 = performance.now();
-    this.o.pool
-      .build({
-        tileId: id,
-        packUrl: new URL(pack.file, this.o.worldUrl).href,
-        offset: loc[1],
-        length: loc[2],
-        ring,
-        vegetationDensity: this.vegetationDensity,
-        skipBuildings: ring <= 1 ? this.o.skipBuildings : undefined,
-      })
+    const bytes = packs?.isRemote(loc[0]) ? packs.readTile(loc[0], loc[1], loc[2]) : Promise.resolve(undefined);
+    bytes
+      .then((tileBytes) =>
+        this.o.pool.build({
+          tileId: id,
+          packUrl: new URL(pack.file, this.o.worldUrl).href,
+          offset: loc[1],
+          length: loc[2],
+          tileBytes,
+          ring,
+          vegetationDensity: this.vegetationDensity,
+          skipBuildings: ring <= 1 ? this.o.skipBuildings : undefined,
+        }),
+      )
       .then((built) => {
         this.inFlight.delete(id);
         if (this.disposed || this.desired.get(id) !== ring) return; // inzwischen überholt

@@ -392,3 +392,19 @@ button:disabled {
   height: 26px;
   accent-color: var(--c-accent);
 }
+
+.region-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 120px;
+  transform: translateX(-50%);
+  max-width: min(90vw, 520px);
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: rgba(30, 40, 38, 0.88);
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+  pointer-events: none;
+  z-index: 20;
+}

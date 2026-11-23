@@ -5,8 +5,8 @@ import type { VehicleDims } from './vehicleDims.ts';
 
 /** Fahrzeugangaben im Rezept; Box und Räder berechnet der Build aus dem skalierten Modell. */
 export interface VehicleRecipe {
-  /** VehicleKind des Spiels: 0 Auto, 1 Fahrrad, 2 Motorrad. */
-  vehicleKind: 0 | 1 | 2;
+  /** VehicleKind des Spiels: 0 Auto, 1 Fahrrad, 2 Motorrad, 3 Hubschrauber (Räder = Rotoren). */
+  vehicleKind: 0 | 1 | 2 | 3;
   /** Fahrzeugtyp für Anzeige und Auswahl (z. B. Kleinwagen, Kombi). */
   type: string;
   /** Knotennamen der Räder (vorne links, vorne rechts, hinten links, hinten rechts bzw. vorne, hinten). */

@@ -9,6 +9,8 @@ export const TRIANGLE_LIMITS: Record<ModelKind, number> = {
   prop: 600,
   landmark: 8000,
 };
+/** Hubschrauber: Hauptfahrzeug für die große Karte, oft nah im Bild (Design world-expansion-helicopter D7). */
+export const HELICOPTER_TRIANGLES = 6000;
 /** Höchstzahl der Materialien je Art (Wahrzeichen ≤ 2, sonst feste Farben + Farbzonen). */
 export const MATERIAL_LIMITS: Record<ModelKind, number> = { figure: 4, npc: 4, vehicle: 4, prop: 3, landmark: 2 };
 export const MAX_TEXTURE_SIZE = 512;
@@ -37,10 +39,15 @@ export function detachableParts(doc: Document): string[] {
 }
 
 /** Prüft ein optimiertes Modell gegen die Regeln seiner Art; liefert Fehlermeldungen (leer = gültig). */
-export function validateModel(id: string, kind: ModelKind, doc: Document): string[] {
+export function validateModel(
+  id: string,
+  kind: ModelKind,
+  doc: Document,
+  triangleLimit = TRIANGLE_LIMITS[kind],
+): string[] {
   const errors: string[] = [];
   const tris = countTriangles(doc);
-  if (tris > TRIANGLE_LIMITS[kind]) errors.push(`${id}: ${tris} Dreiecke > ${TRIANGLE_LIMITS[kind]} (${kind})`);
+  if (tris > triangleLimit) errors.push(`${id}: ${tris} Dreiecke > ${triangleLimit} (${kind})`);
   const mats = doc.getRoot().listMaterials().length;
   if (mats > MATERIAL_LIMITS[kind]) errors.push(`${id}: ${mats} Materialien > ${MATERIAL_LIMITS[kind]} (${kind})`);
   for (const t of doc.getRoot().listTextures()) {

@@ -13,7 +13,12 @@ export interface DetailCheck {
 }
 
 /** Prüft Abschnitt 7: Rückfallquote der Kreuzungen, nahtlose Brücken, Kirchturm in Kandern. */
-export function checkDetails(tiles: TileData[], kandern: { x: number; z: number } | undefined): DetailCheck {
+export function checkDetails(
+  tiles: TileData[],
+  kandern: { x: number; z: number } | undefined,
+  /** Kacheln für die Rückfallquote (regional: nur der Kern, für den die Grenze festgelegt ist). */
+  junctionTiles: TileData[] = tiles,
+): DetailCheck {
   const messages: string[] = [];
   let ok = true;
   const pass = (m: string) => messages.push(`✔ ${m}`);
@@ -25,7 +30,7 @@ export function checkDetails(tiles: TileData[], kandern: { x: number; z: number 
   // 1. Kreuzungen im Rückfallmodus
   let junctions = 0,
     fallback = 0;
-  for (const t of tiles)
+  for (const t of junctionTiles)
     for (const j of t.details?.junctions ?? []) {
       junctions++;
       if (j.fallback) fallback++;

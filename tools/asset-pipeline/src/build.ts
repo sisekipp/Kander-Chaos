@@ -5,7 +5,7 @@ import { createIO, optimizeDocument } from './optimize.ts';
 import { paths } from './paths.ts';
 import { applyColorZones } from './recolor.ts';
 import { parseRecipe, type ManifestEntry, type Recipe } from './recipe.ts';
-import { checkBudget, countTriangles, detachableParts, validateModel } from './validate.ts';
+import { checkBudget, countTriangles, detachableParts, HELICOPTER_TRIANGLES, validateModel } from './validate.ts';
 import { splitParts } from './split.ts';
 import { bakePaletteTexture } from './texbake.ts';
 import { scaleScene, vehicleDims } from './vehicleDims.ts';
@@ -55,7 +55,7 @@ export async function buildModels(): Promise<{ ok: boolean; messages: string[] }
       scaleScene(doc, typeof r.scale === 'number' ? [r.scale, r.scale, r.scale] : r.scale);
     const dims = r.vehicle ? vehicleDims(doc, r.vehicle.wheels) : null;
     await optimizeDocument(doc);
-    const errors = validateModel(r.id, r.kind, doc);
+    const errors = validateModel(r.id, r.kind, doc, r.vehicle?.vehicleKind === 3 ? HELICOPTER_TRIANGLES : undefined);
     if (errors.length) {
       messages.push(...errors.map((e) => `✘ ${e}`));
       continue;

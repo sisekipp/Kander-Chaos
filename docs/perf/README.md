@@ -119,3 +119,17 @@ Auf alten iOS-Geräten sind einzelne Uniforms manchmal schneller als Uniform-Buf
 3. Umschalten und den Messlauf wiederholen. Im Bericht steht unter `extra.uniformBuffers`, mit welcher Einstellung gemessen wurde.
 
 Die schnellere Einstellung wird nach der iPad-Messung als Standard übernommen.
+
+## Messroute „Hubschrauber Basel“ (Desktop)
+
+Route: Landeplatz Kandern → Lörrach → Basel Innenstadt → Landeplatz EuroAirport, Steigflug auf 150 m, dann Schnellflug (bis 60 m/s), Anflug in 40 m. Start im Testmodus über den Knopf **Heli Basel**; die Nachladeregionen kommen dabei aus dem Netz.
+
+| Wert (Desktop, WebKit, E2E `helicopter.spec.ts`, 23.11.2026) | Ergebnis |
+| --- | --- |
+| Dauer | 522 s |
+| Ø Bildrate | 98,7 fps |
+| 1-%-Low | 83,3 fps |
+| Längstes Bild | 281 ms (einmalig, beim Einsteigen) |
+| Stichproben ohne Gelände unter dem Hubschrauber | 0 von 1025 |
+
+Auch hier begrenzt die Bildwiederholrate (100 fps); maßgeblich ist die Messung auf dem iPad Pro 1. Gen (Ziel Ø ≥ 30 fps, 1-%-Low ≥ 20 fps). Screenshots von Piste und Autobahn legt `e2e/airport.spec.ts` unter `apps/game/test-results/` ab.

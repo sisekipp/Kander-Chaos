@@ -94,6 +94,10 @@ export enum RoadKind {
   Footway = 9,
   Rail = 10,
   Steps = 11,
+  /** Start-/Landebahn (Markierungen im Straßen-Shader). */
+  Runway = 12,
+  /** Rollweg am Flughafen. */
+  Taxiway = 13,
 }
 
 export interface Road {
@@ -126,6 +130,11 @@ export enum LandKind {
   Park = 11,
   Cemetery = 12,
   Sports = 13,
+  /** Flughafen und Bahn (abwärtskompatibel angehängt). */
+  Runway = 14,
+  Taxiway = 15,
+  Apron = 16,
+  Platform = 17,
 }
 
 export interface LandArea {
@@ -183,7 +192,12 @@ export enum VehicleKind {
   Car = 0,
   Bike = 1,
   Motorbike = 2,
+  /** Nur auf Landeplätzen, nie auf Parkpositionen (Spec helicopter). */
+  Helicopter = 3,
 }
+
+/** Fahrzeugarten mit Bodenphysik (Parkpositionen, Raycast-Fahrzeug). */
+export type GroundVehicleKind = VehicleKind.Car | VehicleKind.Bike | VehicleKind.Motorbike;
 
 /** Parkposition für ein Fahrzeug (Abschnitt 6). */
 export interface ParkingSpot {
@@ -221,6 +235,8 @@ export interface PackEntry {
   file: string;
   bytes: number;
   sha256: string;
+  /** Nachladeregion: liegt nicht im App-Bundle, sondern unter `WorldIndex.remoteBase` (Cloudflare R2). */
+  remote?: boolean;
 }
 
 /** Position einer Kachel: [Paketindex, Byte-Offset, Länge (komprimiert)]. */
@@ -241,4 +257,6 @@ export interface WorldIndex {
   spawn: { x: number; z: number };
   packs: PackEntry[];
   tiles: Record<string, TileLocation>;
+  /** Basis-URL der Nachladeregionen (nur wenn es Pakete mit `remote` gibt). */
+  remoteBase?: string;
 }

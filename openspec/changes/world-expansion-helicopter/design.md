@@ -32,7 +32,7 @@ Ziel: Region Müllheim – Lörrach – Basel – EuroAirport (ca. 30 × 35 km) 
 
 - Quellen: LGL DGM1 (DE, Datenlizenz Deutschland – Namensnennung 2.0), swisstopo swissALTI3D 2 m (CH, frei nutzbar mit Quellenangabe, LV95 → UTM 32N umprojizieren), IGN RGE ALTI 5 m (F, Licence Ouverte 2.0, Lambert-93 → UTM 32N). Alle als Höhe über Meer; die Höhenbezüge unterscheiden sich um weniger als 0,5 m und werden nicht korrigiert.
 - Zusammenführen auf das 2-m-Raster mit Vorrang nach Land (Landesgrenze aus OSM); in einem 30-m-Streifen an der Grenze wird linear überblendet (Anforderung „Grenze ohne Stufe“).
-- Umprojektion mit eigener, getesteter Rechnung (UTM-Formeln gibt es schon in `utm.ts`; LV95- und Lambert-93-Umrechnung kommen dazu), keine native GDAL-Abhängigkeit.
+- Umprojektion mit eigener, getesteter Rechnung in `dgm/proj.ts` (UTM → WGS84, WGS84 → LV95 nach den Näherungsformeln von swisstopo mit ca. 1 m Genauigkeit, WGS84 → Lambert-93 exakt); jeder Punkt des 2-m-Rasters wird ins Quellsystem umgerechnet und dort bilinear abgetastet. Keine native GDAL-Abhängigkeit.
 - Download wie bisher fortsetzbar in `data/raw/dgm-ch`, `data/raw/dgm-fr`.
 
 ### D3 Neue Inhalte im Kachelformat
@@ -41,14 +41,15 @@ Ziel: Region Müllheim – Lörrach – Basel – EuroAirport (ca. 30 × 35 km) 
 - Hochhausliste je Region in `index.json`-Nebendatei `skyline.json`: Position, Grundriss-Rechteck, Höhe, Farbe. Ab 40 m Höhe, gerundet.
 - Kleinobjekt-Dichte in Nachladeregionen halbiert, Parkpositionen nur in Ortskernen.
 
-### D4 Regionen nachladen von Cloudflare R2
+### D4 Regionen nachladen (statische Dateien bei Cloudflare)
 
-- `index.json` bekommt je Paket ein Feld `remote: true` und die Basis-URL der Nachladeregionen (`remoteBase`, z. B. `https://world.kandern-chaos.example/v<buildVersion>/`). Kernpakete bleiben im App-Bundle.
-- Nachladepakete werden versioniert unter dem Datenstand abgelegt (unveränderliche URLs, lange Cache-Zeit). Der Upload passiert mit `wrangler r2 object put` in einem eigenen Pipeline-Befehl `publish`; der Bucket bekommt öffentliches Lesen und CORS für die App-Domain. Kein Server-Code.
-- Spiel: neues Modul `offline/regionCache.ts` (Cache-API, Name `kc-regions-<buildVersion>`) mit Budget 400 MB, LRU nach letztem Besuch (Zeitstempel in IndexedDB). `TileManager` fragt Pakete über einen `PackSource` an, der Kern aus `kc-world` und Nachladung aus dem Region-Cache oder dem Netz liefert.
-- Vorausladen: Der `StreamingPlanner` meldet zusätzlich die Pakete, die in 20 s Flugweg erreicht werden (Geschwindigkeit × 20 s + Ring-1-Radius); diese werden mit niedriger Priorität angefordert, höchstens zwei Downloads gleichzeitig.
-- Offline-Rand: Ist ein Paket weder im Cache noch ladbar, markiert der Planner dessen Kacheln als „gesperrt“. Fahrzeuge, Figur und Hubschrauber bekommen eine weiche Grenze 60 m vor gesperrten Kacheln (abbremsen, zurückschieben) und die UI zeigt den Hinweis.
-- *Alternative:* alles vorladen – verworfen (500+ MB, Safari löscht große Speicher eher).
+- `index.json` bekommt je Paket ein Feld `remote: true` und die Basis-URL der Nachladeregionen (`remoteBase`, relativ zum Weltordner: `../world-remote/`). Kernpakete liegen wie bisher in `world/`, Nachladeregionen in `world-remote/`.
+- Auslieferung mit dem Spiel: Cloudflare baut das Projekt direkt aus GitHub (Workers Static Assets). Die Rohdaten (~2 GB) sind nicht im Git, deshalb werden die fertigen Regionspakete (hashbasierte, unveränderliche Dateinamen, je ~1,5 MB) mit eingecheckt. Kein R2, kein API-Token, kein eigener Upload-Schritt.
+- Der Service Worker lädt `world-remote/` nicht vor, und die Dateien zählen nicht zum Offline-Budget (300 MB); der Welt-Downloader lädt nur Kernpakete.
+- Spiel: `offline/regionCache.ts` (Cache-API, Name `kc-regions-<buildVersion>`) mit Budget 400 MB, LRU nach letztem Besuch (Zeitstempel in localStorage). `TileManager` fragt Nachladepakete über `offline/packSource.ts` an (Region-Cache oder Netz, Prüfsumme, höchstens zwei Downloads).
+- Vorausladen: Pakete auf dem Weg der nächsten 20 s (+ 500 m Rand) werden mit niedriger Priorität angefordert.
+- Offline-Rand: Ist ein Paket weder im Cache noch ladbar, gilt es als „gesperrt“ (neuer Versuch nach 30 s). Figur, Fahrzeuge, Flugmodus und Hubschrauber bekommen eine weiche Grenze 60 m davor (abbremsen, zurückschieben) und die UI zeigt den Hinweis.
+- *Alternativen:* R2-Bucket mit Upload im Cloudflare-Build – verworfen (Token und Bucket-Verwaltung ohne Nutzen, die Dateien sind ohnehin statisch); alles vorladen – verworfen (500+ MB, Safari löscht große Speicher eher).
 
 ### D5 Fernsicht
 
@@ -66,12 +67,12 @@ Ziel: Region Müllheim – Lörrach – Basel – EuroAirport (ca. 30 × 35 km) 
 ### D7 Hubschrauber-Modell in Blender
 
 - Skript `tools/asset-pipeline/blender/helicopter.py` mit eigenem Baukasten: Rumpf aus Profil-Loft (Querschnitte entlang der Länge, Bevel), verglaste Kabine als eigener Körper, Kufen aus Rohren mit Biegung, Heckausleger konisch, Seitenleitwerk, Hauptrotor mit 4 Blättern und Rotorkopf als eigener Knoten `rotor-main`, Heckrotor `rotor-tail`, Positionslichter (rot/grün/weiß), Türen als `detach_*`. Lackzone `paint` mit zweiter Zone `stripe` (Zierstreifen).
-- Budget ≤ 6.000 Dreiecke (höher als Autos, weil Hauptfahrzeug und oft nah im Bild), ≤ 4 Materialien. Varianten durch Lackfarbe (Rettungsgelb, Polizei-ähnlich nur ohne Schrift? nein – nur zivile Farben: Rot, Blau, Weiß, Gelb).
+- Budget ≤ 6.000 Dreiecke (höher als Autos, weil Hauptfahrzeug und oft nah im Bild), ≤ 4 Materialien. Varianten nur durch zivile Lackfarben (Rot, Blau, Weiß, Gelb), keine Polizei- oder Rettungsbeschriftung.
 - Landeplatz-Prop `helipad`: runde Betonplatte mit H-Markierung und Randlichtern.
 
 ### D8 Modulstruktur
 
-- `tools/world-pipeline/src/region/` – `area.ts` (Rechteck, Kern/Remote-Einteilung, Tests), `publish.ts` (R2-Upload, Manifest).
+- `tools/world-pipeline/src/region/` – `area.ts` (Rechteck, Kern/Remote-Einteilung, Tests).
 - `tools/world-pipeline/src/dgm/` – `swiss.ts`, `france.ts` (Download, Lesen), `lv95.ts`, `lambert93.ts` (Umrechnung + Tests), `merge.ts` (Vorrang und Überblendung + Tests); bisheriges `dgm.ts` wandert als `lgl.ts` hierher.
 - `tools/world-pipeline/src/skyline.ts` (+ test).
 - `apps/game/src/offline/regionCache.ts` (+ test), `offline/packSource.ts` (+ test).
@@ -88,7 +89,7 @@ Ziel: Region Müllheim – Lörrach – Basel – EuroAirport (ca. 30 × 35 km) 
 - **[Langsames Netz]** → Tempo über 120 m begrenzt; zusätzlich drosselt der Hubschrauber automatisch, wenn die Pakete in Flugrichtung noch fehlen (weicher Rand wie offline).
 - **[Lizenzen CH/F]** → swissALTI3D und RGE ALTI sind frei mit Namensnennung; Prüfung und Eintrag in `attribution.json` als eigene Aufgabe, Abbruch, falls sich die Bedingungen geändert haben.
 - **[Safari-Speicher]** → Gesamtziel < 700 MB; bei `QuotaExceededError` verkleinert sich das Region-Budget automatisch und die älteste Region fliegt raus.
-- **[Kosten Cloudflare]** → R2 ohne Egress-Gebühren; Speicher < 1 GB.
+- **[Größe Git und Deploy]** → Nachladeregionen ~211 MB eingecheckt (Dateien je ~1,5 MB, unter den Grenzen von GitHub und Workers Static Assets: 25 MiB je Datei, 20 000 Dateien); alte Stände fallen beim Neubau weg.
 
 ## Migration Plan
 
@@ -99,5 +100,4 @@ Rücknahme: altes `index.json` ohne Remote-Pakete ausliefern.
 
 ## Open Questions
 
-- Name und Domain des R2-Buckets (braucht Cloudflare-Zugang des Projekts).
 - Ob der EuroAirport-Landeplatz auf dem Vorfeld oder neben dem Terminal liegen soll – Annahme: neben dem Terminal auf der Schweizer Seite.

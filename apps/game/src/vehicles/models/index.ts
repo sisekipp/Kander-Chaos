@@ -1,5 +1,5 @@
 import type { Scene } from '@babylonjs/core/scene';
-import { VehicleKind } from '@kandern/world-format';
+import { VehicleKind, type GroundVehicleKind } from '@kandern/world-format';
 import { VEHICLE_SPECS } from '../specs.ts';
 import { buildCar } from './car.ts';
 import { buildTwoWheeler } from './twoWheeler.ts';
@@ -26,7 +26,7 @@ export interface BuiltVehicle {
  * der ID (gleiche Parkposition -> gleiches Auto). Ohne passendes Registry-Modell: prozedurales Modell.
  */
 export function buildVehicle(scene: Scene, kind: VehicleKind, id: number): BuiltVehicle {
-  const base = VEHICLE_SPECS[kind];
+  const base = VEHICLE_SPECS[kind as GroundVehicleKind]; // Parkpositionen tragen nur Bodenfahrzeuge
   const name = `vehicle-${kind}-${id}`;
   const registry = getModels();
   const entry = pickVehicleModel(registry?.manifest ?? null, kind, id);

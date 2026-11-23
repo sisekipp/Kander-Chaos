@@ -5,21 +5,31 @@ import path from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { createInterface } from 'node:readline';
-import { config } from './config.ts';
-import { studyAreaFromBoundary } from './area.ts';
+import { config, REGIONAL } from './config.ts';
+import { projectToWorld, studyAreaFromBoundary, type StudyArea } from './area.ts';
+import { PLAY_AREA, regionalArea, worldRect } from './region/area.ts';
+import { downloadSwissTiles, listSwissTiles, loadSwissIndex } from './dgm/swiss.ts';
+import { downloadFrance, loadFranceIndex } from './dgm/france.ts';
+import { foreignSampler } from './dgm/foreign.ts';
+import { toLambert93 } from './dgm/proj.ts';
 import type { OverpassResult } from './osm.ts';
 import { DgmGrid } from './dgm.ts';
 import { fetchOsmChunked, overpass } from './osmChunks.ts';
 
 const log = (...a: unknown[]) => console.log('[fetch]', ...a);
 
+const SUFFIX = REGIONAL ? '-region' : '';
+
 export const rawPaths = {
   boundary: () => path.join(config.paths.raw, 'osm-boundary.json'),
-  osm: () => process.env.KC_OSM_FILE ?? path.join(config.paths.raw, 'osm-data.json'),
-  osmProps: () => path.join(config.paths.raw, 'osm-props.json'),
+  osm: () => process.env.KC_OSM_FILE ?? path.join(config.paths.raw, `osm-data${SUFFIX}.json`),
+  osmProps: () => path.join(config.paths.raw, `osm-props${SUFFIX}.json`),
+  osmChunks: (kind: string) => path.join(config.paths.raw, `${kind}${SUFFIX}`),
+  dgmCh: () => path.join(config.paths.raw, 'dgm-ch'),
+  dgmFr: () => path.join(config.paths.raw, 'dgm-fr'),
   dgmZip: (e: number, n: number) => path.join(config.paths.raw, 'dgm', `dgm1_32_${e}_${n}_2_bw.zip`),
   dgmMissing: (e: number, n: number) => path.join(config.paths.raw, 'dgm', `dgm1_32_${e}_${n}_2_bw.missing`),
-  dgmGrid: () => path.join(config.paths.work, 'dgm-2m.bin'),
+  dgmGrid: () => path.join(config.paths.work, `dgm-2m${SUFFIX}.bin`),
 };
 
 async function cached(file: string, produce: () => Promise<string | Buffer>): Promise<void> {
@@ -34,8 +44,15 @@ async function cached(file: string, produce: () => Promise<string | Buffer>): Pr
 }
 
 async function download(url: string, file: string): Promise<boolean> {
-  const res = await fetch(url, { headers: { 'User-Agent': config.userAgent } });
-  if (res.status === 404) return false;
+  // Dienste antworten gelegentlich mit vorübergehenden Fehlern (400/5xx): bis zu drei Versuche mit Pause
+  let res: Response | null = null;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    res = await fetch(url, { headers: { 'User-Agent': config.userAgent } });
+    if (res.ok || res.status === 404) break;
+    log(`HTTP ${res.status}, Versuch ${attempt}/3: ${url.slice(0, 80)}…`);
+    await new Promise((r) => setTimeout(r, 5000 * attempt));
+  }
+  if (!res || res.status === 404) return false;
   if (!res.ok || !res.body) throw new Error(`${url}: HTTP ${res.status}`);
   await mkdir(path.dirname(file), { recursive: true });
   await pipeline(Readable.fromWeb(res.body as never), createWriteStream(`${file}.tmp`));
@@ -54,7 +71,10 @@ async function streamXyz(zip: string, onPoint: (e: number, n: number, h: number)
     onPoint(+line.slice(0, a), +line.slice(a + 1, b), +line.slice(b + 1));
   }
   await new Promise<void>((resolve, reject) => {
-    child.on('close', (code) => (code === 0 || code === null ? resolve() : reject(new Error(`unzip ${code}`))));
+    // 11 = keine .xyz im Archiv (Grenzkachel ohne Höhenpunkte)
+    child.on('close', (code) =>
+      code === 0 || code === 11 || code === null ? resolve() : reject(new Error(`unzip ${code}`)),
+    );
   });
 }
 
@@ -63,7 +83,7 @@ export async function runFetch(): Promise<void> {
   await cached(rawPaths.boundary(), () =>
     overpass(`[out:json][timeout:120];relation(${config.boundaryRelation});out body geom;`),
   );
-  const area = studyAreaFromBoundary(JSON.parse(await readFile(rawPaths.boundary(), 'utf8')) as OverpassResult);
+  const area = await worldArea();
   const { origin } = config;
   const minE = origin.easting + area.minX,
     maxE = origin.easting + area.maxX;
@@ -92,6 +112,7 @@ export async function runFetch(): Promise<void> {
   }
 
   // 4. Auf 2-m-Raster reduzieren (Mittel der vier 1-m-Punkte um jeden geraden Gitterpunkt)
+  if (REGIONAL) await fetchForeignDgm();
   if (existsSync(rawPaths.dgmGrid())) log('2-m-Raster vorhanden');
   else await buildDgmGrid(zips, minE, minN, maxE, maxN);
 
@@ -101,7 +122,8 @@ export async function runFetch(): Promise<void> {
     label: 'OSM',
     boundary,
     query: OSM_QUERY_BODY,
-    chunkDir: path.join(config.paths.raw, 'osm-chunks'),
+    chunkDir: rawPaths.osmChunks('osm-chunks'),
+    bbox: osmBox(boundary),
     outFile: rawPaths.osm(),
     chunkKm: 2,
   });
@@ -110,7 +132,8 @@ export async function runFetch(): Promise<void> {
     label: 'Props',
     boundary,
     query: PROPS_QUERY_BODY,
-    chunkDir: path.join(config.paths.raw, 'osm-props-chunks'),
+    chunkDir: rawPaths.osmChunks('osm-props-chunks'),
+    bbox: osmBox(boundary),
     outFile: rawPaths.osmProps(),
     chunkKm: 4,
   });
@@ -136,15 +159,64 @@ async function buildDgmGrid(
     log(`verarbeite ${path.basename(zip)} (${((await stat(zip)).size / 1e6).toFixed(1)} MB)`);
     await streamXyz(zip, (pe, pn, h) => grid.accumulate(pe, pn, h));
   }
-  grid.finalize();
+  grid.finalize(
+    REGIONAL
+      ? foreignSampler(await loadSwissIndex(rawPaths.dgmCh()), await loadFranceIndex(rawPaths.dgmFr()))
+      : undefined,
+  );
+  if (REGIONAL) log(`${grid.foreignFilled} Rasterpunkte aus swisstopo/IGN`);
   await mkdir(config.paths.work, { recursive: true });
   await writeFile(rawPaths.dgmGrid(), grid.serialize());
   log(`2-m-Raster gespeichert, Lücken: ${grid.holes}`);
 }
 
+/** Spielgebiet: Gemeinde + Randstreifen bzw. regionales Rechteck (Müllheim – Basel). */
+export async function worldArea(): Promise<StudyArea> {
+  const core = studyAreaFromBoundary(JSON.parse(await readFile(rawPaths.boundary(), 'utf8')) as OverpassResult);
+  return REGIONAL ? regionalArea(core, worldRect(PLAY_AREA, projectToWorld), config.tileSize) : core;
+}
+
+/** OSM-Abrufgebiet im regionalen Modus (sonst Ausdehnung der Gemeindegrenze). */
+function osmBox(boundary: OverpassResult) {
+  if (!REGIONAL) return undefined;
+  const rel = boundary.elements[0] as unknown as {
+    bounds?: { minlat: number; minlon: number; maxlat: number; maxlon: number };
+  };
+  const b = rel.bounds ?? { minlat: 90, minlon: 180, maxlat: -90, maxlon: -180 };
+  return {
+    minlat: Math.min(b.minlat, PLAY_AREA.south),
+    minlon: Math.min(b.minlon, PLAY_AREA.west),
+    maxlat: Math.max(b.maxlat, PLAY_AREA.north),
+    maxlon: Math.max(b.maxlon, PLAY_AREA.east),
+  };
+}
+
+/** Höhen der Schweiz (swissALTI3D) und Frankreichs (IGN, Streifen westlich von 7,60° O) laden. */
+async function fetchForeignDgm(): Promise<void> {
+  const tiles = await listSwissTiles(PLAY_AREA, config.userAgent);
+  log(`${tiles.length} swissALTI3D-Kacheln im Gebiet`);
+  await downloadSwissTiles(tiles, rawPaths.dgmCh(), download);
+  const sw = toLambert93(PLAY_AREA.south, PLAY_AREA.west),
+    ne = toLambert93(PLAY_AREA.north, 7.6);
+  const nw = toLambert93(PLAY_AREA.north, PLAY_AREA.west),
+    se = toLambert93(PLAY_AREA.south, 7.6);
+  await downloadFrance(
+    {
+      minX: Math.min(sw.x, nw.x),
+      minY: Math.min(sw.y, se.y),
+      maxX: Math.max(ne.x, se.x),
+      maxY: Math.max(ne.y, nw.y),
+    },
+    rawPaths.dgmFr(),
+    download,
+  );
+}
+
 const OSM_QUERY_BODY = `(
   way["building"]; relation["building"];
-  way["highway"]; way["railway"~"^(rail|light_rail|narrow_gauge|preserved)$"];
+  way["highway"]; way["railway"~"^(rail|light_rail|narrow_gauge|preserved|platform|tram)$"];
+  way["public_transport"="platform"]; node["railway"~"^(station|halt)$"];
+  way["aeroway"~"^(runway|taxiway|apron|helipad|terminal)$"]; node["aeroway"="helipad"];
   way["landuse"]; relation["landuse"];
   way["natural"~"^(wood|water|scrub|grassland|heath)$"]; relation["natural"~"^(wood|water)$"];
   way["leisure"~"^(park|pitch|sports_centre|playground|garden)$"];

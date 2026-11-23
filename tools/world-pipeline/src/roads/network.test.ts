@@ -14,6 +14,9 @@ describe('Straßennetz', () => {
     expect(roadKind({ highway: 'primary' })).toEqual({ kind: RoadKind.Primary, width: 8 });
     expect(roadKind({ highway: 'residential', width: '4,5' })?.width).toBe(4.5);
     expect(roadKind({ highway: 'bus_stop' })).toBeNull();
+    expect(roadKind({ aeroway: 'runway' })).toEqual({ kind: RoadKind.Runway, width: 60 });
+    expect(roadKind({ aeroway: 'taxiway', width: '18' })).toEqual({ kind: RoadKind.Taxiway, width: 18 });
+    expect(roadKind({ aeroway: 'runway', area: 'yes' })).toBeNull();
     expect(roadKind({ railway: 'rail' })?.kind).toBe(RoadKind.Rail);
   });
 

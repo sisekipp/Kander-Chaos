@@ -8,6 +8,7 @@ import { hideStressScene } from '../engine/devTools.ts';
 import { saveUniformBuffersEnabled } from '../engine/renderFlags.ts';
 import { Controls } from './controls/index.tsx';
 import { HealthBar } from './hud/HealthBar.tsx';
+import { RegionEdgeHint } from './hud/RegionEdgeHint.tsx';
 import { useGameStore } from '../state/store.ts';
 import { loadSave, newSave, startAutosave } from '../save/saveStore.ts';
 import { runChaosTest } from '../world/chaosTest.ts';
@@ -83,11 +84,17 @@ export function PlayingScreen() {
     setFast(input.fast);
   };
 
-  const route = (names: string[], label: string, flight = false) => {
+  const route = (names: string[], label: string, flight: boolean | 'heli' = false) => {
     const w = getWorld(),
       g = getGame();
     if (!w || !g) return;
-    if (!(flight ? w.startFlightRoute(names[0], names[1]) : w.startRoute(names))) {
+    const started =
+      flight === 'heli'
+        ? w.heli.startBaselRoute()
+        : flight
+          ? w.startFlightRoute(names[0], names[1])
+          : w.startRoute(names);
+    if (!started) {
       setStatus(`Route ${names.join(' → ')}: Orte nicht gefunden`);
       return;
     }
@@ -97,7 +104,7 @@ export function PlayingScreen() {
     const poll = window.setInterval(() => {
       if (getWorld()?.routeActive) return;
       window.clearInterval(poll);
-      if (flight) getWorld()?.stopFlying();
+      if (flight === true) getWorld()?.stopFlying();
       g.perf.recorder.stop();
       // Bericht über den Messlauf-Mechanismus (0 s Nachlauf) herunterladen
       runMeasurement(
@@ -158,6 +165,7 @@ export function PlayingScreen() {
     <>
       <Controls />
       <HealthBar />
+      <RegionEdgeHint />
       <div className="hud">
         <button className="secondary" onClick={() => setScreen('menu')}>
           Menü
@@ -181,6 +189,13 @@ export function PlayingScreen() {
         </button>
         <button className="secondary" disabled={measuring} onClick={() => route(['Kandern', 'Wollbach'], 'flug', true)}>
           Flug
+        </button>
+        <button
+          className="secondary"
+          disabled={measuring}
+          onClick={() => route(['Kandern', 'Lörrach', 'Basel', 'EuroAirport'], 'hubschrauber-basel', 'heli')}
+        >
+          Heli Basel
         </button>
         <button className="secondary" disabled={measuring} onClick={() => measureFree('messlauf', 60)}>
           Messlauf 60 s

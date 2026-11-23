@@ -42,10 +42,12 @@ Alle Schritte sind **fortsetzbar**: Vorhandene Dateien in `data/raw` und `data/w
 
 ## Quellen
 
-| Quelle                       | Inhalt                                                | Lizenz                                                                         | Abruf                                                                                           |
-| ---------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
-| OpenStreetMap (Overpass API) | Grenze, Gebäude, Straßen, Landnutzung, Gewässer, Orte | ODbL 1.0, „© OpenStreetMap-Mitwirkende“                                        | `https://overpass-api.de/api/interpreter`                                                       |
-| LGL Baden-Württemberg, DGM1  | Höhen 1-m-Raster (ETRS89/UTM32, DHHN2016)             | Datenlizenz Deutschland – Namensnennung 2.0, „Datenquelle: LGL, www.lgl-bw.de“ | `https://opengeodata.lgl-bw.de/data/dgm/dgm1_32_<E>_<N>_2_bw.zip` (E ungerade, N gerade, in km) |
+| Quelle                       | Inhalt                                                | Lizenz                                                                                                       | Abruf                                                                                                           |
+| ---------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| OpenStreetMap (Overpass API) | Grenze, Gebäude, Straßen, Landnutzung, Gewässer, Orte | ODbL 1.0, „© OpenStreetMap-Mitwirkende“                                                                      | `https://overpass-api.de/api/interpreter`                                                                       |
+| LGL Baden-Württemberg, DGM1  | Höhen 1-m-Raster (ETRS89/UTM32, DHHN2016)             | Datenlizenz Deutschland – Namensnennung 2.0, „Datenquelle: LGL, www.lgl-bw.de“                               | `https://opengeodata.lgl-bw.de/data/dgm/dgm1_32_<E>_<N>_2_bw.zip` (E ungerade, N gerade, in km)                 |
+| swisstopo, swissALTI3D       | Höhen 2-m-Raster Schweiz (LV95, LN02)                 | OGD-Nutzungsbedingungen swisstopo, frei mit Quellenangabe „Quelle: Bundesamt für Landestopografie swisstopo“ | STAC-API `https://data.geo.admin.ch/api/stac/v0.9/collections/ch.swisstopo.swissalti3d` (1-km-Kacheln, GeoTIFF) |
+| IGN, RGE ALTI®               | Höhen Frankreich (Lambert-93, IGN69)                  | Licence Ouverte 2.0 (Etalab), Namensnennung „IGN – RGE ALTI®“                                                | Géoplateforme `https://data.geopf.fr/wms-r` (Ausschnitte als 32-Bit-Raster)                                     |
 
 `attribution.json` wird bei jedem Build erzeugt und vom Spiel auf der Seite „Über das Spiel“ angezeigt.
 

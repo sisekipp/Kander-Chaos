@@ -20,6 +20,10 @@ export const LAND_COLORS: Record<LandKind, RGB> = {
   [LandKind.Park]: hex(0x74a64e),
   [LandKind.Cemetery]: hex(0x6f8f5d),
   [LandKind.Sports]: hex(0x63a046),
+  [LandKind.Runway]: hex(0x55575a),
+  [LandKind.Taxiway]: hex(0x6a6c6e),
+  [LandKind.Apron]: hex(0x8a8b8c),
+  [LandKind.Platform]: hex(0x9a9690),
 };
 
 export const DEFAULT_GROUND: RGB = hex(0x7fa451);

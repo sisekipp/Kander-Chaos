@@ -1,10 +1,21 @@
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { buildPack, buildWorldIndex, tileId, type BuiltPack, type TileData } from '@kandern/world-format';
-import { config } from './config.ts';
-import { projectToWorld, studyAreaFromBoundary, tilesOf } from './area.ts';
-import { rawPaths } from './fetch.ts';
+import {
+  buildFarTerrain,
+  buildPack,
+  buildWorldIndex,
+  encodeFarTerrain,
+  sampleHeight,
+  tileId,
+  type BuiltPack,
+  type TileData,
+} from '@kandern/world-format';
+import { config, REGIONAL, REMOTE_BASE } from './config.ts';
+import { isRemotePack } from './region/area.ts';
+import { buildSkyline } from './region/skyline.ts';
+import { projectToWorld, tilesOf } from './area.ts';
+import { rawPaths, worldArea } from './fetch.ts';
 import { DgmGrid } from './dgm.ts';
 import {
   assembleRings,
@@ -26,6 +37,8 @@ import { buildTerrainLods } from './terrain.ts';
 import { buildAttribution } from './attribution.ts';
 import { addPropsToTiles, readOsmProps } from './props/index.ts';
 import { buildLandmarks, writeLandmarks } from './landmarks/index.ts';
+import { bufferLine, lineLandKind, lineWidth } from './aeroway.ts';
+import { writeHelipads } from './helipads.ts';
 
 const log = (...a: unknown[]) => console.log('[build]', ...a);
 
@@ -59,7 +72,7 @@ export async function runBuild(outDir = config.paths.out): Promise<BuildResult> 
   for (const f of [rawPaths.boundary(), rawPaths.osm(), rawPaths.dgmGrid()]) {
     if (!existsSync(f)) throw new Error(`Rohdaten fehlen: ${f} – zuerst "fetch" ausführen`);
   }
-  const area = studyAreaFromBoundary(JSON.parse(await readFile(rawPaths.boundary(), 'utf8')) as OverpassResult);
+  const area = await worldArea();
   const tileList = tilesOf(area);
   const included = new Set(tileList.map((t) => tileId(t.tx, t.tz)));
   const includes = (tx: number, tz: number) => included.has(tileId(tx, tz));
@@ -100,9 +113,17 @@ export async function runBuild(outDir = config.paths.out): Promise<BuildResult> 
         if (ring) rawBuildings.push({ id: stableId(w), tags, outline: ring.flat() });
         continue;
       }
-      if (tags.highway || tags.railway) {
+      if (tags.highway || tags.railway || tags.aeroway === 'runway' || tags.aeroway === 'taxiway') {
         const coords = geometryToWorld(w.geometry);
         if (coords && coords.length >= 4) rawWays.push({ id: w.id, nodes: w.nodes, coords, tags });
+      }
+      const llk = lineLandKind(tags);
+      const coordsL = llk !== null ? geometryToWorld(w.geometry) : null;
+      const closed = w.nodes.length > 3 && w.nodes[0] === w.nodes[w.nodes.length - 1];
+      if (llk !== null && coordsL && !closed) {
+        const ring = bufferLine(coordsL, lineWidth(tags, llk));
+        if (ring) rawAreas.push({ id: stableId(w), kind: llk, outers: [ring], inners: [] });
+        continue;
       }
       const lk = landKind(tags);
       if (lk !== null) {
@@ -195,21 +216,31 @@ export async function runBuild(outDir = config.paths.out): Promise<BuildResult> 
     if (!list) regions.set(key, (list = []));
     list.push(t);
   }
-  await mkdir(outDir, { recursive: true });
-  for (const f of await readdir(outDir)) if (/^region_.*\.bin$/.test(f)) await rm(path.join(outDir, f));
-  const packs: { file: string; pack: BuiltPack }[] = [];
+  // Kernpakete (Kandern) ins App-Bundle, übrige Regionen in den Nachladeordner (Cloudflare R2)
+  const remoteDir = config.paths.remote;
+  for (const dir of [outDir, remoteDir]) {
+    await mkdir(dir, { recursive: true });
+    for (const f of await readdir(dir)) if (/^region_.*\.bin$/.test(f)) await rm(path.join(dir, f));
+  }
+  const packs: { file: string; pack: BuiltPack; remote?: boolean }[] = [];
   const { sha256Hex } = await import('@kandern/world-format');
+  let remoteBytes = 0;
   for (const key of [...regions.keys()].sort()) {
-    const pack = buildPack(regions.get(key)!);
+    const list = regions.get(key)!;
+    const pack = buildPack(list);
     const hash = (await sha256Hex(pack.bytes)).slice(0, 10);
     const file = `region_${key}.${hash}.bin`;
-    await writeFile(path.join(outDir, file), pack.bytes);
-    packs.push({ file, pack });
+    const remote = isRemotePack(list, area);
+    await writeFile(path.join(remote ? remoteDir : outDir, file), pack.bytes);
+    if (remote) remoteBytes += pack.bytes.length;
+    packs.push({ file, pack, ...(remote ? { remote } : {}) });
   }
+  if (remoteBytes) log(`davon Nachladeregionen: ${(remoteBytes / 1048576).toFixed(1)} MB in ${remoteDir}`);
 
   const spawnPlace = places.find((p) => p.name === 'Kandern' && p.kind === 'town') ?? { x: 0, z: 0 };
   const index = await buildWorldIndex({
     packs,
+    remoteBase: REMOTE_BASE,
     sourceDate: osmDate,
     tileSize: config.tileSize,
     quant: config.quant,
@@ -225,8 +256,33 @@ export async function runBuild(outDir = config.paths.out): Promise<BuildResult> 
     height,
   );
   await writeLandmarks(landmarks, outDir);
+  // Fernsicht-Gelände: 64-m-Raster der ganzen Region aus der gröbsten Höhenstufe der Kacheln (gehört zum Kern)
+  const ts = config.tileSize;
+  const byTile = new Map(tiles.map((t) => [tileId(t.tx, t.tz), t]));
+  const b = index.bounds;
+  const far = buildFarTerrain(
+    { minX: b.minTx * ts, minZ: b.minTz * ts, maxX: (b.maxTx + 1) * ts, maxZ: (b.maxTz + 1) * ts },
+    64,
+    (x, z) => {
+      const t = byTile.get(tileId(Math.floor(x / ts), Math.floor(z / ts)));
+      return t ? sampleHeight(t, t.lods[t.lods.length - 1], x - t.tx * ts, z - t.tz * ts) : null;
+    },
+  );
+  await writeFile(path.join(outDir, 'farterrain.bin'), encodeFarTerrain(far));
+  log(`Fernsicht-Gelände ${far.cols} × ${far.rows} Punkte`);
+  // Fernsicht-Liste der hohen Gebäude (klein, gehört zum Kern)
+  const skyline = buildSkyline(tiles);
+  await writeFile(path.join(outDir, 'skyline.json'), JSON.stringify({ version: 1, buildings: skyline }));
+  log(`${skyline.length} Gebäude ≥ 40 m in der Fernsicht-Liste`);
+  const nPads = await writeHelipads(outDir, projectToWorld, (x, z) =>
+    included.has(tileId(Math.floor(x / config.tileSize), Math.floor(z / config.tileSize))),
+  );
+  log(`${nPads} Landeplätze`);
   log(`${landmarks.length} Wahrzeichen`);
-  await writeFile(path.join(outDir, 'attribution.json'), JSON.stringify(buildAttribution(osmDate, osmDate), null, 2));
+  await writeFile(
+    path.join(outDir, 'attribution.json'),
+    JSON.stringify(buildAttribution(osmDate, osmDate, REGIONAL ? { swisstopo: osmDate, ign: osmDate } : {}), null, 2),
+  );
   await writeFile(
     path.join(outDir, 'places.json'),
     JSON.stringify(places.map((p) => ({ ...p, x: Math.round(p.x), z: Math.round(p.z) }))),

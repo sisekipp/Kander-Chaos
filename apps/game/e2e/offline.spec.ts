@@ -46,7 +46,10 @@ test.describe('Downloader ohne Service Worker', () => {
     await page.getByRole('button', { name: 'Erneut versuchen' }).click();
     await expect(page.getByText('Bereit zum Offline-Spielen')).toBeVisible({ timeout: 90_000 });
     const total = await page.evaluate(
-      async () => (await (await fetch('/world/index.json')).json()).packs.length as number,
+      async () =>
+        // nur Kernpakete werden vorgeladen (Nachladeregionen kommen bei Bedarf)
+        (await (await fetch('/world/index.json')).json()).packs.filter((p: { remote?: boolean }) => !p.remote)
+          .length as number,
     );
     // Zweiter Versuch lädt nur, was fehlte (die 2 vor dem Abbruch fertigen Pakete nicht erneut)
     expect(packRequests - firstAttempt).toBe(total - 2);

@@ -23,10 +23,16 @@ export interface PipelineConfig {
   overpassUrl: string;
   dgmUrl: (e: number, n: number) => string;
   userAgent: string;
-  paths: { raw: string; work: string; out: string };
+  paths: { raw: string; work: string; out: string; remote: string };
   /** Bekannte Ortsteile, die Gebäude enthalten müssen (Abdeckungsprüfung). */
   requiredPlaces: string[];
 }
+
+/** Regionales Spielgebiet (Müllheim – Basel) statt nur Gemeinde Kandern; eigene Rohdaten-Dateien. */
+export const REGIONAL = process.env.KC_REGIONAL === '1';
+
+/** Basis-URL der Nachladeregionen im Index; die Pakete werden mit dem Spiel ausgeliefert (statische Dateien bei Cloudflare). */
+export const REMOTE_BASE = process.env.KC_REMOTE_BASE ?? '../world-remote/';
 
 export const config: PipelineConfig = {
   boundaryRelation: 1130283,
@@ -44,6 +50,7 @@ export const config: PipelineConfig = {
     raw: path.join(REPO_ROOT, 'data/raw'),
     work: path.join(REPO_ROOT, 'data/work'),
     out: path.join(REPO_ROOT, 'apps/game/public/world'),
+    remote: path.join(REPO_ROOT, 'apps/game/public/world-remote'),
   },
   requiredPlaces: ['Kandern', 'Wollbach', 'Holzen', 'Riedlingen', 'Tannenkirch', 'Sitzenkirch', 'Feuerbach'],
 };

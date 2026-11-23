@@ -12,6 +12,8 @@ export interface BuildRequest {
   packUrl: string;
   offset: number;
   length: number;
+  /** Bereits gelesene (komprimierte) Kachel-Bytes aus einer Nachladeregion; dann wird `packUrl` nicht abgerufen. */
+  tileBytes?: Uint8Array;
   ring: Ring;
   vegetationDensity: number;
   /** Gebäude-IDs, die in Ring 0/1 nicht generiert werden (dort steht ein Wahrzeichen-Modell). */

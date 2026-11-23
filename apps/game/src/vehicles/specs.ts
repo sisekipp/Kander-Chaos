@@ -1,4 +1,4 @@
-import { VehicleKind } from '@kandern/world-format';
+import { VehicleKind, type GroundVehicleKind } from '@kandern/world-format';
 
 export interface WheelSpec {
   /** Lage relativ zum Fahrzeugmittelpunkt (x = rechts, z = vorne), Aufhängungspunkt auf Höhe `y`. */
@@ -38,7 +38,7 @@ export interface VehicleSpec {
 
 const kmh = (v: number) => v / 3.6;
 
-export const VEHICLE_SPECS: Record<VehicleKind, VehicleSpec> = {
+export const VEHICLE_SPECS: Record<GroundVehicleKind, VehicleSpec> = {
   [VehicleKind.Car]: {
     kind: VehicleKind.Car,
     name: 'Auto',

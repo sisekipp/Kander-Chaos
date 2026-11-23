@@ -552,6 +552,46 @@
       "parts": []
     },
     {
+      "id": "helicopter",
+      "kind": "vehicle",
+      "file": "helicopter.glb",
+      "bytes": 69568,
+      "triangles": 3484,
+      "zones": ["paint", "stripe"],
+      "parts": ["detach_door_left", "detach_door_right", "detach_step_left", "detach_step_right"],
+      "vehicle": {
+        "vehicleKind": 3,
+        "type": "Hubschrauber",
+        "wheels": [
+          {
+            "name": "rotor-main",
+            "x": 0,
+            "y": 3.225,
+            "z": -0.3,
+            "radius": 0.125
+          },
+          {
+            "name": "rotor-tail",
+            "x": 0.19,
+            "y": 2.6,
+            "z": -7,
+            "radius": 0.1
+          }
+        ],
+        "box": [2.45, 3.395, 10.042],
+        "center": [0, 1.702, -2.279]
+      }
+    },
+    {
+      "id": "helipad",
+      "kind": "prop",
+      "file": "helipad.glb",
+      "bytes": 12456,
+      "triangles": 560,
+      "zones": [],
+      "parts": []
+    },
+    {
       "id": "hydrant",
       "kind": "prop",
       "file": "hydrant.glb",

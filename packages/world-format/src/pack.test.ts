@@ -52,4 +52,23 @@ describe('Weltindex', () => {
     expect([t.tx, t.tz]).toEqual([-1, 2]);
     expect(idx.buildVersion).toHaveLength(16);
   });
+
+  it('markiert Nachladepakete und setzt remoteBase nur, wenn es welche gibt', async () => {
+    const { buildWorldIndex } = await import('./pack.ts');
+    const base = {
+      sourceDate: '2026-11-01',
+      tileSize: 250,
+      quant: { base: 150, step: 0.02 },
+      origin: { epsg: 25832, easting: 400000, northing: 5290000 },
+      spawn: { x: 0, z: 0 },
+      remoteBase: 'https://r2.example/world/',
+    };
+    const core = { file: 'a.bin', pack: buildPack([makeTile(0, 0)]) };
+    const far = { file: 'b.bin', pack: buildPack([makeTile(9, 9)]), remote: true };
+    const idx = await buildWorldIndex({ ...base, packs: [core, far] });
+    expect(idx.packs[0].remote).toBeUndefined();
+    expect(idx.packs[1].remote).toBe(true);
+    expect(idx.remoteBase).toBe('https://r2.example/world/');
+    expect((await buildWorldIndex({ ...base, packs: [core] })).remoteBase).toBeUndefined();
+  });
 });

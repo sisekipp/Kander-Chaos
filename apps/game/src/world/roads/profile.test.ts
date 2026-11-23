@@ -96,4 +96,17 @@ describe('Straßenquerschnitt', () => {
     const enc = encodeMarking({ marking: Marking.MotorwayLanes, lanes: 3, halfCarriageway: 5.5 });
     expect(decodeMarking(enc)).toEqual({ marking: Marking.MotorwayLanes, lanes: 3, halfCarriageway: 5.5 });
   });
+
+  it('Gleise: Schotterband, Gleisanzahl für die Schienen im Shader', () => {
+    const p = roadProfile(RoadKind.Rail, 7, detail({ lanes: 2 }));
+    expect(p.segments.every((s) => s.code === RoadCode.Ballast)).toBe(true);
+    expect(decodeMarking(encodeMarking(p)).lanes).toBe(2);
+  });
+
+  it('Piste und Rollweg: flaches Band mit eigenem Code, halbe Breite für die Randlinien', () => {
+    const p = roadProfile(RoadKind.Runway, 60, detail());
+    expect(p.segments.map((s) => s.code)).toEqual([RoadCode.Runway]);
+    expect(decodeMarking(encodeMarking(p)).halfCarriageway).toBe(30);
+    expect(roadProfile(RoadKind.Taxiway, 23, detail()).segments[0].code).toBe(RoadCode.Taxiway);
+  });
 });

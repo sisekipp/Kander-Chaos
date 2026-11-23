@@ -124,11 +124,13 @@ void main(void) {
   } else if (code < 12.5) {
     col = vec3(0.64, 0.6, 0.52) * (0.85 + 0.3 * n); // Schotter
   } else if (code < 13.5) {
-    // Gleis: Schotter, Schwellen alle 0,6 m, Schienen bei ±0,75 m
+    // Gleise: Schotter, je Gleis (Abstand 3,5 m) Schwellen alle 0,6 m und Schienen bei ±0,75 m
+    float tracks = max(1.0, floor(floor(vCode.y / 100.0 + 1e-3) / 10.0 + 1e-3));
+    float xt = mod(x + tracks * 1.75, 3.5) - 1.75;
     col = vec3(0.5, 0.48, 0.45) * (0.8 + 0.4 * n);
-    float sleeper = kcDash(y, 0.6, 0.4) * (1.0 - smoothstep(1.2, 1.3, abs(x)));
+    float sleeper = kcDash(y, 0.6, 0.4) * (1.0 - smoothstep(1.2, 1.3, abs(xt)));
     col = mix(col, vec3(0.38, 0.3, 0.24), sleeper);
-    float rail = max(kcLine(x, -0.75, 0.04), kcLine(x, 0.75, 0.04));
+    float rail = max(kcLine(xt, -0.75, 0.04), kcLine(xt, 0.75, 0.04));
     col = mix(col, vec3(0.62, 0.62, 0.64), rail);
   } else if (code < 14.5) {
     // Kopfsteinpflaster im Ortskern
@@ -136,8 +138,22 @@ void main(void) {
     col *= 1.0 - 0.25 * kcJoints(vec2(x, y), vec2(0.12, 0.14), 0.012);
   } else if (code < 15.5) {
     col = vec3(0.3, 0.52, 0.66) * (0.9 + 0.15 * n); // Wasser (vorläufig)
-  } else {
+  } else if (code < 16.5) {
     col = vec3(0.42, 0.6, 0.3) * (0.88 + 0.24 * kcFbm2(vWorld * 0.5)); // Rasen (Mittelinsel)
+  } else {
+    float hw = vCode.y - floor(vCode.y / 100.0 + 1e-3) * 100.0;
+    if (code < 17.5) {
+      // Piste: heller Beton, Mittellinie gestrichelt (30 m / 20 m), Randlinien
+      col = vec3(0.56, 0.56, 0.55) * (0.92 + 0.12 * n);
+      float m = kcLine(x, 0.0, 0.45) * kcDash(y, 50.0, 0.6);
+      m = max(m, kcLine(x, -hw + 1.5, 0.45));
+      m = max(m, kcLine(x, hw - 1.5, 0.45));
+      col = mix(col, white, m);
+    } else {
+      // Rollweg: Asphalt, gelbe Mittellinie
+      col = asphalt * 0.95;
+      col = mix(col, vec3(0.92, 0.75, 0.15), kcLine(x, 0.0, 0.5)); // breiter als echt (0,15 m), damit aus der Luft sichtbar
+    }
   }
   vec3 nrm = normalize(vNormal);
   gl_FragColor = vec4(kcFinish(col * kcLight(nrm), vDepth), 1.0);

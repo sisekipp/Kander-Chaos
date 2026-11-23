@@ -1,3 +1,5 @@
+import { blendForeign } from './dgm/merge.ts';
+
 /**
  * Globales 2-m-Höhenraster in UTM. Gitterpunkte liegen auf geraden ganzzahligen Koordinaten;
  * jeder Wert ist der Mittelwert der vier umgebenden 1-m-DGM-Punkte (Zellmitten bei x.5).
@@ -13,6 +15,8 @@ export class DgmGrid {
   ) {}
 
   holes = 0;
+  /** Aus Schweiz/Frankreich gefüllte Rasterpunkte. */
+  foreignFilled = 0;
 
   static create(minE: number, minN: number, maxE: number, maxN: number): DgmGrid {
     const cols = (maxE - minE) / 2 + 1;
@@ -31,13 +35,26 @@ export class DgmGrid {
     this.cnt![k]++;
   }
 
-  /** Mittelwerte bilden, Lücken (keine Daten) per Nachbarschafts-Füllung schließen. */
-  finalize(): void {
+  /**
+   * Mittelwerte bilden, Lücken aus einer ausländischen Höhenquelle füllen (mit Überblendung an der Grenze,
+   * `foreign(e, n)` liefert NaN ohne Daten) und verbleibende Lücken per Nachbarschafts-Füllung schließen.
+   */
+  finalize(foreign?: (e: number, n: number) => number): void {
     const cnt = this.cnt!;
+    const has = new Uint8Array(this.h.length);
+    for (let k = 0; k < this.h.length; k++) {
+      if (cnt[k] > 0) {
+        this.h[k] /= cnt[k];
+        has[k] = 1;
+      }
+    }
+    if (foreign)
+      this.foreignFilled = blendForeign(this.h, has, this.cols, this.rows, (i, j) =>
+        foreign(this.e0 + i * 2, this.n0 + j * 2),
+      );
     const nan = new Uint8Array(this.h.length);
     for (let k = 0; k < this.h.length; k++) {
-      if (cnt[k] > 0) this.h[k] /= cnt[k];
-      else {
+      if (!has[k]) {
         nan[k] = 1;
         this.holes++;
       }

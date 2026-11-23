@@ -34,7 +34,7 @@ async function decompress(gz: Uint8Array): Promise<Uint8Array> {
 
 async function build(req: BuildRequest): Promise<BuiltTile> {
   const t0 = performance.now();
-  const tile = decodeTile(await decompress(await fetchRange(req.packUrl, req.offset, req.length)));
+  const tile = decodeTile(await decompress(req.tileBytes ?? (await fetchRange(req.packUrl, req.offset, req.length))));
   const t1 = performance.now();
   const land = new LandLookup(tile.land);
   const density = req.vegetationDensity * (req.ring === 0 ? 1 : req.ring === 1 ? 0.6 : 0.25);

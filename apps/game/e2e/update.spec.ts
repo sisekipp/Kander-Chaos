@@ -17,14 +17,17 @@ test('neue Weltversion: nur geänderte Pakete, Hinweis ohne Unterbrechung, Aktiv
   const indexFile = path.join(WORLD, 'index.json');
   const original = readFileSync(indexFile, 'utf8');
   const idx = JSON.parse(original);
-  const oldFile: string = idx.packs[0].file;
+  // ein Kernpaket ändern (nur Kernpakete liegen im Welt-Cache)
+  const core = idx.packs.findIndex((p: { remote?: boolean }) => !p.remote);
+  const coreCount = idx.packs.filter((p: { remote?: boolean }) => !p.remote).length;
+  const oldFile: string = idx.packs[core].file;
   const newFile = oldFile.replace(/\.bin$/, '.neu.bin');
   try {
     await firstVisit(page);
     const cachedBefore = await page.evaluate(async () => (await (await caches.open('kc-world')).keys()).length);
 
     copyFileSync(path.join(WORLD, oldFile), path.join(WORLD, newFile));
-    idx.packs[0].file = newFile;
+    idx.packs[core].file = newFile;
     idx.buildVersion = 'update-test';
     writeFileSync(indexFile, JSON.stringify(idx));
 
@@ -36,7 +39,7 @@ test('neue Weltversion: nur geänderte Pakete, Hinweis ohne Unterbrechung, Aktiv
     const cache = await page.evaluate(async () =>
       (await (await caches.open('kc-world')).keys()).map((k) => new URL(k.url).pathname),
     );
-    expect(cache.filter((k) => k.endsWith('.bin')).length).toBe(idx.packs.length + 1);
+    expect(cache.filter((k) => /\/region_[^/]*\.bin$/.test(k)).length).toBe(coreCount + 1);
     expect(cache).toContain(`/world/${newFile}`);
     // Spiel läuft weiter; aktiv ist noch die alte Version
     await waitPlayable(page);

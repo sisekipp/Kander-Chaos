@@ -49,6 +49,12 @@ export interface GameState {
   /** Flugmodus aktiv (Kamera frei, Figur eingefroren). */
   flying: boolean;
   setFlying(v: boolean): void;
+  /** Spieler sitzt im Hubschrauber (Hubschrauber-Steuerung). */
+  heli: boolean;
+  setHeli(v: boolean): void;
+  /** Am Rand einer gerade nicht ladbaren Region (Hinweis in der UI). */
+  regionEdge: boolean;
+  setRegionEdge(v: boolean): void;
   setModels(m: Partial<GameState['models']>): void;
 }
 
@@ -95,4 +101,8 @@ export const useGameStore = create<GameState>((set) => ({
   setModels: (m) => set((s) => ({ models: { ...s.models, ...m } })),
   flying: false,
   setFlying: (flying) => set({ flying }),
+  heli: false,
+  setHeli: (heli) => set({ heli }),
+  regionEdge: false,
+  setRegionEdge: (regionEdge) => set({ regionEdge }),
 }));

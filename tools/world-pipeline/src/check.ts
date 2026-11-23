@@ -15,7 +15,10 @@ import { DgmGrid } from './dgm.ts';
 import { rawPaths } from './fetch.ts';
 import { checkProps } from './props/check.ts';
 import { checkDetails } from './roads/check.ts';
-import { config } from './config.ts';
+import { config, REGIONAL } from './config.ts';
+import { projectToWorld } from './area.ts';
+import { checkBudgets, checkRegion } from './region/check.ts';
+import { buildSkyline } from './region/skyline.ts';
 import { RoadGraph } from './roads/network.ts';
 import type { Place } from './build.ts';
 
@@ -24,7 +27,9 @@ const fail = (m: string) => console.log(`  ✘ ${m}`);
 
 export async function loadWorld(dir: string): Promise<{ index: WorldIndex; tiles: TileData[]; places: Place[] }> {
   const index = JSON.parse(await readFile(path.join(dir, 'index.json'), 'utf8')) as WorldIndex;
-  const packs = await Promise.all(index.packs.map((p) => readFile(path.join(dir, p.file))));
+  const packs = await Promise.all(
+    index.packs.map((p) => readFile(path.join(p.remote ? config.paths.remote : dir, p.file))),
+  );
   const tiles = Object.values(index.tiles).map((loc) => readTileFromPack(packs[loc[0]], loc));
   const places = JSON.parse(await readFile(path.join(dir, 'places.json'), 'utf8')) as Place[];
   return { index, tiles, places };
@@ -44,7 +49,7 @@ export async function runCheck({ determinism }: { determinism: boolean }): Promi
 
   // 1. Integrität der Pakete
   for (const p of index.packs) {
-    const bytes = await readFile(path.join(dir, p.file));
+    const bytes = await readFile(path.join(p.remote ? config.paths.remote : dir, p.file));
     if (bytes.length !== p.bytes || (await sha256Hex(bytes)) !== p.sha256) {
       fail(`Hash stimmt nicht: ${p.file}`);
       good = false;
@@ -52,14 +57,41 @@ export async function runCheck({ determinism }: { determinism: boolean }): Promi
   }
   ok(`${index.packs.length} Pakete, Hashes geprüft`);
 
-  // 2. Budget
-  let total = 0;
-  for (const p of index.packs) total += (await stat(path.join(dir, p.file))).size;
-  const mb = (total / 1048576).toFixed(1);
-  if (total > config.budgetBytes) {
-    fail(`Kacheldaten ${mb} MB > Budget ${config.budgetBytes / 1048576} MB`);
-    good = false;
-  } else ok(`Kacheldaten ${mb} MB ≤ ${config.budgetBytes / 1048576} MB`);
+  // 2. Budget (regional: Kern, Nachladeregionen und Einzelpakete getrennt)
+  if (REGIONAL) {
+    const r = checkBudgets(index.packs);
+    for (const m of r.messages) console.log(`  ${m}`);
+    good &&= r.ok;
+  } else {
+    let total = 0;
+    for (const p of index.packs) total += (await stat(path.join(dir, p.file))).size;
+    const mb = (total / 1048576).toFixed(1);
+    if (total > config.budgetBytes) {
+      fail(`Kacheldaten ${mb} MB > Budget ${config.budgetBytes / 1048576} MB`);
+      good = false;
+    } else ok(`Kacheldaten ${mb} MB ≤ ${config.budgetBytes / 1048576} MB`);
+  }
+
+  // 2a. Regionales Gebiet: Städte, Autobahn, Pisten, Hochhäuser
+  if (REGIONAL) {
+    const at = (lat: number, lon: number) => {
+      const [x, z] = projectToWorld({ lat, lon });
+      return { x, z };
+    };
+    const r = checkRegion(tiles, buildSkyline(tiles), {
+      towns: [
+        { name: 'Müllheim', ...at(47.8081, 7.6309) },
+        { name: 'Lörrach', ...at(47.6156, 7.6614) },
+        { name: 'Weil am Rhein', ...at(47.5947, 7.6106) },
+        { name: 'Basel', ...at(47.5584, 7.5885) },
+      ],
+      weil: at(47.5947, 7.6106),
+      airport: at(47.5996, 7.5291),
+      roche: at(47.5591, 7.6068),
+    });
+    for (const m of r.messages) console.log(`  ${m}`);
+    good &&= r.ok;
+  }
 
   // 3. Abdeckung der Ortsteile: Kacheln im Umkreis von 300 m enthalten Gebäude
   const byId = new Map(tiles.map((t) => [`${t.tx},${t.tz}`, t]));
@@ -103,9 +135,18 @@ export async function runCheck({ determinism }: { determinism: boolean }): Promi
   if (!pc.ok) good = false;
 
   // 5a. Darstellungsdetails (Kreuzungen, Brücken, Kirchturm)
+  // Rückfallquote der Kreuzungen: Grenze gilt für den Kern (Kandern); regional nur zur Information
+  const coreIds = new Set(index.packs.flatMap((p, k) => (p.remote ? [] : [k])));
+  const coreTiles = REGIONAL ? tiles.filter((t) => coreIds.has(index.tiles[`${t.tx},${t.tz}`][0])) : tiles;
+  if (REGIONAL) {
+    const all = tiles.flatMap((t) => t.details?.junctions ?? []);
+    const share = all.length ? all.filter((j) => j.fallback).length / all.length : 0;
+    console.log(`  ℹ ganze Region: ${(share * 100).toFixed(1)} % der Kreuzungen im Rückfallmodus`);
+  }
   const dc = checkDetails(
     tiles,
     places.find((p) => p.name === 'Kandern'),
+    coreTiles,
   );
   for (const m of dc.messages) console.log(`  ${m}`);
   if (!dc.ok) good = false;

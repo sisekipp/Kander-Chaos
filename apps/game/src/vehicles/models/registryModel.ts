@@ -12,7 +12,7 @@ import type { VehicleModel } from './types.ts';
 import { physicsBox } from './fromManifest.ts';
 
 /** Färbt die Lack-Zone dieser Kopie ein: Grauwerte der Zone × Lackfarbe in die (eigenen) Vertex-Farben. */
-function bakePaint(mesh: Mesh, paint: RGB): void {
+export function bakePaint(mesh: Mesh, paint: RGB): void {
   mesh.makeGeometryUnique();
   const col = mesh.getVerticesData(VertexBuffer.ColorKind);
   if (!col) return;

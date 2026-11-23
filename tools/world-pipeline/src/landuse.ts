@@ -14,6 +14,11 @@ export function landKind(tags: Record<string, string>): LandKind | null {
   const lu = tags.landuse,
     nat = tags.natural,
     lei = tags.leisure;
+  // Flughafen und Bahn (Flächen); Linien werden in aeroway.ts zu Flächen verbreitert
+  if (tags['area:aeroway'] === 'runway') return LandKind.Runway;
+  if (tags['area:aeroway'] === 'taxiway') return LandKind.Taxiway;
+  if (tags.aeroway === 'apron') return LandKind.Apron;
+  if (tags.railway === 'platform' || tags.public_transport === 'platform') return LandKind.Platform;
   if (lu === 'forest' || nat === 'wood') {
     const leaf = tags.leaf_type;
     if (leaf === 'broadleaved') return LandKind.ForestDeciduous;

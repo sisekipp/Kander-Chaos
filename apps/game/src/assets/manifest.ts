@@ -12,7 +12,7 @@ export interface WheelInfo {
 
 export interface VehicleInfo {
   /** VehicleKind: 0 Auto, 1 Fahrrad, 2 Motorrad. */
-  vehicleKind: 0 | 1 | 2;
+  vehicleKind: 0 | 1 | 2 | 3;
   type: string;
   box: [number, number, number];
   center: [number, number, number];

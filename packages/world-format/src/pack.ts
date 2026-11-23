@@ -63,7 +63,9 @@ export async function verifyPack(entry: PackEntry, bytes: Uint8Array): Promise<b
 }
 
 export interface IndexInput {
-  packs: { file: string; pack: BuiltPack }[];
+  packs: { file: string; pack: BuiltPack; remote?: boolean }[];
+  /** Basis-URL der Nachladeregionen. */
+  remoteBase?: string;
   sourceDate: string;
   tileSize: number;
   quant: WorldIndex['quant'];
@@ -79,8 +81,8 @@ export async function buildWorldIndex(input: IndexInput): Promise<WorldIndex> {
     minTz = Infinity,
     maxTx = -Infinity,
     maxTz = -Infinity;
-  for (const [i, { file, pack }] of input.packs.entries()) {
-    packs.push({ file, bytes: pack.bytes.length, sha256: await sha256Hex(pack.bytes) });
+  for (const [i, { file, pack, remote }] of input.packs.entries()) {
+    packs.push({ file, bytes: pack.bytes.length, sha256: await sha256Hex(pack.bytes), ...(remote ? { remote } : {}) });
     for (const [id, [off, len]] of [...pack.tiles.entries()].sort(([a], [b]) => (a < b ? -1 : 1))) {
       tiles[id] = [i, off, len];
       const { tx, tz } = parseTileId(id);
@@ -102,5 +104,6 @@ export async function buildWorldIndex(input: IndexInput): Promise<WorldIndex> {
     spawn: input.spawn,
     packs,
     tiles,
+    ...(packs.some((p) => p.remote) && input.remoteBase ? { remoteBase: input.remoteBase } : {}),
   };
 }

@@ -1175,6 +1175,36 @@
       },
       "changes": "Grundfarben in Vertex-Farben eingebacken",
       "status": "accepted"
+    },
+    {
+      "id": "helicopter",
+      "kind": "vehicle",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/helicopter.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-23",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "ziviler Mehrzweck-Hubschrauber ohne Kennung und Logos"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Lackzonen paint/stripe, Rotoren als eigene Knoten",
+      "status": "accepted"
+    },
+    {
+      "id": "helipad",
+      "kind": "prop",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/helicopter.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-23",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Hubschrauberlandeplatz mit H-Markierung"
+      },
+      "changes": "Grundfarben in Vertex-Farben eingebacken, Lackzonen paint/stripe, Rotoren als eigene Knoten",
+      "status": "accepted"
     }
   ]
 }

@@ -21,6 +21,10 @@ export const enum RoadCode {
   Water = 15,
   /** Rasen (Mittelinsel von Kreisverkehren). */
   Grass = 16,
+  /** Start-/Landebahn: Beton, weiße Mittel- und Randlinien. */
+  Runway = 17,
+  /** Rollweg: Asphalt, gelbe Mittellinie. */
+  Taxiway = 18,
 }
 
 /** Markierungsprofil (Teil von uv2.y). */
@@ -85,6 +89,8 @@ function carriagewayCode(kind: RoadKind, surface: Surface): RoadCode {
 
 function pathCode(kind: RoadKind, surface: Surface): RoadCode {
   if (kind === RoadKind.Rail) return RoadCode.Ballast;
+  if (kind === RoadKind.Runway) return RoadCode.Runway;
+  if (kind === RoadKind.Taxiway) return RoadCode.Taxiway;
   if (kind === RoadKind.Track) return surface === Surface.Asphalt ? RoadCode.AsphaltMinor : RoadCode.Track;
   if (kind === RoadKind.Cycleway) return surface === Surface.Asphalt ? RoadCode.Cycleway : RoadCode.Gravel;
   if (surface === Surface.Paving) return RoadCode.Footway;
@@ -170,12 +176,18 @@ export function roadProfile(
       segs.push(...barrier(right + 0.5, 1, GUARDRAIL_HEIGHT, RoadCode.Guardrail));
     }
   }
+  if (kind === RoadKind.Runway || kind === RoadKind.Taxiway) {
+    // Markierungen brauchen keine Kanten: ein flaches Band in voller Breite
+    segs.length = 0;
+    flat(-half, half, 0, pathCode(kind, d.surface));
+  }
   const cs = segs.flatMap((s) => [s.a.c, s.b.c]);
   return {
     segments: segs,
     halfCarriageway: half,
     marking,
-    lanes: isCarriageway ? Math.max(1, d.lanes) : 0,
+    // Gleise: Anzahl Gleise (Schienenpaare im Shader)
+    lanes: isCarriageway || kind === RoadKind.Rail ? Math.max(1, d.lanes) : 0,
     totalWidth: Math.max(...cs) - Math.min(...cs),
   };
 }

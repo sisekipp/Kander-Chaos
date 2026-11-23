@@ -87,4 +87,9 @@ describe('settlementLookup', () => {
     expect(inTown(250, 50)).toBe(false);
     expect(inTown(150, 50)).toBe(false);
   });
+
+  it('Bahn: Gleisanzahl aus tracks im Feld der Fahrstreifen', () => {
+    expect(roadAttributes({ railway: 'rail', tracks: '2' }, RoadKind.Rail, false).lanes).toBe(2);
+    expect(roadAttributes({ railway: 'rail' }, RoadKind.Rail, false).lanes).toBe(1);
+  });
 });

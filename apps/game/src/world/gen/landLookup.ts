@@ -16,6 +16,10 @@ const PRIORITY: Record<LandKind, number> = {
   [LandKind.Park]: 7,
   [LandKind.Sports]: 7,
   [LandKind.Water]: 9,
+  [LandKind.Apron]: 10,
+  [LandKind.Platform]: 10,
+  [LandKind.Taxiway]: 11,
+  [LandKind.Runway]: 12,
 };
 
 interface Prepared {

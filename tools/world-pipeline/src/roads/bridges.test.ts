@@ -83,4 +83,15 @@ describe('Brücken', () => {
   it('ignoriert Nicht-Brücken', () => {
     expect(buildBridges([piece(1, [0, 0, 10, 0], 1, 2, false)], () => 0).size).toBe(0);
   });
+
+  it('Verzweigung: am gemeinsamen Knoten gleiche Fahrbahnhöhe (kein Sprung)', () => {
+    const ps = [
+      piece(1000, [0, 0, 30, 0], 1, 2),
+      piece(2000, [30, 0, 60, 0], 2, 3),
+      piece(3000, [30, 0, 30, 40], 2, 4),
+    ];
+    const decks = buildBridges(ps, (x, z) => valley(x) + z * 0.1);
+    const hs = ps.map((p) => decks.get(p.id)!(30, 0));
+    expect(Math.max(...hs) - Math.min(...hs)).toBeLessThan(0.01);
+  });
 });

@@ -8,7 +8,7 @@
       "license": "Open Database License (ODbL) 1.0",
       "licenseUrl": "https://opendatacommons.org/licenses/odbl/1-0/",
       "url": "https://www.openstreetmap.org/copyright",
-      "retrieved": "2026-11-22",
+      "retrieved": "2026-11-23",
       "note": "Gebäude, Straßen, Landnutzung und Gewässer. Die abgeleiteten Kacheldaten stehen auf Anfrage unter der ODbL zur Verfügung."
     },
     {
@@ -18,8 +18,28 @@
       "license": "Datenlizenz Deutschland – Namensnennung – Version 2.0",
       "licenseUrl": "https://www.govdata.de/dl-de/by-2-0",
       "url": "https://opengeodata.lgl-bw.de/",
-      "retrieved": "2026-11-22",
+      "retrieved": "2026-11-23",
       "note": "Höhendaten, auf 2-m-Raster gemittelt."
+    },
+    {
+      "id": "swisstopo-swissalti3d",
+      "name": "swissALTI3D, Bundesamt für Landestopografie swisstopo",
+      "attribution": "Quelle: Bundesamt für Landestopografie swisstopo",
+      "license": "Nutzungsbedingungen für kostenlose Geodaten und Geodienste (OGD) von swisstopo",
+      "licenseUrl": "https://www.swisstopo.admin.ch/de/nutzungsbedingungen-kostenlose-geodaten-und-geodienste",
+      "url": "https://www.swisstopo.admin.ch/de/hoehenmodell-swissalti3d",
+      "retrieved": "2026-11-23",
+      "note": "Höhendaten der Schweiz (2 m), nach UTM 32N umgerechnet."
+    },
+    {
+      "id": "ign-rgealti",
+      "name": "RGE ALTI®, Institut national de l’information géographique et forestière (IGN)",
+      "attribution": "IGN – RGE ALTI®",
+      "license": "Licence Ouverte / Open Licence 2.0 (Etalab)",
+      "licenseUrl": "https://www.etalab.gouv.fr/licence-ouverte-open-licence/",
+      "url": "https://geoservices.ign.fr/rgealti",
+      "retrieved": "2026-11-23",
+      "note": "Höhendaten Frankreichs über die Géoplateforme, nach UTM 32N umgerechnet."
     }
   ]
 }

@@ -98,6 +98,12 @@ export class FlyController {
     };
   }
 
+  /** Geschwindigkeit von außen anpassen (weiche Grenze vor gesperrten Regionen). */
+  adjustVelocity(f: (vx: number, vz: number) => { vx: number; vz: number }): void {
+    const v = f(this.state.vx, this.state.vz);
+    this.state = { ...this.state, vx: v.vx, vz: v.vz };
+  }
+
   update(dtMs: number): FlyFocus {
     const dt = Math.min(dtMs, 100) / 1000;
     this.camera.alpha -= input.lookDX;

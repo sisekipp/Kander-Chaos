@@ -177,5 +177,52 @@ export function buildBridges(pieces: WayPiece[], ground: HeightFn): Map<number, 
       });
     });
   }
+  return matchSharedEnds(pieces, out);
+}
+
+/**
+ * Verzweigte Brücken (Autobahnkreuze, Auffahrten) werden stückweise berechnet: an gemeinsamen Knoten auf die
+ * mittlere Höhe angleichen, die Abweichung läuft linear über das Stück aus (kein Höhensprung).
+ */
+function matchSharedEnds(pieces: WayPiece[], decks: Map<number, DeckFn>): Map<number, DeckFn> {
+  const at = new Map<number, number[]>();
+  const endsOf = new Map<number, [number, number]>();
+  for (const p of pieces) {
+    const f = decks.get(p.id);
+    if (!f) continue;
+    const n = p.coords.length;
+    const h0 = f(p.coords[0], p.coords[1]),
+      h1 = f(p.coords[n - 2], p.coords[n - 1]);
+    endsOf.set(p.id, [h0, h1]);
+    for (const [node, h] of [
+      [p.startNode, h0],
+      [p.endNode, h1],
+    ]) {
+      let l = at.get(node);
+      if (!l) at.set(node, (l = []));
+      l.push(h);
+    }
+  }
+  const target = (node: number) => {
+    const l = at.get(node)!;
+    return l.reduce((a, b) => a + b, 0) / l.length;
+  };
+  const out = new Map<number, DeckFn>();
+  for (const p of pieces) {
+    const f = decks.get(p.id);
+    if (!f) continue;
+    const [h0, h1] = endsOf.get(p.id)!;
+    const d0 = target(p.startNode) - h0,
+      d1 = target(p.endNode) - h1;
+    if (Math.abs(d0) < 1e-6 && Math.abs(d1) < 1e-6) {
+      out.set(p.id, f);
+      continue;
+    }
+    const len = lengthOf(p.coords) || 1;
+    out.set(p.id, (x, z) => {
+      const t = Math.min(1, Math.max(0, along(p.coords, x, z) / len));
+      return f(x, z) + d0 * (1 - t) + d1 * t;
+    });
+  }
   return out;
 }

@@ -1,5 +1,5 @@
 import { RoadKind, clipPolylineToRect, type Road } from '@kandern/world-format';
-import { roadAttributes, type RoadAttributes } from './attributes.ts';
+import { roadAttributes, trackCount, type RoadAttributes } from './attributes.ts';
 
 export interface RawWay {
   id: number;
@@ -34,9 +34,22 @@ const KIND: Record<string, [RoadKind, number]> = {
   steps: [RoadKind.Steps, 1.8],
 };
 
+const RAIL_TYPES = new Set(['rail', 'light_rail', 'narrow_gauge', 'preserved', 'tram']);
+
 /** Straßentyp und Breite; null = keine darstellbare Verkehrsfläche. */
 export function roadKind(tags: Record<string, string>): { kind: RoadKind; width: number } | null {
-  if (tags.railway) return { kind: RoadKind.Rail, width: 3 };
+  if (tags.railway) {
+    // Nur Gleise (keine Bahnsteige, Haltestellen-Linien o. ä.); Breite 3,5 m je Gleis
+    if (!RAIL_TYPES.has(tags.railway)) return null;
+    return { kind: RoadKind.Rail, width: 3.5 * trackCount(tags) };
+  }
+  // Pisten und Rollwege als Linien zusätzlich zur Fläche: tragen die Markierungen
+  if (tags.aeroway === 'runway' || tags.aeroway === 'taxiway') {
+    if (tags.area === 'yes') return null;
+    const runway = tags.aeroway === 'runway';
+    const w = parseFloat((tags.width ?? '').replace(',', '.'));
+    return { kind: runway ? RoadKind.Runway : RoadKind.Taxiway, width: w > 5 && w < 100 ? w : runway ? 60 : 23 };
+  }
   if (tags.area === 'yes') return null;
   const k = KIND[tags.highway ?? ''];
   if (!k) return null;
