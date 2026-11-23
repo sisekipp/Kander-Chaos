@@ -85,7 +85,8 @@ test('Wahrzeichen ersetzen das generierte Gebäude und halten die Figur auf', as
     const p = w.player.position;
     const dist = (p.x - lm.x) * vx + (p.z - lm.z) * vz;
     const halfWidth = Math.max(...lm.footprint.filter((_: number, i: number) => i % 2 === 1));
-    return { dist, halfWidth, skipped: w.tiles.o.skipBuildings.includes(lm.buildingId) };
+    const tileId = `${Math.floor(lm.x / w.index.tileSize)},${Math.floor(lm.z / w.index.tileSize)}`;
+    return { dist, halfWidth, skipped: w.tiles.o.skipBuildings(tileId).includes(lm.buildingId) };
   });
   console.log(JSON.stringify(r));
   expect(r.skipped).toBe(true);

@@ -10,6 +10,8 @@ import { Controls } from './controls/index.tsx';
 import { HealthBar } from './hud/HealthBar.tsx';
 import { RegionEdgeHint } from './hud/RegionEdgeHint.tsx';
 import { useGameStore } from '../state/store.ts';
+import { disposeNpcPreview, toggleNpcPreview } from '../npc/preview/NpcPreview.ts';
+import { getModels } from '../assets/ModelRegistry.ts';
 import { loadSave, newSave, startAutosave } from '../save/saveStore.ts';
 import { runChaosTest } from '../world/chaosTest.ts';
 
@@ -21,6 +23,7 @@ export function PlayingScreen() {
   const [quality, setQualityState] = useState(getGame()?.quality.level ?? 'low');
   const [measuring, setMeasuring] = useState(false);
   const debugPhysics = useGameStore((s) => s.debugPhysics);
+  const [npcs, setNpcs] = useState(false);
   const setDebugPhysics = useGameStore((s) => s.setDebugPhysics);
 
   useEffect(() => {
@@ -31,11 +34,12 @@ export function PlayingScreen() {
     const detachKeys = attachKeyboard();
     let stopAutosave: (() => void) | null = null;
     loadSave()
-      .then((save) =>
-        World.create(game, {
+      .then((save) => {
+        if (save) useGameStore.getState().setFigureVariant(save.figure.variant);
+        return World.create(game, {
           save: save ? { x: save.player.x, z: save.player.z, worldVersion: save.worldVersion } : undefined,
-        }),
-      )
+        });
+      })
       .then((w) => {
         if (cancelled) {
           w.dispose();
@@ -54,6 +58,8 @@ export function PlayingScreen() {
                 { x: Math.round(p.x * 10) / 10, z: Math.round(p.z * 10) / 10, yaw: ww.player.heading },
                 game.quality.level,
                 ww.index.buildVersion,
+                {},
+                useGameStore.getState().figureVariant,
               );
             },
           },
@@ -73,6 +79,7 @@ export function PlayingScreen() {
       window.clearInterval(t);
       detachKeys();
       stopAutosave?.();
+      disposeNpcPreview();
       input.fast = false;
       getWorld()?.dispose();
       setWorld(null);
@@ -153,6 +160,19 @@ export function PlayingScreen() {
     );
   };
 
+  /** NPC-Testansicht (gebackene Animationen, Thin Instances) 8 m vor der Figur in Blickrichtung der Kamera. */
+  const toggleNpcs = () => {
+    const g = getGame(),
+      w = getWorld();
+    if (!g || !w) return;
+    const p = w.player.position,
+      yaw = w.player.rig.forwardYaw;
+    const at = { x: p.x + Math.sin(yaw) * 8, y: p.y, z: p.z + Math.cos(yaw) * 8, yaw };
+    toggleNpcPreview(g.scene, getModels(), at)
+      .then(setNpcs)
+      .catch((e) => setStatus(`NPC-Testansicht: ${(e as Error).message}`));
+  };
+
   const switchQuality = () => {
     const g = getGame();
     if (!g) return;
@@ -212,6 +232,9 @@ export function PlayingScreen() {
         </button>
         <button className={debugPhysics ? 'active' : 'secondary'} onClick={() => setDebugPhysics(!debugPhysics)}>
           Debug
+        </button>
+        <button className={npcs ? 'active' : 'secondary'} data-testid="npc-preview" onClick={toggleNpcs}>
+          NPCs
         </button>
         <button
           className="secondary"

@@ -23,6 +23,10 @@ export class Walker {
   readonly velocity = new Vector3();
   yaw = 0;
   frozen = true;
+  /** Steht auf dem Boden (für die Animation). */
+  grounded = true;
+  /** Seit dem letzten Abholen gesprungen (Animation „jump“). */
+  jumped = false;
   private readonly cc: PhysicsCharacterController | null;
 
   constructor(
@@ -30,8 +34,9 @@ export class Walker {
     private readonly world: WalkerWorld,
     start: Vector3,
     usePhysics: boolean,
+    variant = 0,
   ) {
-    this.figure = createFigure(scene);
+    this.figure = createFigure(scene, variant);
     this.figure.root.position.copyFrom(start);
     this.cc = usePhysics
       ? new PhysicsCharacterController(
@@ -100,6 +105,7 @@ export class Walker {
       p.z += mz * speed * dt;
       p.y = this.world.heightAt(p.x, p.z) ?? p.y;
       this.velocity.set(mx * speed, 0, mz * speed);
+      this.grounded = true;
       this.cc?.setPosition(new Vector3(p.x, p.y + 0.9, p.z));
     } else {
       this.stepPhysics(dt, mx * speed, mz * speed, camYaw);
@@ -114,7 +120,8 @@ export class Walker {
     const desired = new Vector3(vx, 0, vz);
     const current = cc.getVelocity();
     let out: Vector3;
-    if (support.supportedState === CharacterSupportedState.SUPPORTED) {
+    this.grounded = support.supportedState === CharacterSupportedState.SUPPORTED;
+    if (this.grounded) {
       const fwd = new Vector3(Math.sin(camYaw), 0, Math.cos(camYaw));
       out = cc.calculateMovement(
         dt,
@@ -125,7 +132,10 @@ export class Walker {
         desired,
         Vector3.Up(),
       );
-      if (input.jump) out.y = 6;
+      if (input.jump) {
+        out.y = 6;
+        this.jumped = true;
+      }
     } else {
       out = current.add(GRAVITY.scale(dt));
       out.x = desired.x;

@@ -1,0 +1,5 @@
+{
+  "id": "npc-worker",
+  "kind": "npc",
+  "source": "own/npc-worker.glb"
+}

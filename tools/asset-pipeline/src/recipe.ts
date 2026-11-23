@@ -2,6 +2,7 @@ import type { ColorZones } from './recolor.ts';
 import type { ModelKind } from './registry.ts';
 import type { PartCut } from './split.ts';
 import type { VehicleDims } from './vehicleDims.ts';
+import type { VatInfo } from './build.ts';
 
 /** Fahrzeugangaben im Rezept; Box und Räder berechnet der Build aus dem skalierten Modell. */
 export interface VehicleRecipe {
@@ -44,9 +45,11 @@ export interface ManifestEntry {
   triangles: number;
   zones: string[];
   parts: string[];
-  vehicle?: Omit<VehicleRecipe, 'wheels'> & VehicleDims;
+  vehicle?: Omit<VehicleRecipe, 'wheels' | 'seat'> & VehicleDims;
   /** Prüfsumme (nur Modelle der Region, für den Region-Cache). */
   sha256?: string;
+  /** Gebackene Animationen (NPC-Figuren). */
+  vat?: VatInfo;
 }
 
 export function parseRecipe(json: unknown, file: string): Recipe {

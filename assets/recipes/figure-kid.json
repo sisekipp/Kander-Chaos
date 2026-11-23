@@ -1,0 +1,10 @@
+{
+  "id": "figure-kid",
+  "kind": "figure",
+  "source": "own/figure-kid.glb",
+  "colorZones": {
+    "shirt": ["shirt"],
+    "pants": ["pants"],
+    "hair": ["hair"]
+  }
+}

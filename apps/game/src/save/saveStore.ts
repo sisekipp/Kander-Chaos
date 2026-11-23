@@ -19,6 +19,12 @@ export async function storeSave(save: SaveGame): Promise<void> {
   await set(KEY, save);
 }
 
+/** Figurvariante in den bestehenden Spielstand schreiben (ohne Spielstand übernimmt sie das nächste Speichern). */
+export async function storeFigureVariant(variant: number): Promise<void> {
+  const s = await loadSave();
+  if (s) await storeSave({ ...s, figure: { variant } });
+}
+
 export interface SaveSource {
   snapshot(): SaveGame | null;
 }

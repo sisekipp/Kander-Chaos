@@ -8,6 +8,7 @@
   "vehicle": {
     "vehicleKind": 1,
     "type": "Stadtrad",
-    "wheels": ["wheel-front", "wheel-back"]
+    "wheels": ["wheel-front", "wheel-back"],
+    "seat": "seat"
   }
 }

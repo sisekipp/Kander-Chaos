@@ -1670,6 +1670,141 @@
       },
       "changes": "Grundfarben in Vertex-Farben eingebacken",
       "status": "accepted"
+    },
+    {
+      "id": "figure-kid",
+      "kind": "figure",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/figure.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-23",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "freundliches Low-Poly-Kind mit Skelett und 8 Animationen, Farbzonen Shirt/Hose/Haare"
+      },
+      "changes": "feste Farben in Vertex-Farben eingebacken, Farbzonen shirt, pants, hair",
+      "status": "accepted"
+    },
+    {
+      "id": "npc-kid-girl",
+      "kind": "npc",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/npcs.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-23",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Mädchen mit Pferdeschwanz und Rock"
+      },
+      "changes": "Farben in Vertex-Farben eingebacken, Teile verbunden, Animationen als VAT gebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "npc-kid-boy",
+      "kind": "npc",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/npcs.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-23",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Junge mit Kappe und kurzer Hose"
+      },
+      "changes": "Farben in Vertex-Farben eingebacken, Teile verbunden, Animationen als VAT gebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "npc-teen",
+      "kind": "npc",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/npcs.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-23",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Jugendliche mit langen Haaren"
+      },
+      "changes": "Farben in Vertex-Farben eingebacken, Teile verbunden, Animationen als VAT gebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "npc-woman",
+      "kind": "npc",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/npcs.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-23",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Frau mit Dutt und Rock"
+      },
+      "changes": "Farben in Vertex-Farben eingebacken, Teile verbunden, Animationen als VAT gebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "npc-man",
+      "kind": "npc",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/npcs.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-23",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Mann mit Bart"
+      },
+      "changes": "Farben in Vertex-Farben eingebacken, Teile verbunden, Animationen als VAT gebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "npc-worker",
+      "kind": "npc",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/npcs.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-23",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Arbeiter mit Warnfarbe und Helm"
+      },
+      "changes": "Farben in Vertex-Farben eingebacken, Teile verbunden, Animationen als VAT gebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "npc-grandma",
+      "kind": "npc",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/npcs.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-23",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Oma mit grauem Dutt"
+      },
+      "changes": "Farben in Vertex-Farben eingebacken, Teile verbunden, Animationen als VAT gebacken",
+      "status": "accepted"
+    },
+    {
+      "id": "npc-grandpa",
+      "kind": "npc",
+      "source": "eigenes Modell: tools/asset-pipeline/blender/npcs.py (Blender-Kommandozeile)",
+      "package": "Kandern Chaos – eigene Modelle",
+      "license": "own",
+      "retrieved": "2026-11-23",
+      "style": {
+        "european": true,
+        "noLogos": true,
+        "notes": "Opa mit Bart und Mütze"
+      },
+      "changes": "Farben in Vertex-Farben eingebacken, Teile verbunden, Animationen als VAT gebacken",
+      "status": "accepted"
     }
   ]
 }

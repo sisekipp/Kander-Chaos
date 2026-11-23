@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useGameStore } from '../state/store.ts';
 import { RegionStorage } from './RegionStorage.tsx';
+import { FigurePicker } from './FigurePicker.tsx';
 import { exportSave, importSave, SaveValidationError } from '../save/saveStore.ts';
 
 export function MenuScreen({ onDevTools }: { onDevTools: () => void }) {
@@ -54,6 +55,7 @@ export function MenuScreen({ onDevTools }: { onDevTools: () => void }) {
           onChange={onImport}
           data-testid="import-input"
         />
+        <FigurePicker />
         <label className="toggle">
           <input type="checkbox" checked={simple} onChange={(e) => setSimple(e.target.checked)} />
           <span>Einfach fahren (Auto gibt selbst Gas)</span>

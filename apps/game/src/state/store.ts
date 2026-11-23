@@ -37,6 +37,9 @@ export interface GameState {
   /** „Einfach“-Fahrmodus: Auto-Gas beim Lenken (gespeichert). */
   simpleDriving: boolean;
   setSimpleDriving(v: boolean): void;
+  /** Gewählte Figurvariante (aus dem Spielstand, im Menü wählbar). */
+  figureVariant: number;
+  setFigureVariant(v: number): void;
   /** Spielzustand für die UI (4 Hz aus der Welt). */
   play: { mode: 'walking' | 'driving'; canEnter: boolean; vehicleHealth: number; speedKmh: number };
   setPlay(p: Partial<GameState['play']>): void;
@@ -87,6 +90,8 @@ export const useGameStore = create<GameState>((set) => ({
     }
     set({ simpleDriving });
   },
+  figureVariant: 0,
+  setFigureVariant: (figureVariant) => set({ figureVariant }),
   play: { mode: 'walking', canEnter: false, vehicleHealth: 1, speedKmh: 0 },
   setPlay: (p) =>
     set((s) => {

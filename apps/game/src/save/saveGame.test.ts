@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vite-plus/test';
-import { SaveValidationError, newSave, parseSave, parseSaveFile } from './saveGame.ts';
+import { SAVE_SCHEMA_VERSION, SaveValidationError, newSave, parseSave, parseSaveFile } from './saveGame.ts';
 
 describe('Spielstand', () => {
   it('Round-Trip über Export/Import', () => {
@@ -25,5 +25,19 @@ describe('Spielstand', () => {
     expect(s.player.yaw).toBe(0);
     expect(s.settings.quality).toBe('low');
     expect(s.progress).toEqual({});
+  });
+
+  it('Migration 1 -> 2: Standardvariante der Figur', () => {
+    const v1 = { kind: 'kandern-chaos-spielstand', schemaVersion: 1, player: { x: 1, z: 2 }, figure: { variant: 4 } };
+    const s = parseSave(v1);
+    expect(s.schemaVersion).toBe(SAVE_SCHEMA_VERSION);
+    expect(SAVE_SCHEMA_VERSION).toBe(2);
+    expect(s.figure).toEqual({ variant: 0 });
+  });
+
+  it('Figurvariante bleibt erhalten, ungültige Werte werden zur Standardvariante', () => {
+    expect(parseSaveFile(JSON.stringify(newSave({ x: 0, z: 0, yaw: 0 }, 'low', 'v', {}, 3))).figure.variant).toBe(3);
+    const bad = { kind: 'kandern-chaos-spielstand', schemaVersion: 2, player: { x: 0, z: 0 }, figure: { variant: 77 } };
+    expect(parseSave(bad).figure.variant).toBe(0);
   });
 });

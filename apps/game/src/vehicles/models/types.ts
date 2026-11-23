@@ -1,3 +1,4 @@
+import type { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import type { Mesh } from '@babylonjs/core/Meshes/mesh';
 import type { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import type { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
@@ -13,5 +14,7 @@ export interface VehicleModel {
   /** Teile, die bei Schaden abfallen können (Stoßstange, Spiegel, Schutzblech …). */
   detachable: Mesh[];
   material: StandardMaterial;
+  /** Sitzpunkt der Figur relativ zu `root` (Zweiräder mit Sitzknoten), sonst null. */
+  seat?: Vector3 | null;
   dispose(): void;
 }

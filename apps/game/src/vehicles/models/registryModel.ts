@@ -1,5 +1,6 @@
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
 import type { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
@@ -104,8 +105,12 @@ export function buildRegistryVehicle(
     wheels[front].setParent(steerNode);
   }
 
+  // Sitzpunkt aus dem Manifest (Modellkoordinaten -> root: x gespiegelt, Mitte abgezogen)
+  const seat = info.seat ? new Vector3(-(info.seat[0] - center[0]), info.seat[1] - center[1], info.seat[2] - center[2]) : null;
+
   return {
     root,
+    seat,
     body: body ?? meshes[0],
     wheels,
     steerNode,

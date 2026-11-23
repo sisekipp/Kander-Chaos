@@ -1,5 +1,10 @@
-/** Spielstand: rein lokal, JSON mit Schema-Version (Migrationen über `schemaVersion`). */
-export const SAVE_SCHEMA_VERSION = 1;
+import { normalizeVariant } from '../player/figureVariants.ts';
+
+/**
+ * Spielstand: rein lokal, JSON mit Schema-Version (Migrationen über `schemaVersion`).
+ * Version 2: Figurvariante (`figure.variant`); ältere Stände bekommen die Standardvariante 0.
+ */
+export const SAVE_SCHEMA_VERSION = 2;
 export const SAVE_KIND = 'kandern-chaos-spielstand';
 
 export interface SaveGame {
@@ -10,6 +15,8 @@ export interface SaveGame {
   worldVersion: string;
   player: { x: number; z: number; yaw: number };
   settings: { quality: 'low' | 'high' };
+  /** Aussehen der Spielfigur (seit Version 2). */
+  figure: { variant: number };
   /** Platz für spätere Changes (Fortschritt, Belohnungen …). */
   progress: Record<string, unknown>;
 }
@@ -34,6 +41,8 @@ export function parseSave(raw: unknown): SaveGame {
   if (Math.abs(p.x) > 50_000 || Math.abs(p.z) > 50_000)
     throw new SaveValidationError('Der Spielstand ist beschädigt (Position außerhalb der Welt).');
   const s = (o.settings ?? {}) as Record<string, unknown>;
+  // Migration 1 -> 2: Figurvariante fehlt -> Standardvariante
+  const f = (o.schemaVersion >= 2 ? (o.figure ?? {}) : {}) as Record<string, unknown>;
   return {
     kind: SAVE_KIND,
     schemaVersion: SAVE_SCHEMA_VERSION,
@@ -41,6 +50,7 @@ export function parseSave(raw: unknown): SaveGame {
     worldVersion: typeof o.worldVersion === 'string' ? o.worldVersion : '',
     player: { x: p.x, z: p.z, yaw: isNum(p.yaw) ? p.yaw : 0 },
     settings: { quality: s.quality === 'high' ? 'high' : 'low' },
+    figure: { variant: normalizeVariant(f.variant) },
     progress: typeof o.progress === 'object' && o.progress !== null ? (o.progress as Record<string, unknown>) : {},
   };
 }
@@ -61,6 +71,7 @@ export function newSave(
   quality: 'low' | 'high',
   worldVersion: string,
   progress: Record<string, unknown> = {},
+  figureVariant = 0,
 ): SaveGame {
   return {
     kind: SAVE_KIND,
@@ -69,6 +80,7 @@ export function newSave(
     worldVersion,
     player,
     settings: { quality },
+    figure: { variant: normalizeVariant(figureVariant) },
     progress,
   };
 }

@@ -23,13 +23,16 @@
       "id": "bike-city",
       "kind": "vehicle",
       "file": "bike-city.glb",
-      "bytes": 41560,
+      "bytes": 41904,
       "triangles": 1772,
       "zones": ["paint"],
       "parts": ["detach_basket", "detach_mudguard_back", "detach_mudguard_front", "detach_rack"],
       "vehicle": {
         "vehicleKind": 1,
         "type": "Stadtrad",
+        "seat": [0, 0.985, -0.18],
+        "box": [0.58, 0.946, 1.822],
+        "center": [0, 0.593, -0.04],
         "wheels": [
           {
             "name": "wheel-front",
@@ -45,22 +48,23 @@
             "z": -0.56,
             "radius": 0.35
           }
-        ],
-        "box": [0.58, 0.946, 1.822],
-        "center": [0, 0.593, -0.04]
+        ]
       }
     },
     {
       "id": "bike-mtb",
       "kind": "vehicle",
       "file": "bike-mtb.glb",
-      "bytes": 34256,
+      "bytes": 34608,
       "triangles": 1528,
       "zones": ["paint"],
       "parts": ["detach_bottle", "detach_seatclamp"],
       "vehicle": {
         "vehicleKind": 1,
         "type": "Mountainbike",
+        "seat": [0, 0.965, -0.16],
+        "box": [0.72, 0.815, 1.174],
+        "center": [0, 0.557, 0.037],
         "wheels": [
           {
             "name": "wheel-front",
@@ -76,9 +80,7 @@
             "z": -0.54,
             "radius": 0.35
           }
-        ],
-        "box": [0.72, 0.815, 1.174],
-        "center": [0, 0.557, 0.037]
+        ]
       }
     },
     {
@@ -144,6 +146,8 @@
       "vehicle": {
         "vehicleKind": 0,
         "type": "Kompaktwagen",
+        "box": [2.14, 1.23, 4.313],
+        "center": [0, 0.915, 0.016],
         "wheels": [
           {
             "name": "wheel-front-left",
@@ -173,9 +177,7 @@
             "z": -1.33,
             "radius": 0.32
           }
-        ],
-        "box": [2.14, 1.23, 4.313],
-        "center": [0, 0.915, 0.016]
+        ]
       }
     },
     {
@@ -196,6 +198,8 @@
       "vehicle": {
         "vehicleKind": 0,
         "type": "Kombi",
+        "box": [2.18, 1.225, 4.773],
+        "center": [0, 0.912, 0.007],
         "wheels": [
           {
             "name": "wheel-front-left",
@@ -225,9 +229,7 @@
             "z": -1.42,
             "radius": 0.33
           }
-        ],
-        "box": [2.18, 1.225, 4.773],
-        "center": [0, 0.912, 0.007]
+        ]
       }
     },
     {
@@ -248,6 +250,8 @@
       "vehicle": {
         "vehicleKind": 0,
         "type": "Kleinstwagen",
+        "box": [1.94, 1.25, 2.773],
+        "center": [0, 0.925, 0.007],
         "wheels": [
           {
             "name": "wheel-front-left",
@@ -277,9 +281,7 @@
             "z": -0.88,
             "radius": 0.29
           }
-        ],
-        "box": [1.94, 1.25, 2.773],
-        "center": [0, 0.925, 0.007]
+        ]
       }
     },
     {
@@ -300,6 +302,8 @@
       "vehicle": {
         "vehicleKind": 0,
         "type": "Familienvan",
+        "box": [2.18, 1.495, 4.653],
+        "center": [0, 1.047, 0.007],
         "wheels": [
           {
             "name": "wheel-front-left",
@@ -329,9 +333,7 @@
             "z": -1.45,
             "radius": 0.32
           }
-        ],
-        "box": [2.18, 1.495, 4.653],
-        "center": [0, 1.047, 0.007]
+        ]
       }
     },
     {
@@ -352,6 +354,8 @@
       "vehicle": {
         "vehicleKind": 0,
         "type": "Pickup",
+        "box": [2.28, 1.43, 5.253],
+        "center": [0, 1.135, 0.007],
         "wheels": [
           {
             "name": "wheel-front-left",
@@ -381,9 +385,7 @@
             "z": -1.6,
             "radius": 0.38
           }
-        ],
-        "box": [2.28, 1.43, 5.253],
-        "center": [0, 1.135, 0.007]
+        ]
       }
     },
     {
@@ -404,6 +406,8 @@
       "vehicle": {
         "vehicleKind": 0,
         "type": "Limousine",
+        "box": [2.18, 1.201, 4.773],
+        "center": [0, 0.901, 0.007],
         "wheels": [
           {
             "name": "wheel-front-left",
@@ -433,9 +437,7 @@
             "z": -1.42,
             "radius": 0.33
           }
-        ],
-        "box": [2.18, 1.201, 4.773],
-        "center": [0, 0.901, 0.007]
+        ]
       }
     },
     {
@@ -456,6 +458,8 @@
       "vehicle": {
         "vehicleKind": 0,
         "type": "Kleinwagen",
+        "box": [2.06, 1.22, 3.893],
+        "center": [0, 0.91, 0.026],
         "wheels": [
           {
             "name": "wheel-front-left",
@@ -485,9 +489,7 @@
             "z": -1.22,
             "radius": 0.32
           }
-        ],
-        "box": [2.06, 1.22, 3.893],
-        "center": [0, 0.91, 0.026]
+        ]
       }
     },
     {
@@ -508,6 +510,8 @@
       "vehicle": {
         "vehicleKind": 0,
         "type": "SUV",
+        "box": [2.24, 1.325, 4.573],
+        "center": [0, 1.063, 0.007],
         "wheels": [
           {
             "name": "wheel-front-left",
@@ -537,9 +541,7 @@
             "z": -1.36,
             "radius": 0.37
           }
-        ],
-        "box": [2.24, 1.325, 4.573],
-        "center": [0, 1.063, 0.007]
+        ]
       }
     },
     {
@@ -549,6 +551,15 @@
       "bytes": 7316,
       "triangles": 246,
       "zones": [],
+      "parts": []
+    },
+    {
+      "id": "figure-kid",
+      "kind": "figure",
+      "file": "figure-kid.glb",
+      "bytes": 87964,
+      "triangles": 706,
+      "zones": ["hair", "pants", "shirt"],
       "parts": []
     },
     {
@@ -562,6 +573,8 @@
       "vehicle": {
         "vehicleKind": 3,
         "type": "Hubschrauber",
+        "box": [2.45, 3.395, 10.042],
+        "center": [0, 1.702, -2.279],
         "wheels": [
           {
             "name": "rotor-main",
@@ -577,9 +590,7 @@
             "z": -7,
             "radius": 0.1
           }
-        ],
-        "box": [2.45, 3.395, 10.042],
-        "center": [0, 1.702, -2.279]
+        ]
       }
     },
     {
@@ -1045,13 +1056,16 @@
       "id": "motorbike",
       "kind": "vehicle",
       "file": "motorbike.glb",
-      "bytes": 50248,
+      "bytes": 50604,
       "triangles": 1980,
       "zones": ["paint"],
       "parts": ["detach_exhaust", "detach_fender", "detach_fender_back"],
       "vehicle": {
         "vehicleKind": 2,
         "type": "Motorrad",
+        "seat": [0, 0.91, -0.33],
+        "box": [0.74, 0.825, 2.07],
+        "center": [0, 0.685, -0.022],
         "wheels": [
           {
             "name": "wheel-front",
@@ -1067,9 +1081,335 @@
             "z": -0.72,
             "radius": 0.32
           }
-        ],
-        "box": [0.74, 0.825, 2.07],
-        "center": [0, 0.685, -0.022]
+        ]
+      }
+    },
+    {
+      "id": "npc-grandma",
+      "kind": "npc",
+      "file": "npc-grandma.glb",
+      "bytes": 45572,
+      "triangles": 798,
+      "zones": [],
+      "parts": [],
+      "vat": {
+        "file": "npc-grandma.vat.bin",
+        "width": 48,
+        "height": 196,
+        "fps": 30,
+        "clips": {
+          "fallover": {
+            "from": 0,
+            "to": 24
+          },
+          "getup": {
+            "from": 25,
+            "to": 55
+          },
+          "idle": {
+            "from": 56,
+            "to": 116
+          },
+          "run": {
+            "from": 117,
+            "to": 133
+          },
+          "walk": {
+            "from": 134,
+            "to": 164
+          },
+          "wave": {
+            "from": 165,
+            "to": 195
+          }
+        }
+      }
+    },
+    {
+      "id": "npc-grandpa",
+      "kind": "npc",
+      "file": "npc-grandpa.glb",
+      "bytes": 44036,
+      "triangles": 742,
+      "zones": [],
+      "parts": [],
+      "vat": {
+        "file": "npc-grandpa.vat.bin",
+        "width": 48,
+        "height": 196,
+        "fps": 30,
+        "clips": {
+          "fallover": {
+            "from": 0,
+            "to": 24
+          },
+          "getup": {
+            "from": 25,
+            "to": 55
+          },
+          "idle": {
+            "from": 56,
+            "to": 116
+          },
+          "run": {
+            "from": 117,
+            "to": 133
+          },
+          "walk": {
+            "from": 134,
+            "to": 164
+          },
+          "wave": {
+            "from": 165,
+            "to": 195
+          }
+        }
+      }
+    },
+    {
+      "id": "npc-kid-boy",
+      "kind": "npc",
+      "file": "npc-kid-boy.glb",
+      "bytes": 45608,
+      "triangles": 748,
+      "zones": [],
+      "parts": [],
+      "vat": {
+        "file": "npc-kid-boy.vat.bin",
+        "width": 48,
+        "height": 196,
+        "fps": 30,
+        "clips": {
+          "fallover": {
+            "from": 0,
+            "to": 24
+          },
+          "getup": {
+            "from": 25,
+            "to": 55
+          },
+          "idle": {
+            "from": 56,
+            "to": 116
+          },
+          "run": {
+            "from": 117,
+            "to": 133
+          },
+          "walk": {
+            "from": 134,
+            "to": 164
+          },
+          "wave": {
+            "from": 165,
+            "to": 195
+          }
+        }
+      }
+    },
+    {
+      "id": "npc-kid-girl",
+      "kind": "npc",
+      "file": "npc-kid-girl.glb",
+      "bytes": 44164,
+      "triangles": 754,
+      "zones": [],
+      "parts": [],
+      "vat": {
+        "file": "npc-kid-girl.vat.bin",
+        "width": 48,
+        "height": 196,
+        "fps": 30,
+        "clips": {
+          "fallover": {
+            "from": 0,
+            "to": 24
+          },
+          "getup": {
+            "from": 25,
+            "to": 55
+          },
+          "idle": {
+            "from": 56,
+            "to": 116
+          },
+          "run": {
+            "from": 117,
+            "to": 133
+          },
+          "walk": {
+            "from": 134,
+            "to": 164
+          },
+          "wave": {
+            "from": 165,
+            "to": 195
+          }
+        }
+      }
+    },
+    {
+      "id": "npc-man",
+      "kind": "npc",
+      "file": "npc-man.glb",
+      "bytes": 44420,
+      "triangles": 750,
+      "zones": [],
+      "parts": [],
+      "vat": {
+        "file": "npc-man.vat.bin",
+        "width": 48,
+        "height": 196,
+        "fps": 30,
+        "clips": {
+          "fallover": {
+            "from": 0,
+            "to": 24
+          },
+          "getup": {
+            "from": 25,
+            "to": 55
+          },
+          "idle": {
+            "from": 56,
+            "to": 116
+          },
+          "run": {
+            "from": 117,
+            "to": 133
+          },
+          "walk": {
+            "from": 134,
+            "to": 164
+          },
+          "wave": {
+            "from": 165,
+            "to": 195
+          }
+        }
+      }
+    },
+    {
+      "id": "npc-teen",
+      "kind": "npc",
+      "file": "npc-teen.glb",
+      "bytes": 44724,
+      "triangles": 750,
+      "zones": [],
+      "parts": [],
+      "vat": {
+        "file": "npc-teen.vat.bin",
+        "width": 48,
+        "height": 196,
+        "fps": 30,
+        "clips": {
+          "fallover": {
+            "from": 0,
+            "to": 24
+          },
+          "getup": {
+            "from": 25,
+            "to": 55
+          },
+          "idle": {
+            "from": 56,
+            "to": 116
+          },
+          "run": {
+            "from": 117,
+            "to": 133
+          },
+          "walk": {
+            "from": 134,
+            "to": 164
+          },
+          "wave": {
+            "from": 165,
+            "to": 195
+          }
+        }
+      }
+    },
+    {
+      "id": "npc-woman",
+      "kind": "npc",
+      "file": "npc-woman.glb",
+      "bytes": 45292,
+      "triangles": 798,
+      "zones": [],
+      "parts": [],
+      "vat": {
+        "file": "npc-woman.vat.bin",
+        "width": 48,
+        "height": 196,
+        "fps": 30,
+        "clips": {
+          "fallover": {
+            "from": 0,
+            "to": 24
+          },
+          "getup": {
+            "from": 25,
+            "to": 55
+          },
+          "idle": {
+            "from": 56,
+            "to": 116
+          },
+          "run": {
+            "from": 117,
+            "to": 133
+          },
+          "walk": {
+            "from": 134,
+            "to": 164
+          },
+          "wave": {
+            "from": 165,
+            "to": 195
+          }
+        }
+      }
+    },
+    {
+      "id": "npc-worker",
+      "kind": "npc",
+      "file": "npc-worker.glb",
+      "bytes": 44780,
+      "triangles": 748,
+      "zones": [],
+      "parts": [],
+      "vat": {
+        "file": "npc-worker.vat.bin",
+        "width": 48,
+        "height": 196,
+        "fps": 30,
+        "clips": {
+          "fallover": {
+            "from": 0,
+            "to": 24
+          },
+          "getup": {
+            "from": 25,
+            "to": 55
+          },
+          "idle": {
+            "from": 56,
+            "to": 116
+          },
+          "run": {
+            "from": 117,
+            "to": 133
+          },
+          "walk": {
+            "from": 134,
+            "to": 164
+          },
+          "wave": {
+            "from": 165,
+            "to": 195
+          }
+        }
       }
     },
     {
@@ -1094,13 +1434,16 @@
       "id": "scooter",
       "kind": "vehicle",
       "file": "scooter.glb",
-      "bytes": 43880,
+      "bytes": 44172,
       "triangles": 1892,
       "zones": ["paint"],
       "parts": ["detach_exhaust", "detach_fender", "detach_mirror_left", "detach_mirror_right", "detach_rack"],
       "vehicle": {
         "vehicleKind": 2,
         "type": "Roller",
+        "seat": [0, 0.74, -0.38],
+        "box": [0.68, 1.064, 1.775],
+        "center": [0, 0.718, -0.021],
         "wheels": [
           {
             "name": "wheel-front",
@@ -1116,9 +1459,7 @@
             "z": -0.6,
             "radius": 0.24
           }
-        ],
-        "box": [0.68, 1.064, 1.775],
-        "center": [0, 0.718, -0.021]
+        ]
       }
     },
     {
@@ -1184,6 +1525,8 @@
       "vehicle": {
         "vehicleKind": 0,
         "type": "Kleintransporter",
+        "box": [2.36, 2.02, 5.273],
+        "center": [0, 1.35, -0.003],
         "wheels": [
           {
             "name": "wheel-front-left",
@@ -1213,9 +1556,7 @@
             "z": -1.75,
             "radius": 0.34
           }
-        ],
-        "box": [2.36, 2.02, 5.273],
-        "center": [0, 1.35, -0.003]
+        ]
       }
     }
   ]

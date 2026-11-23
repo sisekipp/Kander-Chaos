@@ -7,6 +7,7 @@ Aufbau je Modell (Knotennamen liest die Asset-Pipeline bzw. das Spiel):
 - `body`: Rahmen/Karosserie (Material `paint` = Lackzone, wird im Spiel je Fahrzeug eingefärbt)
 - `steer`: Gabel, Lenker, Lampe – dreht im Spiel um die senkrechte Achse durch das Vorderrad
 - `wheel-front`, `wheel-back`: Räder (Mitte der Geometrie = Radmitte)
+- `seat`: Sattel bzw. Sitzbank (Oberkante = Sitzpunkt der Figur)
 - `detach_*`: lösbare Teile für den Schaden (mindestens 2)
 Boden bei z = 0. Kein Text, keine Logos.
 """
@@ -41,7 +42,7 @@ def bike_frame_common(rear_y, front_y, r, bb, seat_top, head_top, head_bottom):
     # Sattelstütze und Sattel
     top = (0, seat_top[1] + 0.02, seat_top[2] + 0.12)
     tube(seat_top, top, 0.013, "chrome")
-    box(0.14, 0.26, 0.05, (0, top[1] - 0.02, top[2] + 0.02), "seat", bevel=0.015)
+    box(0.14, 0.26, 0.05, (0, top[1] - 0.02, top[2] + 0.02), "seat", "seat", bevel=0.015)
     # Steuerrohr
     tube(head_bottom, head_top, 0.025, "paint")
 
@@ -134,7 +135,7 @@ def scooter():
     r, rear_y, front_y = 0.24, 0.6, -0.6
     box(0.34, 0.56, 0.07, (0, 0.0, 0.28), "paint", bevel=0.02)  # Trittbrett
     box(0.42, 0.74, 0.36, (0, 0.4, 0.46), "paint", bevel=0.1)  # Heckverkleidung
-    box(0.3, 0.62, 0.12, (0, 0.38, 0.68), "seat", bevel=0.04)  # Sitzbank
+    box(0.3, 0.62, 0.12, (0, 0.38, 0.68), "seat", "seat", bevel=0.04)  # Sitzbank
     box(0.12, 0.05, 0.05, (0, 0.78, 0.6), "taillight", bevel=0.01)
     box(0.42, 0.08, 0.62, (0, -0.36, 0.58), "paint", rot=(math.radians(-12), 0, 0), bevel=0.04)  # Beinschild
     box(0.3, 0.3, 0.12, (0, rear_y - 0.12, 0.3), "engine", bevel=0.02)  # Motor/Schwinge
@@ -176,7 +177,7 @@ def motorbike():
         box(0.38, 0.015, 0.14, (0, -0.24 + k * 0.04, 0.68), "metal_dark", rot=(math.radians(15), 0, 0))
     # Tank, Sitzbank, Heck
     box(0.36, 0.5, 0.22, (0, -0.2, 0.9), "paint", bevel=0.08)
-    box(0.3, 0.55, 0.1, (0, 0.33, 0.86), "seat", bevel=0.035)
+    box(0.3, 0.55, 0.1, (0, 0.33, 0.86), "seat", "seat", bevel=0.035)
     box(0.24, 0.35, 0.12, (0, 0.68, 0.86), "paint", rot=(math.radians(-10), 0, 0), bevel=0.04)
     box(0.12, 0.04, 0.05, (0, 0.86, 0.87), "taillight", bevel=0.01)
     # Auspuff (lösbar)

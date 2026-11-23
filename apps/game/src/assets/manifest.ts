@@ -17,7 +17,17 @@ export interface VehicleInfo {
   box: [number, number, number];
   center: [number, number, number];
   wheels: WheelInfo[];
-  seat?: string;
+  /** Sitzpunkt der Figur in Modellkoordinaten (Zweiräder). */
+  seat?: [number, number, number];
+}
+
+/** Gebackene Animationen einer NPC-Figur (Babylon-VAT-Layout, RGBA16F). */
+export interface VatInfo {
+  file: string;
+  width: number;
+  height: number;
+  fps: number;
+  clips: Record<string, { from: number; to: number }>;
 }
 
 export interface ModelEntry {
@@ -33,6 +43,8 @@ export interface ModelEntry {
   vehicle?: VehicleInfo;
   /** Prüfsumme (nur Modelle der Region, `manifest-remote.json`). */
   sha256?: string;
+  /** Animationstextur (NPC-Figuren). */
+  vat?: VatInfo;
 }
 
 export interface ModelManifest {

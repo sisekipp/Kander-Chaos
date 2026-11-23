@@ -1,3 +1,4 @@
+import type { Document } from '@gltf-transform/core';
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
@@ -10,6 +11,8 @@ import { checkBudget, countTriangles, detachableParts, triangleLimitFor, validat
 import { splitParts } from './split.ts';
 import { bakePaletteTexture } from './texbake.ts';
 import { scaleScene, vehicleDims } from './vehicleDims.ts';
+import { joinPrimitives, prune } from '@gltf-transform/functions';
+import { bakeVat, toHalf, type VatClip } from './bakeVat.ts';
 
 export async function loadRecipes(): Promise<Recipe[]> {
   if (!existsSync(paths.recipes)) return [];
@@ -57,8 +60,11 @@ export async function buildModels(): Promise<{ ok: boolean; messages: string[] }
     if (!r.texture) zones = applyColorZones(doc, r.colorZones ?? {}).zones;
     if (r.scale !== undefined && r.scale !== 1)
       scaleScene(doc, typeof r.scale === 'number' ? [r.scale, r.scale, r.scale] : r.scale);
-    const dims = r.vehicle ? vehicleDims(doc, r.vehicle.wheels) : null;
+    const dims = r.vehicle ? vehicleDims(doc, r.vehicle.wheels, r.vehicle.seat) : null;
+    if (r.kind === 'npc') mergeSkinnedPrimitives(doc); // ein Primitiv = ein Draw Call
     await optimizeDocument(doc);
+    // Nach der Optimierung backen: die Quantisierung verrechnet ihre Skalierung in die inversen Bindematrizen
+    const vat = r.kind === 'npc' ? await bakeNpc(doc, r.id) : null;
     const errors = validateModel(r.id, r.kind, doc, triangleLimitFor(r));
     if (errors.length) {
       messages.push(...errors.map((e) => `✘ ${e}`));
@@ -69,7 +75,8 @@ export async function buildModels(): Promise<{ ok: boolean; messages: string[] }
     // Regionsmodelle: unveränderliche Dateinamen mit Hash, eigenes Manifest, nicht im Offline-Budget
     const file = r.remote ? `${r.id}.${sha256.slice(0, 10)}.glb` : `${r.id}.glb`;
     await writeFile(path.join(r.remote ? paths.outRemote : paths.out, file), glb);
-    if (!r.remote) sizes[r.id] = glb.byteLength;
+    if (vat) await writeFile(path.join(paths.out, vat.entry.file), vat.bytes);
+    if (!r.remote) sizes[r.id] = glb.byteLength + (vat?.bytes.byteLength ?? 0);
     (r.remote ? remote : manifest).push({
       id: r.id,
       kind: r.kind,
@@ -78,8 +85,9 @@ export async function buildModels(): Promise<{ ok: boolean; messages: string[] }
       triangles: countTriangles(doc),
       zones,
       parts: detachableParts(doc),
-      ...(r.vehicle && dims ? { vehicle: { ...r.vehicle, ...dims } } : {}),
+      ...(r.vehicle && dims ? { vehicle: { ...withoutSeatName(r.vehicle), ...dims } } : {}),
       ...(r.remote ? { sha256 } : {}),
+      ...(vat ? { vat: vat.entry } : {}),
     });
     messages.push(`✔ ${r.id}: ${countTriangles(doc)} Dreiecke, ${(glb.byteLength / 1024).toFixed(0)} KB`);
   }
@@ -97,4 +105,52 @@ export async function buildModels(): Promise<{ ok: boolean; messages: string[] }
     );
   }
   return { ok, messages };
+}
+
+/**
+ * Primitive mit gleichem Material je Mesh zu einem verbinden. `join()` von gltf-transform überspringt Meshes mit
+ * Skelett; die Gelenke/Gewichte bleiben hier pro Vertex erhalten, deshalb ist das Verbinden sicher.
+ */
+export function mergeSkinnedPrimitives(doc: Document): void {
+  for (const mesh of doc.getRoot().listMeshes()) {
+    const byMat = new Map<unknown, ReturnType<typeof mesh.listPrimitives>>();
+    for (const p of mesh.listPrimitives()) byMat.set(p.getMaterial(), [...(byMat.get(p.getMaterial()) ?? []), p]);
+    for (const prims of byMat.values()) {
+      if (prims.length < 2) continue;
+      const joined = joinPrimitives(prims);
+      for (const p of prims) {
+        mesh.removePrimitive(p);
+        p.dispose();
+      }
+      mesh.addPrimitive(joined);
+    }
+  }
+}
+
+/**
+ * NPC-Figur: Animationen in eine VAT backen (Halbfloat) und aus dem Modell entfernen; das Skelett (Gelenke,
+ * Gewichte) bleibt für den Shader.
+ */
+async function bakeNpc(doc: Document, id: string) {
+  const v = bakeVat(doc, 30);
+  for (const a of doc.getRoot().listAnimations()) a.dispose();
+  await doc.transform(prune());
+  const half = toHalf(v.data);
+  const entry: VatInfo = { file: `${id}.vat.bin`, width: v.width, height: v.height, fps: v.fps, clips: v.clips };
+  return { entry, bytes: new Uint8Array(half.buffer) };
+}
+
+/** Animationstextur einer NPC-Figur (RGBA16F, Breite · Höhe Texel). */
+export interface VatInfo {
+  file: string;
+  width: number;
+  height: number;
+  fps: number;
+  clips: Record<string, VatClip>;
+}
+
+/** Fahrzeugangaben fürs Manifest: der Sitzknoten-Name wird durch den berechneten Sitzpunkt ersetzt. */
+function withoutSeatName<T extends { seat?: string }>(v: T): Omit<T, 'seat' | 'wheels'> {
+  const { seat: _seat, wheels: _wheels, ...rest } = v as T & { wheels?: unknown };
+  return rest;
 }

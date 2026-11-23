@@ -8,7 +8,7 @@ Für alle Aufgaben gilt die Codestruktur aus Design D9 bzw. Projektregeln: höch
 - [x] 1.2 Kandidatenpakete (Kenney; Quaternius entfällt, Figuren entstehen in Blender) auf Lizenz (CC0) und Stil prüfen, Ergebnis je Modell ins Register; Lücken (europäischer Kleintransporter, StVO-Schilder, deutsche Laterne o. ä.) als selbst zu bauende Modelle im Register vormerken
 - [x] 1.3 `optimize.ts` mit gltf-transform (dedup, weld, Quantisierung, meshopt, Texturen ≤ 512 px) und `recolor.ts` (Farbzonen); Unit-Test für Farbzonen; Prüfung, dass die Ausgabe in Babylon lädt (Node-Test mit Loader oder Browsertest)
 - [x] 1.4 `validate.ts`: Dreiecksgrenzen je Art, Materialanzahl, mindestens 2 lösbare Teile bei Fahrzeugen, Budget 15 MB gesamt; Unit-Tests für jede Regel
-- [ ] 1.5 README der Asset-Pipeline (Ablauf, Regeln, wie man ein Modell hinzufügt); prüfen, dass ein frischer Checkout mit den Befehlen die Modelle erzeugt
+- [x] 1.5 README der Asset-Pipeline (Ablauf, Regeln, wie man ein Modell hinzufügt); prüfen, dass ein frischer Checkout mit den Befehlen die Modelle erzeugt
 
 ## 2. Laden im Spiel
 
@@ -37,15 +37,15 @@ Für alle Aufgaben gilt die Codestruktur aus Design D9 bzw. Projektregeln: höch
 
 ## 5. Spielfigur
 
-- [ ] 5.1 Figurmodell (Blender-Skript) mit ≥ 4 Varianten und Animationen (stehen, gehen, rennen, springen, fallen, einsteigen, aussteigen, sitzen) übernehmen; Validierung ≤ 3.000 Dreiecke
-- [ ] 5.2 `player/animation/animState.ts` und `blend.ts` (Zustände, Überblendung 0,3 s, Gehgeschwindigkeit passend); Unit-Tests für Zustandswechsel und Gewichte
-- [ ] 5.3 `FigureAnimator.ts` und neue `figure.ts`; Figur sitzt sichtbar auf Fahrrad/Motorrad und neigt sich mit; E2E-Test: Animation wechselt beim Losgehen und beim Einsteigen
-- [ ] 5.4 Figurvariante im Menü wählbar und im Spielstand gespeichert (Schema-Version 2 mit Migration); Unit-Test für die Migration, E2E-Test: Variante bleibt nach Neustart erhalten
+- [x] 5.1 Figurmodell (Blender-Skript) mit ≥ 4 Varianten und Animationen (stehen, gehen, rennen, springen, fallen, einsteigen, aussteigen, sitzen) übernehmen; Validierung ≤ 3.000 Dreiecke
+- [x] 5.2 `player/animation/animState.ts` und `blend.ts` (Zustände, Überblendung 0,3 s, Gehgeschwindigkeit passend); Unit-Tests für Zustandswechsel und Gewichte
+- [x] 5.3 `FigureAnimator.ts` und neue `figure.ts`; Figur sitzt sichtbar auf Fahrrad/Motorrad und neigt sich mit; E2E-Test: Animation wechselt beim Losgehen und beim Einsteigen
+- [x] 5.4 Figurvariante im Menü wählbar und im Spielstand gespeichert (Schema-Version 2 mit Migration); Unit-Test für die Migration, E2E-Test: Variante bleibt nach Neustart erhalten
 
 ## 6. NPC-Figuren vorbereiten
 
-- [ ] 6.1 ≥ 8 NPC-Figuren mit gemeinsamem Animationssatz (Blender-Skript) bauen; `bakeVat.ts` backt Animationstexturen
-- [ ] 6.2 Testansicht im Testmodus (alle Figuren nebeneinander, gebackene Gehanimation mit Thin Instances); Browsertest: 8 Figuren sichtbar, Draw Calls ≤ Anzahl Figurmodelle
+- [x] 6.1 ≥ 8 NPC-Figuren mit gemeinsamem Animationssatz (Blender-Skript) bauen; `bakeVat.ts` backt Animationstexturen
+- [x] 6.2 Testansicht im Testmodus (alle Figuren nebeneinander, gebackene Gehanimation mit Thin Instances); Browsertest: 8 Figuren sichtbar, Draw Calls ≤ Anzahl Figurmodelle
 
 ## 7. Wahrzeichen
 
@@ -55,7 +55,7 @@ Für alle Aufgaben gilt die Codestruktur aus Design D9 bzw. Projektregeln: höch
 
 ## 8. Integration und Messung
 
-- [ ] 8.1 Alle Unit- und E2E-Tests grün, Budget-Prüfung (Modelle ≤ 15 MB, gesamt ≤ 300 MB) im Build
+- [x] 8.1 Alle Unit- und E2E-Tests grün, Budget-Prüfung (Modelle ≤ 15 MB, gesamt ≤ 300 MB) im Build
 - [ ] 8.2 Messung auf dem iPad Pro 1. Gen (Testroute, Messlauf in der Kernstadt mit Fahrzeugen, NPC-Testansicht) mit Ziel Ø ≥ 30 fps und 1-%-Low ≥ 20 fps; Ergebnis in `docs/perf/<datum>-modelle.md`
 
 ## Workflow follow-up

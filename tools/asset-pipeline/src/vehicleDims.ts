@@ -14,6 +14,8 @@ export interface VehicleDims {
   /** Mitte der Karosserie. */
   center: [number, number, number];
   wheels: WheelDims[];
+  /** Sitzpunkt der Figur (Mitte der Oberkante des Sitzknotens), nur Zweiräder. */
+  seat?: [number, number, number];
 }
 
 function nodeBox(n: Node): { min: number[]; max: number[] } | null {
@@ -39,7 +41,7 @@ function nodeBox(n: Node): { min: number[]; max: number[] } | null {
  * Maße eines Fahrzeugs aus dem (skalierten) Modell: Box der Karosserie aus allen Knoten außer den Rädern,
  * Radmitten aus der Mitte der Rad-Geometrie und Radradius aus der halben Höhe des Rad-Meshes. Werte in glTF-Koordinaten.
  */
-export function vehicleDims(doc: Document, wheelNames: string[]): VehicleDims {
+export function vehicleDims(doc: Document, wheelNames: string[], seatName?: string): VehicleDims {
   const nodes = doc.getRoot().listNodes();
   const min = [Infinity, Infinity, Infinity],
     max = [-Infinity, -Infinity, -Infinity];
@@ -61,7 +63,19 @@ export function vehicleDims(doc: Document, wheelNames: string[]): VehicleDims {
     return { name, x, y, z, radius: (b.max[1] - b.min[1]) / 2 };
   });
   const r3 = (v: number) => Math.round(v * 1000) / 1000;
+  const seatNode = seatName ? nodes.find((x) => x.getName() === seatName) : undefined;
+  if (seatName && !seatNode) throw new Error(`Sitzknoten "${seatName}" fehlt`);
+  const sb = seatNode ? nodeBox(seatNode) : null;
   return {
+    ...(sb
+      ? {
+          seat: [r3((sb.min[0] + sb.max[0]) / 2), r3(sb.max[1]), r3((sb.min[2] + sb.max[2]) / 2)] as [
+            number,
+            number,
+            number,
+          ],
+        }
+      : {}),
     box: [r3(max[0] - min[0]), r3(max[1] - min[1]), r3(max[2] - min[2])],
     center: [r3((min[0] + max[0]) / 2), r3((min[1] + max[1]) / 2), r3((min[2] + max[2]) / 2)],
     wheels: wheels.map((w) => ({ name: w.name, x: r3(w.x), y: r3(w.y), z: r3(w.z), radius: r3(w.radius) })),

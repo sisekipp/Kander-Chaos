@@ -81,4 +81,17 @@ describe('Fahrzeugmaße aus dem Modell', () => {
   it('fehlender Radknoten ist ein Fehler', () => {
     expect(() => vehicleDims(car(), ['wheel-x'])).toThrow();
   });
+
+  it('Sitzpunkt = Mitte der Oberkante des Sitzknotens', () => {
+    const doc = car();
+    const body = doc
+      .getRoot()
+      .listNodes()
+      .find((n) => n.getName() === 'body')!;
+    body.setName('seat');
+    const d = vehicleDims(doc, ['wheel-front-left'], 'seat');
+    expect(d.seat).toEqual([0, 1.15, 0]);
+    expect(vehicleDims(car(), ['wheel-front-left']).seat).toBeUndefined();
+    expect(() => vehicleDims(car(), ['wheel-front-left'], 'seat')).toThrow();
+  });
 });
