@@ -11,6 +11,15 @@ export const TRIANGLE_LIMITS: Record<ModelKind, number> = {
 };
 /** Hubschrauber: Hauptfahrzeug für die große Karte, oft nah im Bild (Design world-expansion-helicopter D7). */
 export const HELICOPTER_TRIANGLES = 6000;
+/** Große Wahrzeichen der Region (Hochhäuser, Terminal, Bahnhofshallen; Change landmarks-region D3). */
+export const LANDMARK_LARGE_TRIANGLES = 15000;
+
+/** Dreiecksgrenze eines Rezepts. */
+export function triangleLimitFor(r: { kind: ModelKind; large?: boolean; vehicle?: { vehicleKind?: number } }): number {
+  if (r.vehicle?.vehicleKind === 3) return HELICOPTER_TRIANGLES;
+  if (r.kind === 'landmark' && r.large) return LANDMARK_LARGE_TRIANGLES;
+  return TRIANGLE_LIMITS[r.kind];
+}
 /** Höchstzahl der Materialien je Art (Wahrzeichen ≤ 2, sonst feste Farben + Farbzonen). */
 export const MATERIAL_LIMITS: Record<ModelKind, number> = { figure: 4, npc: 4, vehicle: 4, prop: 3, landmark: 2 };
 export const MAX_TEXTURE_SIZE = 512;

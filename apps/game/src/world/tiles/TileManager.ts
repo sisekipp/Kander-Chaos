@@ -23,8 +23,8 @@ export interface TileManagerOptions {
   /** Upload-Budget pro Bild in ms. */
   uploadBudgetMs?: number;
   onTileBuilt?: (t: BuiltTile) => void;
-  /** Gebäude-IDs mit Wahrzeichen-Modell: in Ring 0 und 1 nicht generieren (dort steht das Modell). */
-  skipBuildings?: number[];
+  /** Gebäude-IDs mit geladenem Wahrzeichen-Modell je Kachel: in Ring 0 und 1 nicht generieren. */
+  skipBuildings?: (tileId: string) => number[];
   /** Quelle für Nachladeregionen (ohne: alle Pakete liegen unter `worldUrl`). */
   packs?: PackSource;
 }
@@ -41,6 +41,7 @@ export class TileManager {
   private readonly staging = new Map<string, TileState>();
   private readonly inFlight = new Map<string, Ring>();
   private readonly desired = new Map<string, Ring>();
+  private readonly refreshAfter = new Set<string>();
   private readonly queue = new UploadQueue();
   private lastPlan = -Infinity;
   private vegetationDensity: number;
@@ -56,6 +57,14 @@ export class TileManager {
     this.vegetationDensity = o.vegetationDensity;
     // Paket fertig oder gesperrt -> sofort neu planen
     if (o.packs) o.packs.onChange = () => (this.lastPlan = -Infinity);
+  }
+
+  /** Kachel in ihrer aktuellen Detailstufe neu bauen (z. B. wenn ein Wahrzeichen-Modell eingetroffen ist). */
+  refresh(tileId: string): void {
+    const t = this.loaded.get(tileId);
+    // Kachel gerade im Bau: danach noch einmal bauen (sonst fehlt das gerade eingetroffene Modell)
+    if (this.inFlight.has(tileId) || this.staging.has(tileId)) this.refreshAfter.add(tileId);
+    else if (t) this.request(tileId, t.ring, 0);
   }
 
   /** Liegt (x, z) in einer Kachel, deren Nachladeregion gerade nicht ladbar ist? */
@@ -188,7 +197,7 @@ export class TileManager {
           tileBytes,
           ring,
           vegetationDensity: this.vegetationDensity,
-          skipBuildings: ring <= 1 ? this.o.skipBuildings : undefined,
+          skipBuildings: ring <= 1 ? this.o.skipBuildings?.(id) : undefined,
         }),
       )
       .then((built) => {
@@ -228,6 +237,7 @@ export class TileManager {
         this.loaded.set(b.tileId, tile);
         this.staging.delete(b.tileId);
         this.registry.ready(tile);
+        if (this.refreshAfter.delete(b.tileId)) this.refresh(b.tileId);
       }),
     });
   }

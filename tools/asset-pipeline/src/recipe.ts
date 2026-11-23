@@ -29,6 +29,10 @@ export interface Recipe {
   /** Bereiche, die als lösbare Teile (`detach_*`) abgetrennt werden (Koordinaten der Quelle). */
   parts?: PartCut[];
   vehicle?: VehicleRecipe;
+  /** Wahrzeichen der Region: Ausgabe nach `models-remote/`, wird bei Bedarf nachgeladen. */
+  remote?: boolean;
+  /** Großes Wahrzeichen: höhere Dreiecksgrenze. */
+  large?: boolean;
 }
 
 /** Eintrag im Manifest `apps/game/public/models/manifest.json` (liest das Spiel). */
@@ -41,6 +45,8 @@ export interface ManifestEntry {
   zones: string[];
   parts: string[];
   vehicle?: Omit<VehicleRecipe, 'wheels'> & VehicleDims;
+  /** Prüfsumme (nur Modelle der Region, für den Region-Cache). */
+  sha256?: string;
 }
 
 export function parseRecipe(json: unknown, file: string): Recipe {

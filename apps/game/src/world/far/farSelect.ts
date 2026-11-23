@@ -72,3 +72,46 @@ export function farGrid(
     }
   return { positions, indices: new Uint32Array(idx), heights };
 }
+
+/** Quader einer Silhouette in Weltlage: Mitte, Größe und Gierwinkel (Babylon: RotationY). */
+export interface SilhouetteBox {
+  x: number;
+  y: number;
+  z: number;
+  sx: number;
+  sy: number;
+  sz: number;
+  yaw: number;
+}
+
+/** Vereinfachte Form eines Wahrzeichens: Quader [lx, y, lz, sx, sy, sz] im Modellsystem (Mitte, Größe). */
+export type SilhouetteShape = number[][];
+
+/**
+ * Quader für die gewählten Einträge: Wahrzeichen mit Form -> deren Quader, gedreht nach der Längsachse
+ * (ux, uz); sonst ein Quader nach Ausdehnung und Höhe. `ground` = Geländehöhe am Fußpunkt.
+ */
+export function silhouetteBoxes(
+  list: (SilhouetteSource & { landmarkId?: string })[],
+  pick: number[],
+  shapes: Record<string, SilhouetteShape>,
+  landmarks: Map<string, { x: number; z: number; ux: number; uz: number }>,
+  ground: (x: number, z: number) => number,
+): SilhouetteBox[] {
+  const out: SilhouetteBox[] = [];
+  for (const i of pick) {
+    const e = list[i];
+    const shape = e.landmarkId ? shapes[e.landmarkId] : undefined;
+    const lm = e.landmarkId ? landmarks.get(e.landmarkId) : undefined;
+    if (shape?.length && lm) {
+      const g = ground(lm.x, lm.z);
+      const yaw = Math.atan2(-lm.uz, lm.ux);
+      for (const [lx, y, lz, sx, sy, sz] of shape)
+        out.push({ x: lm.x + lx * lm.ux - lz * lm.uz, y: g + y, z: lm.z + lx * lm.uz + lz * lm.ux, sx, sy, sz, yaw });
+    } else {
+      const g = ground(e.x, e.z);
+      out.push({ x: e.x, y: g + e.h / 2, z: e.z, sx: e.w, sy: e.h, sz: e.d, yaw: 0 });
+    }
+  }
+  return out;
+}

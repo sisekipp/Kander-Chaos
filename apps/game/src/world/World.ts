@@ -28,7 +28,7 @@ import { FlySession } from '../fly/FlySession.ts';
 
 export { WORLD_URL, loadWorldIndex, type Place } from './worldSetup.ts';
 import { createTiles, loadWorldIndex, WORLD_URL, type Place } from './worldSetup.ts';
-import { createPackSource } from '../offline/regions.ts';
+import { attachRemoteModels, createPackSource } from '../offline/regions.ts';
 import { RegionBorder } from './regionBorder.ts';
 import { FarView } from './far/FarView.ts';
 import type { PackSource } from '../offline/packSource.ts';
@@ -76,6 +76,8 @@ export class World {
     const fromSave =
       opts.save && opts.save.worldVersion === index.buildVersion ? { x: opts.save.x, z: opts.save.z } : undefined;
     const packs = await createPackSource(index, WORLD_URL).catch(() => null);
+    const models = getModels();
+    if (models) await attachRemoteModels(models, index.buildVersion).catch(() => {});
     return new World(game, index, places, physics, opts.start ?? fromSave ?? index.spawn, landmarks, helipads, packs);
   }
 
@@ -115,7 +117,7 @@ export class World {
     game.camera.detachControl();
     game.camera.maxZ = 2600;
     this.panorama = createPanorama(scene, scene.fogColor);
-    void FarView.load(scene, WORLD_URL).then((f) => (this.disposedFar ? f?.dispose() : (this.far = f)));
+    void FarView.load(scene, WORLD_URL, landmarkList).then((f) => (this.disposedFar ? f?.dispose() : (this.far = f)));
     this.player = new PlayerController(scene, game.camera, this.tiles, new Vector3(start.x, 0, start.z), physics);
     this.player.vehicles = this.vehicles;
     this.unsubs.push(useGameStore.subscribe((st) => (this.player.simpleDriving = st.simpleDriving)));

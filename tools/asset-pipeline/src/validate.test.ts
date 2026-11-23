@@ -6,6 +6,7 @@ import {
   checkBudget,
   countTriangles,
   detachableParts,
+  triangleLimitFor,
   validateModel,
 } from './validate.ts';
 
@@ -47,6 +48,13 @@ describe('Prüfregeln für Modelle', () => {
     expect(validateModel('bank', 'prop', model(700))[0]).toContain('700 Dreiecke > 600');
     expect(validateModel('kirche', 'landmark', model(7000))).toEqual([]);
     expect(validateModel('figur', 'figure', model(3200))[0]).toContain('> 3000');
+  });
+
+  it('große Wahrzeichen der Region bis 15.000 Dreiecke, normale bis 8.000', () => {
+    const doc = model(12000);
+    expect(validateModel('roche', 'landmark', doc, triangleLimitFor({ kind: 'landmark', large: true }))).toEqual([]);
+    expect(validateModel('kapelle', 'landmark', doc, triangleLimitFor({ kind: 'landmark' }))[0]).toContain('> 8000');
+    expect(triangleLimitFor({ kind: 'vehicle', vehicle: { vehicleKind: 3 } })).toBe(HELICOPTER_TRIANGLES);
   });
 
   it('Hubschrauber darf bis 6.000 Dreiecke haben (eigene Grenze), Autos nur 2.500', () => {

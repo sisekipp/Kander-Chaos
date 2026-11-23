@@ -34,6 +34,8 @@ from landmark_styles import (  # noqa: E402
     townhall,
 )
 from lmkit import box, color, cyl, export, pyramid  # noqa: E402
+from region_detail import REGION_DETAILS  # noqa: E402
+from region_styles import REGION_STYLES  # noqa: E402
 
 OUT = sys.argv[sys.argv.index("--") + 1] if "--" in sys.argv else "assets/landmarks"
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../.."))
@@ -198,19 +200,71 @@ DETAILS = {
 }
 
 
+SILHOUETTES = {}
+
+
+def silhouette(lm_id, max_boxes=8):
+    """Vereinfachte Form für die Fernsicht: die größten Bauteile als Quader im Modellsystem (lx, y, lz)."""
+    from mathutils import Vector
+
+    parts = []
+    for objs in kit.groups.values():
+        for o in objs:
+            pts = [o.matrix_world @ Vector(c) for c in o.bound_box]
+            xs, ys, zs = [p.x for p in pts], [p.y for p in pts], [p.z for p in pts]
+            sx, sy, sz = max(xs) - min(xs), max(ys) - min(ys), max(zs) - min(zs)
+            if sz < 0.5 or max(zs) < 1.0:
+                continue
+            # Blender (bx, by, bz) -> Modell (lx = −bx, y = bz, lz = −by)
+            cx, cy, cz = (max(xs) + min(xs)) / 2, (max(ys) + min(ys)) / 2, (max(zs) + min(zs)) / 2
+            parts.append((sx * sy * sz, [round(-cx, 1), round(cz, 1), round(-cy, 1), round(sx, 1), round(sz, 1), round(sy, 1)]))
+    parts.sort(key=lambda p: -p[0])
+    SILHOUETTES[lm_id] = [p[1] for p in parts[:max_boxes]]
+
+
+def existing_ids():
+    """Bisher gebaute Kandern-Wahrzeichen (aus dem letzten Rezept); dieser Bestand bleibt fest."""
+    path = os.path.join(ROOT, "assets/recipes/landmarks.json")
+    if not os.path.exists(path):
+        return None
+    return {r["id"].removeprefix("landmark-") for r in json.load(open(path)) if not r.get("remote")}
+
+
+KEEP = existing_ids()
+
+
+def wanted(lm):
+    """Modell bauen? Liste der Region (region.json) und der bisherige Kandern-Bestand."""
+    if lm.get("region"):
+        return True
+    return (lm["id"] in KEEP) if KEEP is not None else not lm.get("remote")
+
+
 def build(lm):
-    fn = DETAILS.get(lm.get("detail") or "") or STYLES.get(lm["style"])
+    if not wanted(lm):
+        return False
+    detail = lm.get("detail") or ""
+    fn = DETAILS.get(detail) or REGION_DETAILS.get(detail) or STYLES.get(lm["style"]) or REGION_STYLES.get(lm["style"])
     if fn is None:
         print(f"[landmarks] {lm['id']}: keine Vorlage für {lm['style']}")
         return False
     kit.reset()
     fn(lm)
+    if lm.get("region"):
+        silhouette(lm["id"])
     export(lm["id"], OUT)
     return True
 
 
-def write_recipes_and_registry(ids):
-    recipes = [{"id": f"landmark-{i}", "kind": "landmark", "source": f"landmarks/{i}.glb"} for i in ids]
+def write_recipes_and_registry(ids, by_id):
+    recipes = []
+    for i in ids:
+        r = {"id": f"landmark-{i}", "kind": "landmark", "source": f"landmarks/{i}.glb"}
+        if by_id[i].get("region"):
+            r["remote"] = True  # Modell wird bei Bedarf nachgeladen (models-remote/)
+        if by_id[i].get("large"):
+            r["large"] = True  # höhere Dreiecksgrenze (Hochhaus, Terminal)
+        recipes.append(r)
     with open(os.path.join(ROOT, "assets/recipes/landmarks.json"), "w") as f:
         f.write(json.dumps(recipes, indent=2, ensure_ascii=False) + "\n")
     path = os.path.join(ROOT, "assets/registry.json")
@@ -237,5 +291,8 @@ def write_recipes_and_registry(ids):
 data = json.load(open(os.path.join(ROOT, "assets/landmarks/footprints.json")))
 os.makedirs(OUT, exist_ok=True)
 built = [lm["id"] for lm in data["landmarks"] if build(lm)]
-write_recipes_and_registry(sorted(built))
+write_recipes_and_registry(sorted(built), {lm["id"]: lm for lm in data["landmarks"]})
+# Silhouetten der Wahrzeichen der Region für die Fernsicht (klein, gehört zum Kern)
+with open(os.path.join(ROOT, "apps/game/public/world/silhouettes.json"), "w") as f:
+    f.write(json.dumps({"version": 1, "silhouettes": SILHOUETTES}, separators=(",", ":")) + "\n")
 print(f"[landmarks] fertig: {len(built)} Modelle")

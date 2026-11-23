@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vite-plus/test';
 import { LandKind, RoadKind, type PackEntry, type TileData } from '@kandern/world-format';
-import { checkBudgets, checkRegion, MB } from './check.ts';
+import { checkBudgets, checkLandmarks, checkRegion, MB } from './check.ts';
 
 describe('checkBudgets', () => {
   const p = (bytes: number, remote = false) => ({ file: `f${bytes}`, bytes, sha256: '', remote }) as PackEntry;
@@ -39,5 +39,18 @@ describe('checkRegion', () => {
     const r = checkRegion([tile(0, 0, {})], [{ id: 1, x: 120, z: 90, h: 90, w: 30, d: 30 }], targets);
     expect(r.ok).toBe(false);
     expect(r.messages.filter((m) => m.startsWith('✘'))).toHaveLength(4);
+  });
+});
+
+describe('checkLandmarks', () => {
+  const sky = [{ id: 1, x: 0, z: 0, h: 205, w: 30, d: 30, landmarkId: 'roche' }];
+  it('alle gefunden, Höhe passt', () => {
+    expect(checkLandmarks([{ id: 'roche', height: 200 }], [{ id: 'roche' }], sky).ok).toBe(true);
+  });
+  it('fehlendes Wahrzeichen und falsche Höhe werden gemeldet', () => {
+    const r = checkLandmarks([{ id: 'roche', height: 150 }, { id: 'muenster' }], [{ id: 'roche' }], sky);
+    expect(r.ok).toBe(false);
+    expect(r.messages.join(' ')).toContain('muenster');
+    expect(r.messages.join(' ')).toContain('205 m statt 150 m');
   });
 });

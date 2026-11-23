@@ -1,19 +1,10 @@
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import {
-  buildFarTerrain,
-  buildPack,
-  buildWorldIndex,
-  encodeFarTerrain,
-  sampleHeight,
-  tileId,
-  type BuiltPack,
-  type TileData,
-} from '@kandern/world-format';
+import { buildPack, buildWorldIndex, tileId, type BuiltPack, type TileData } from '@kandern/world-format';
 import { config, REGIONAL, REMOTE_BASE } from './config.ts';
 import { isRemotePack } from './region/area.ts';
-import { buildSkyline } from './region/skyline.ts';
+import { writeFarOutputs } from './region/farOutputs.ts';
 import { projectToWorld, tilesOf } from './area.ts';
 import { rawPaths, worldArea } from './fetch.ts';
 import { DgmGrid } from './dgm.ts';
@@ -255,25 +246,12 @@ export async function runBuild(outDir = config.paths.out): Promise<BuildResult> 
     (x, z) => included.has(tileId(Math.floor(x / config.tileSize), Math.floor(z / config.tileSize))),
     height,
   );
+  for (const l of landmarks) {
+    const loc = index.tiles[tileId(Math.floor(l.x / config.tileSize), Math.floor(l.z / config.tileSize))];
+    if (loc && index.packs[loc[0]].remote) l.remote = true;
+  }
   await writeLandmarks(landmarks, outDir);
-  // Fernsicht-Gelände: 64-m-Raster der ganzen Region aus der gröbsten Höhenstufe der Kacheln (gehört zum Kern)
-  const ts = config.tileSize;
-  const byTile = new Map(tiles.map((t) => [tileId(t.tx, t.tz), t]));
-  const b = index.bounds;
-  const far = buildFarTerrain(
-    { minX: b.minTx * ts, minZ: b.minTz * ts, maxX: (b.maxTx + 1) * ts, maxZ: (b.maxTz + 1) * ts },
-    64,
-    (x, z) => {
-      const t = byTile.get(tileId(Math.floor(x / ts), Math.floor(z / ts)));
-      return t ? sampleHeight(t, t.lods[t.lods.length - 1], x - t.tx * ts, z - t.tz * ts) : null;
-    },
-  );
-  await writeFile(path.join(outDir, 'farterrain.bin'), encodeFarTerrain(far));
-  log(`Fernsicht-Gelände ${far.cols} × ${far.rows} Punkte`);
-  // Fernsicht-Liste der hohen Gebäude (klein, gehört zum Kern)
-  const skyline = buildSkyline(tiles);
-  await writeFile(path.join(outDir, 'skyline.json'), JSON.stringify({ version: 1, buildings: skyline }));
-  log(`${skyline.length} Gebäude ≥ 40 m in der Fernsicht-Liste`);
+  await writeFarOutputs(outDir, tiles, index, landmarks, log);
   const nPads = await writeHelipads(outDir, projectToWorld, (x, z) =>
     included.has(tileId(Math.floor(x / config.tileSize), Math.floor(z / config.tileSize))),
   );

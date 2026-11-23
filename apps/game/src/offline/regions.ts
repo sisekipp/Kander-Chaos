@@ -1,5 +1,9 @@
 import { sha256Hex, type WorldIndex } from '@kandern/world-format';
 import { PackSource } from './packSource.ts';
+import { RemoteFiles } from './remoteFiles.ts';
+import { BASE_URL } from '../engine/assets.ts';
+import { parseManifest } from '../assets/manifest.ts';
+import type { ModelRegistry } from '../assets/ModelRegistry.ts';
 import { RegionCache, regionCacheName, type CacheLike, type MetaStore, type RegionEntry } from './regionCache.ts';
 
 /** Verdrahtung im Browser: Region-Cache (Cache-API + localStorage) und Paketquelle für einen Weltindex. */
@@ -61,4 +65,17 @@ export async function createPackSource(index: WorldIndex, worldUrl: string): Pro
     store: await regionCache(index.buildVersion),
     sha256: sha256Hex,
   });
+}
+
+/** Modelle der Region (Wahrzeichen) an die Registry hängen: gleicher Region-Cache, gleiches Budget. */
+export async function attachRemoteModels(registry: ModelRegistry, buildVersion: string): Promise<void> {
+  const base = new URL(`${BASE_URL}models-remote/`, location.href).href;
+  const res = await fetch(`${base}manifest-remote.json`).catch(() => null);
+  if (!res?.ok) return;
+  const entries = parseManifest(await res.json()).models;
+  if (!entries.length) return;
+  registry.attachRemote(
+    entries,
+    new RemoteFiles(base, { fetch: (u) => fetch(u), store: await regionCache(buildVersion), sha256: sha256Hex }),
+  );
 }

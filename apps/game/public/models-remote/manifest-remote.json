@@ -1,0 +1,315 @@
+{
+  "version": 1,
+  "models": [
+    {
+      "id": "landmark-basel-badischer-bahnhof",
+      "kind": "landmark",
+      "file": "landmark-basel-badischer-bahnhof.acd49eb21b.glb",
+      "bytes": 14384,
+      "triangles": 568,
+      "zones": [],
+      "parts": [],
+      "sha256": "acd49eb21b3a579557bdf83baf808320a90c9b9ce4059fa3ba89aa09bdf3e198"
+    },
+    {
+      "id": "landmark-basel-claraturm",
+      "kind": "landmark",
+      "file": "landmark-basel-claraturm.fad6578df7.glb",
+      "bytes": 9120,
+      "triangles": 324,
+      "zones": [],
+      "parts": [],
+      "sha256": "fad6578df7408fd5eded7a1e41a8a9caee87a281c82d038c1ae193876f062aa0"
+    },
+    {
+      "id": "landmark-basel-messe",
+      "kind": "landmark",
+      "file": "landmark-basel-messe.328a522fb6.glb",
+      "bytes": 10708,
+      "triangles": 508,
+      "zones": [],
+      "parts": [],
+      "sha256": "328a522fb6b3943978367766661b21d92128e9734ad4003d1dfe267efbd0c106"
+    },
+    {
+      "id": "landmark-basel-messeturm",
+      "kind": "landmark",
+      "file": "landmark-basel-messeturm.eb15bc7a5b.glb",
+      "bytes": 11168,
+      "triangles": 476,
+      "zones": [],
+      "parts": [],
+      "sha256": "eb15bc7a5bcdae0f570acd96517a5439b898c786af6adf075dc1edfc5aea1f98"
+    },
+    {
+      "id": "landmark-basel-mittlere-bruecke",
+      "kind": "landmark",
+      "file": "landmark-basel-mittlere-bruecke.c101b5f341.glb",
+      "bytes": 10268,
+      "triangles": 504,
+      "zones": [],
+      "parts": [],
+      "sha256": "c101b5f341137017a4fe58fd1d6578196152742aadc89ed59131bb8bfd74370f"
+    },
+    {
+      "id": "landmark-basel-muenster",
+      "kind": "landmark",
+      "file": "landmark-basel-muenster.955a0d7b42.glb",
+      "bytes": 16596,
+      "triangles": 824,
+      "zones": [],
+      "parts": [],
+      "sha256": "955a0d7b4217cbea9354376e2728b51cfef7f8e27c7a6485318297d39e072035"
+    },
+    {
+      "id": "landmark-basel-rathaus",
+      "kind": "landmark",
+      "file": "landmark-basel-rathaus.06ef7df369.glb",
+      "bytes": 49240,
+      "triangles": 3120,
+      "zones": [],
+      "parts": [],
+      "sha256": "06ef7df369eae13292cab86cf460dab2bde984ada7705e5df80fe14269628ae8"
+    },
+    {
+      "id": "landmark-basel-roche-bau-1",
+      "kind": "landmark",
+      "file": "landmark-basel-roche-bau-1.30e01cb1aa.glb",
+      "bytes": 24592,
+      "triangles": 2268,
+      "zones": [],
+      "parts": [],
+      "sha256": "30e01cb1aaf666f2043c25a4fd8b522aa5664dc8cf54762e6c6c0e82520eaae3"
+    },
+    {
+      "id": "landmark-basel-roche-bau-2",
+      "kind": "landmark",
+      "file": "landmark-basel-roche-bau-2.8999153318.glb",
+      "bytes": 28708,
+      "triangles": 3420,
+      "zones": [],
+      "parts": [],
+      "sha256": "899915331894ccfa1f350f66136a4a8cb3666bf0640fd543c714640b1d65bdf6"
+    },
+    {
+      "id": "landmark-basel-sbb",
+      "kind": "landmark",
+      "file": "landmark-basel-sbb.68f333a284.glb",
+      "bytes": 14028,
+      "triangles": 536,
+      "zones": [],
+      "parts": [],
+      "sha256": "68f333a284f6adb37483932e0a5531a92bd1000bcde016c6ecf02edf8af13080"
+    },
+    {
+      "id": "landmark-basel-spalentor",
+      "kind": "landmark",
+      "file": "landmark-basel-spalentor.bb6f6f6ebc.glb",
+      "bytes": 10888,
+      "triangles": 408,
+      "zones": [],
+      "parts": [],
+      "sha256": "bb6f6f6ebc7aad7d6c2f996791703945d7a5e63403f2b4d870e886de74609116"
+    },
+    {
+      "id": "landmark-basel-st-jakob-park",
+      "kind": "landmark",
+      "file": "landmark-basel-st-jakob-park.77e802eb50.glb",
+      "bytes": 6376,
+      "triangles": 156,
+      "zones": [],
+      "parts": [],
+      "sha256": "77e802eb504b38790e0c89e9eb6dc99740e94f15ddd4cbf23d152d7db8016504"
+    },
+    {
+      "id": "landmark-basel-st-jakob-turm",
+      "kind": "landmark",
+      "file": "landmark-basel-st-jakob-turm.e066987bb7.glb",
+      "bytes": 10156,
+      "triangles": 392,
+      "zones": [],
+      "parts": [],
+      "sha256": "e066987bb7c9ddd65256257136bd2a076d55f40c5b76cb85b288208d5fee638b"
+    },
+    {
+      "id": "landmark-euroairport-flugzeug-1",
+      "kind": "landmark",
+      "file": "landmark-euroairport-flugzeug-1.40476dfcb1.glb",
+      "bytes": 11860,
+      "triangles": 424,
+      "zones": [],
+      "parts": [],
+      "sha256": "40476dfcb1662ab0d4e667188e4fdeb51b37a14a0d092f855ac3473a4d773c02"
+    },
+    {
+      "id": "landmark-euroairport-flugzeug-2",
+      "kind": "landmark",
+      "file": "landmark-euroairport-flugzeug-2.40476dfcb1.glb",
+      "bytes": 11860,
+      "triangles": 424,
+      "zones": [],
+      "parts": [],
+      "sha256": "40476dfcb1662ab0d4e667188e4fdeb51b37a14a0d092f855ac3473a4d773c02"
+    },
+    {
+      "id": "landmark-euroairport-flugzeug-3",
+      "kind": "landmark",
+      "file": "landmark-euroairport-flugzeug-3.40476dfcb1.glb",
+      "bytes": 11860,
+      "triangles": 424,
+      "zones": [],
+      "parts": [],
+      "sha256": "40476dfcb1662ab0d4e667188e4fdeb51b37a14a0d092f855ac3473a4d773c02"
+    },
+    {
+      "id": "landmark-euroairport-flugzeug-4",
+      "kind": "landmark",
+      "file": "landmark-euroairport-flugzeug-4.f7d33bf544.glb",
+      "bytes": 11936,
+      "triangles": 424,
+      "zones": [],
+      "parts": [],
+      "sha256": "f7d33bf54458b64c7245361446331054269af4df49b929f014506b9e8d576c37"
+    },
+    {
+      "id": "landmark-euroairport-flugzeug-5",
+      "kind": "landmark",
+      "file": "landmark-euroairport-flugzeug-5.f43731e625.glb",
+      "bytes": 11936,
+      "triangles": 424,
+      "zones": [],
+      "parts": [],
+      "sha256": "f43731e625097246fcbaa7c49aacb3f95738626138799517e00fa72f41fb1ad9"
+    },
+    {
+      "id": "landmark-euroairport-hangar-1",
+      "kind": "landmark",
+      "file": "landmark-euroairport-hangar-1.b137c74510.glb",
+      "bytes": 5328,
+      "triangles": 100,
+      "zones": [],
+      "parts": [],
+      "sha256": "b137c74510361384155dff0f780d4aaf3a4ec3f8daa227210d7a2290fd043b5a"
+    },
+    {
+      "id": "landmark-euroairport-hangar-2",
+      "kind": "landmark",
+      "file": "landmark-euroairport-hangar-2.472bddad8d.glb",
+      "bytes": 5320,
+      "triangles": 100,
+      "zones": [],
+      "parts": [],
+      "sha256": "472bddad8df9ef06148bf11a4cc0c32ec68fd1d9e3055d27a2214bc6147ebd00"
+    },
+    {
+      "id": "landmark-euroairport-terminal",
+      "kind": "landmark",
+      "file": "landmark-euroairport-terminal.3bfe4ac464.glb",
+      "bytes": 27012,
+      "triangles": 2480,
+      "zones": [],
+      "parts": [],
+      "sha256": "3bfe4ac464a7e5d4f08f12cffb50bfe82d96d8c1fe9f00f912404e49ba89d1af"
+    },
+    {
+      "id": "landmark-euroairport-tower",
+      "kind": "landmark",
+      "file": "landmark-euroairport-tower.4a288e0790.glb",
+      "bytes": 8760,
+      "triangles": 260,
+      "zones": [],
+      "parts": [],
+      "sha256": "4a288e0790eac9d821db2d4c2118bb955baa9b013840b3dd914d6d180e20d3a9"
+    },
+    {
+      "id": "landmark-loerrach-bahnhof",
+      "kind": "landmark",
+      "file": "landmark-loerrach-bahnhof.189c0c1298.glb",
+      "bytes": 45544,
+      "triangles": 3152,
+      "zones": [],
+      "parts": [],
+      "sha256": "189c0c1298f2215bc98f648550a24a7af5fb44c4db046593c7232a1c6acec644"
+    },
+    {
+      "id": "landmark-loerrach-burg-roetteln",
+      "kind": "landmark",
+      "file": "landmark-loerrach-burg-roetteln.d16b0dfb14.glb",
+      "bytes": 5680,
+      "triangles": 168,
+      "zones": [],
+      "parts": [],
+      "sha256": "d16b0dfb14c9f9bed82a76f316c201b87257e4b25108d63cc2eb059dd3b3e205"
+    },
+    {
+      "id": "landmark-loerrach-rathaus",
+      "kind": "landmark",
+      "file": "landmark-loerrach-rathaus.17049e4ea8.glb",
+      "bytes": 30220,
+      "triangles": 2572,
+      "zones": [],
+      "parts": [],
+      "sha256": "17049e4ea83fbe43faac5741005eebc7207d0d058121e5d18980d64afb2577ae"
+    },
+    {
+      "id": "landmark-muellheim-bahnhof",
+      "kind": "landmark",
+      "file": "landmark-muellheim-bahnhof.298e20df15.glb",
+      "bytes": 29320,
+      "triangles": 1676,
+      "zones": [],
+      "parts": [],
+      "sha256": "298e20df15cf2616d0720c58908c3080516ce96cc832e261ac365247ed385076"
+    },
+    {
+      "id": "landmark-muellheim-martinskirche",
+      "kind": "landmark",
+      "file": "landmark-muellheim-martinskirche.c92b189091.glb",
+      "bytes": 24028,
+      "triangles": 992,
+      "zones": [],
+      "parts": [],
+      "sha256": "c92b1890917c892d814f2d2c718eeac8d1be6b56f6267bbdcb1c2a58f28c2672"
+    },
+    {
+      "id": "landmark-weil-dreilaenderbruecke",
+      "kind": "landmark",
+      "file": "landmark-weil-dreilaenderbruecke.78f8bf174e.glb",
+      "bytes": 8644,
+      "triangles": 348,
+      "zones": [],
+      "parts": [],
+      "sha256": "78f8bf174e1fe1bed74eae15122e9f69dcf591df132fa3f7f83983778301f65f"
+    },
+    {
+      "id": "landmark-weil-vitra-design-museum",
+      "kind": "landmark",
+      "file": "landmark-weil-vitra-design-museum.8a7dc78a42.glb",
+      "bytes": 4364,
+      "triangles": 60,
+      "zones": [],
+      "parts": [],
+      "sha256": "8a7dc78a427982cf2eb5cd50f5b35cc7deb1f5d8a687befd0b5545de13829510"
+    },
+    {
+      "id": "landmark-weil-vitra-feuerwehrhaus",
+      "kind": "landmark",
+      "file": "landmark-weil-vitra-feuerwehrhaus.e38a4b316d.glb",
+      "bytes": 4336,
+      "triangles": 60,
+      "zones": [],
+      "parts": [],
+      "sha256": "e38a4b316d21b433a80c34d8ac3128bcafe84eb4dc6c96bacf7689df9aa4813f"
+    },
+    {
+      "id": "landmark-weil-vitra-haus",
+      "kind": "landmark",
+      "file": "landmark-weil-vitra-haus.dd74913aa8.glb",
+      "bytes": 4452,
+      "triangles": 120,
+      "zones": [],
+      "parts": [],
+      "sha256": "dd74913aa8fc2492632ebaf61ebff0fa6a8bb1b9105b391084dbe4d63afa89af"
+    }
+  ]
+}

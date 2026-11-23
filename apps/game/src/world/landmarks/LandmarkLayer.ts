@@ -41,15 +41,39 @@ export class LandmarkLayer implements TileLayer {
     this.material = createVertexColorMaterial(scene, 'landmark-mat');
   }
 
-  /** Wahrzeichen mit vorhandenem Modell: deren Gebäude lässt der Worker in Ring 0 und 1 aus. */
+  /** Wahrzeichen mit Modell im Kern oder in der Region (Regionsmodelle werden bei Bedarf nachgeladen). */
   static usable(landmarks: LandmarkInfo[], registry: ModelRegistry | null): LandmarkInfo[] {
-    const ids = new Set(registry?.ids ?? []);
-    return landmarks.filter((l) => ids.has(landmarkModelId(l)));
+    return registry ? landmarks.filter((l) => registry.knows(landmarkModelId(l))) : [];
+  }
+
+  /**
+   * Gebäude-IDs, die der Worker in dieser Kachel weglässt: nur Wahrzeichen, deren Modell schon geladen ist.
+   * Fehlt ein Regionsmodell (noch unterwegs, offline), bleibt das generierte Gebäude stehen.
+   */
+  skipFor(tileId: string): number[] {
+    const out: number[] = [];
+    for (const l of this.byTile.get(tileId) ?? [])
+      if (l.buildingId !== null && this.registry.isLoaded(landmarkModelId(l))) out.push(l.buildingId);
+    return out;
+  }
+
+  /** Meldet, welche Kachel neu gebaut werden muss, sobald ihr Regionsmodell eingetroffen ist. */
+  watchRemote(refresh: (tileId: string) => void): () => void {
+    return this.registry.onReady((id) => {
+      for (const [tid, list] of this.byTile) if (list.some((l) => landmarkModelId(l) === id)) refresh(tid);
+    });
   }
 
   upload(tile: TileState, b: BuiltTile): (() => void)[] {
-    if (b.ring > 1) return [];
-    return (this.byTile.get(tile.id) ?? []).map((l) => () => this.place(tile, l, b.ring === 0));
+    const list = this.byTile.get(tile.id) ?? [];
+    // Ring 2: Regionsmodelle schon vorausladen, damit sie in Ring 1 bereitstehen
+    if (b.ring > 1) {
+      for (const l of list) this.registry.ensure(landmarkModelId(l), 1000);
+      return [];
+    }
+    return list
+      .filter((l) => this.registry.ensure(landmarkModelId(l), 0))
+      .map((l) => () => this.place(tile, l, b.ring === 0));
   }
 
   private place(tile: TileState, l: LandmarkInfo, near: boolean): void {

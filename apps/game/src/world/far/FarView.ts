@@ -9,7 +9,13 @@ import type { Scene } from '@babylonjs/core/scene';
 import type { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import type { Game } from '../../engine/Game.ts';
 import { decodeFarTerrain, farHeightAt, type FarTerrain } from '@kandern/world-format';
-import { farGrid, visibleSilhouettes, type SilhouetteSource } from './farSelect.ts';
+import {
+  farGrid,
+  silhouetteBoxes,
+  visibleSilhouettes,
+  type SilhouetteShape,
+  type SilhouetteSource,
+} from './farSelect.ts';
 
 /** Sichtweite im Flug: mindestens 12 km laut Spec; 20 km, damit Basel von Kandern aus (≈ 17 km) zu sehen ist. */
 export const FAR_RANGE = 20000;
@@ -23,6 +29,8 @@ export class FarView {
   private readonly terrain: Mesh | null;
   private readonly boxes: Mesh;
   private readonly list: SilhouetteSource[];
+  private shapes: Record<string, SilhouetteShape> = {};
+  private landmarks = new Map<string, { x: number; z: number; ux: number; uz: number }>();
   private active = false;
   private sinceUpdate = 1e9;
 
@@ -44,17 +52,27 @@ export class FarView {
   }
 
   /** Lädt `farterrain.bin` und `skyline.json`; fehlt beides, gibt es keine Fernsicht (null). */
-  static async load(scene: Scene, worldUrl: string): Promise<FarView | null> {
-    const [far, sky] = await Promise.all([
+  static async load(
+    scene: Scene,
+    worldUrl: string,
+    landmarks: { id: string; x: number; z: number; ux: number; uz: number }[] = [],
+  ): Promise<FarView | null> {
+    const [far, sky, sil] = await Promise.all([
       fetch(`${worldUrl}farterrain.bin`)
         .then(async (r) => (r.ok ? decodeFarTerrain(new Uint8Array(await r.arrayBuffer())) : null))
         .catch(() => null),
       fetch(`${worldUrl}skyline.json`)
         .then((r) => (r.ok ? (r.json() as Promise<{ buildings: SilhouetteSource[] }>) : null))
         .catch(() => null),
+      fetch(`${worldUrl}silhouettes.json`)
+        .then((r) => (r.ok ? (r.json() as Promise<{ silhouettes: Record<string, SilhouetteShape> }>) : null))
+        .catch(() => null),
     ]);
     if (!far && !sky?.buildings.length) return null;
-    return new FarView(scene, far, sky?.buildings ?? []);
+    const view = new FarView(scene, far, sky?.buildings ?? []);
+    view.shapes = sil?.silhouettes ?? {};
+    view.landmarks = new Map(landmarks.map((l) => [l.id, l]));
+    return view;
   }
 
   private static terrainMesh(scene: Scene, far: FarTerrain): Mesh {
@@ -108,17 +126,21 @@ export class FarView {
     if (this.sinceUpdate < 1000) return;
     this.sinceUpdate = 0;
     const pick = visibleSilhouettes(this.list, x, z, FAR_RANGE, ringAt);
-    const m = new Float32Array(pick.length * 16);
-    const tmp = new Matrix();
-    pick.forEach((i, k) => {
-      const e = this.list[i];
-      const g = this.groundAt(e.x, e.z);
-      Matrix.ScalingToRef(e.w, e.h, e.d, tmp);
-      tmp.setTranslationFromFloats(e.x, g + e.h / 2, e.z);
+    // Wahrzeichen als vereinfachte Form aus mehreren Quadern, übrige Hochhäuser als ein Quader (ein Draw Call)
+    const boxes = silhouetteBoxes(this.list, pick, this.shapes, this.landmarks, (bx, bz) => this.groundAt(bx, bz));
+    const m = new Float32Array(boxes.length * 16);
+    const scale = new Matrix(),
+      rot = new Matrix(),
+      tmp = new Matrix();
+    boxes.forEach((b, k) => {
+      Matrix.ScalingToRef(b.sx, b.sy, b.sz, scale);
+      Matrix.RotationYToRef(b.yaw, rot);
+      scale.multiplyToRef(rot, tmp);
+      tmp.setTranslationFromFloats(b.x, b.y, b.z);
       tmp.copyToArray(m, k * 16);
     });
     this.boxes.thinInstanceSetBuffer('matrix', m, 16, false);
-    this.boxes.setEnabled(pick.length > 0);
+    this.boxes.setEnabled(boxes.length > 0);
   }
 
   /**

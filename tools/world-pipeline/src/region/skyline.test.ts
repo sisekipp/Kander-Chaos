@@ -30,4 +30,16 @@ describe('buildSkyline', () => {
   it('Gebäude über Kachelgrenzen nur einmal', () => {
     expect(buildSkyline([tile(0, 0, [[7, 50, 0]]), tile(1, 0, [[7, 50, 0]])])).toHaveLength(1);
   });
+
+  it('Wahrzeichen: Sollhöhe ersetzt geschätzte Höhe, ID in der Liste; freie Wahrzeichen per Lage', () => {
+    const s = buildSkyline([tile(0, 0, [[9, 20, 0]])], 40, [
+      { id: 'roche-1', buildingId: 9, x: 0, z: 0, height: 178 },
+      { id: 'tower', buildingId: null, x: 50, z: 60, height: 45, size: [14, 14] },
+      { id: 'flugzeug', buildingId: null, x: 0, z: 0, height: 12, size: [36, 40] },
+    ]);
+    expect(s.map((e) => [e.landmarkId, e.h])).toEqual([
+      ['roche-1', 178],
+      ['tower', 45],
+    ]);
+  });
 });

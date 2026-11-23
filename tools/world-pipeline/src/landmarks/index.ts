@@ -9,7 +9,13 @@ import path from 'node:path';
 import { ensureCCW, type Building } from '@kandern/world-format';
 import { REPO_ROOT } from '../config.ts';
 import { cleanRing, type RawBuilding } from '../buildings.ts';
-import { selectLandmarks, type Landmark, type LandmarkExtra, type LandmarkOverride } from './select.ts';
+import {
+  missingOverrides,
+  selectLandmarks,
+  type Landmark,
+  type LandmarkExtra,
+  type LandmarkOverride,
+} from './select.ts';
 
 interface LandmarkConfig {
   overrides: Record<string, LandmarkOverride>;
@@ -29,6 +35,13 @@ export async function buildLandmarks(
   const cfg: LandmarkConfig = existsSync(file)
     ? (JSON.parse(await readFile(file, 'utf8')) as LandmarkConfig)
     : { overrides: {}, extras: [] };
+  // Wahrzeichen der Region: eigene Liste, als `region` markiert (Modell wird bei Bedarf nachgeladen)
+  const regionFile = path.join(LANDMARK_DIR, 'region.json');
+  if (existsSync(regionFile)) {
+    const reg = JSON.parse(await readFile(regionFile, 'utf8')) as LandmarkConfig;
+    for (const [k, v] of Object.entries(reg.overrides)) cfg.overrides[k] = { ...v, region: true };
+    cfg.extras.push(...reg.extras.map((e) => ({ ...e, region: true })));
+  }
   const rings = raw
     .filter((r) => placed.has(r.id))
     .map((r) => ({ id: r.id, tags: r.tags, outline: ensureCCW(cleanRing(r.outline)) }));
@@ -38,7 +51,10 @@ export async function buildLandmarks(
       return { ...e, x, z };
     })
     .filter((e) => inWorld(e.x, e.z));
-  return selectLandmarks(rings, placed, cfg.overrides, extras, groundAt);
+  const found = selectLandmarks(rings, placed, cfg.overrides, extras, groundAt);
+  const missing = missingOverrides(cfg.overrides, found);
+  if (missing.length) console.warn(`[build] Wahrzeichen ohne passendes OSM-Gebäude: ${missing.join(', ')}`);
+  return found;
 }
 
 export async function writeLandmarks(landmarks: Landmark[], outDir: string): Promise<void> {

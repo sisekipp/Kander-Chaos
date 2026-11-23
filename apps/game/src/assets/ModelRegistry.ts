@@ -10,6 +10,7 @@ import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_mesh_quantization';
 import { BASE_URL } from '../engine/assets.ts';
 import { configureMeshopt } from './meshopt.ts';
 import { parseManifest, type ModelEntry, type ModelManifest } from './manifest.ts';
+import type { RemoteFiles } from '../offline/remoteFiles.ts';
 
 /** Vorlage für Thin Instances: eigene Geometrie-Kopie je Teil-Mesh (Instanzpuffer hängen an der Geometrie). */
 export interface InstanceTemplate {
@@ -24,10 +25,60 @@ export interface InstanceTemplate {
  * - `instanceTemplates(id)`: Geometrie je Teil-Mesh für Thin Instances (Props)
  */
 export class ModelRegistry {
+  /** Modelle der Region (`manifest-remote.json`): werden erst bei Bedarf über `ensure` geladen. */
+  private remote = new Map<string, ModelEntry>();
+  private files: RemoteFiles | null = null;
+  private readonly listeners = new Set<(id: string) => void>();
+
   private constructor(
     readonly manifest: ModelManifest,
     private readonly containers: Map<string, AssetContainer>,
+    private readonly scene?: Scene,
   ) {}
+
+  /** Regionsmodelle bekannt machen; die Bytes kommen über `files` (Region-Cache oder Netz). */
+  attachRemote(entries: ModelEntry[], files: RemoteFiles): void {
+    this.remote = new Map(entries.map((e) => [e.id, e]));
+    this.files = files;
+    const byFile = new Map(entries.map((e) => [e.file, e]));
+    files.onLoaded = (file, data) => {
+      const e = byFile.get(file);
+      if (!e || !data || !this.scene) return;
+      files.take(file);
+      const url = URL.createObjectURL(new Blob([data], { type: 'model/gltf-binary' }));
+      void LoadAssetContainerAsync(url, this.scene, { pluginExtension: '.glb' })
+        .then((c) => {
+          this.containers.set(e.id, c);
+          for (const fn of this.listeners) fn(e.id);
+        })
+        .catch((err) => console.warn('[models]', e.id, err))
+        .finally(() => URL.revokeObjectURL(url));
+    };
+  }
+
+  /** Ist das Modell geladen (Kern oder bereits nachgeladene Region)? */
+  isLoaded(id: string): boolean {
+    return this.containers.has(id);
+  }
+
+  /** Gibt es das Modell überhaupt (Kern oder Region)? */
+  knows(id: string): boolean {
+    return this.containers.has(id) || this.remote.has(id);
+  }
+
+  /** Regionsmodell anfordern (kleinere Priorität = wichtiger); true, wenn es schon geladen ist. */
+  ensure(id: string, prio = 0): boolean {
+    if (this.containers.has(id)) return true;
+    const e = this.remote.get(id);
+    if (e && this.files) this.files.request({ file: e.file, sha256: e.sha256 ?? '', bytes: e.bytes }, prio);
+    return false;
+  }
+
+  /** Benachrichtigung, sobald ein Regionsmodell geladen ist; liefert die Abmeldung. */
+  onReady(fn: (id: string) => void): () => void {
+    this.listeners.add(fn);
+    return () => this.listeners.delete(fn);
+  }
 
   static async load(
     scene: Scene,
@@ -48,7 +99,7 @@ export class ModelRegistry {
         onProgress?.(++loaded, manifest.models.length);
       }),
     );
-    return new ModelRegistry(manifest, containers);
+    return new ModelRegistry(manifest, containers, scene);
   }
 
   get ids(): string[] {

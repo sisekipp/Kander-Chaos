@@ -15,9 +15,9 @@ import { DgmGrid } from './dgm.ts';
 import { rawPaths } from './fetch.ts';
 import { checkProps } from './props/check.ts';
 import { checkDetails } from './roads/check.ts';
-import { config, REGIONAL } from './config.ts';
+import { config, REGIONAL, REPO_ROOT } from './config.ts';
 import { projectToWorld } from './area.ts';
-import { checkBudgets, checkRegion } from './region/check.ts';
+import { checkBudgets, checkLandmarks, checkRegion } from './region/check.ts';
 import { buildSkyline } from './region/skyline.ts';
 import { RoadGraph } from './roads/network.ts';
 import type { Place } from './build.ts';
@@ -91,6 +91,17 @@ export async function runCheck({ determinism }: { determinism: boolean }): Promi
     });
     for (const m of r.messages) console.log(`  ${m}`);
     good &&= r.ok;
+    // Wahrzeichen der Region (Liste assets/landmarks/region.json)
+    const reg = JSON.parse(await readFile(path.join(REPO_ROOT, 'assets/landmarks/region.json'), 'utf8'));
+    const expected = [
+      ...Object.values(reg.overrides as Record<string, { id: string; height?: number }>),
+      ...(reg.extras as { id: string; height?: number }[]),
+    ];
+    const found = JSON.parse(await readFile(path.join(dir, 'landmarks.json'), 'utf8')).landmarks;
+    const sky = JSON.parse(await readFile(path.join(dir, 'skyline.json'), 'utf8')).buildings;
+    const lc = checkLandmarks(expected, found, sky);
+    for (const m of lc.messages) console.log(`  ${m}`);
+    good &&= lc.ok;
   }
 
   // 3. Abdeckung der Ortsteile: Kacheln im Umkreis von 300 m enthalten Gebäude

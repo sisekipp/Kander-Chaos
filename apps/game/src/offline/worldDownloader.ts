@@ -10,6 +10,7 @@ const META_FILES = [
   'helipads.json',
   'skyline.json',
   'farterrain.bin',
+  'silhouettes.json',
 ] as const;
 const worldPath = (f: string) => `${BASE_URL}world/${f}`;
 const pendingPath = (f: string) => `${BASE_URL}world/pending/${f}`;

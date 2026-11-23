@@ -1,11 +1,12 @@
-import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { createIO, optimizeDocument } from './optimize.ts';
 import { paths } from './paths.ts';
 import { applyColorZones } from './recolor.ts';
 import { parseRecipe, type ManifestEntry, type Recipe } from './recipe.ts';
-import { checkBudget, countTriangles, detachableParts, HELICOPTER_TRIANGLES, validateModel } from './validate.ts';
+import { createHash } from 'node:crypto';
+import { checkBudget, countTriangles, detachableParts, triangleLimitFor, validateModel } from './validate.ts';
 import { splitParts } from './split.ts';
 import { bakePaletteTexture } from './texbake.ts';
 import { scaleScene, vehicleDims } from './vehicleDims.ts';
@@ -36,9 +37,12 @@ export async function buildModels(): Promise<{ ok: boolean; messages: string[] }
   const recipes = await loadRecipes();
   const io = await createIO();
   const manifest: ManifestEntry[] = [];
+  const remote: ManifestEntry[] = [];
   const messages: string[] = [];
   const sizes: Record<string, number> = {};
   await mkdir(paths.out, { recursive: true });
+  await mkdir(paths.outRemote, { recursive: true });
+  for (const f of await readdir(paths.outRemote)) if (f.endsWith('.glb')) await rm(path.join(paths.outRemote, f));
   for (const r of recipes) {
     const doc = await io.read(sourcePath(r));
     let zones: string[] = [];
@@ -55,16 +59,18 @@ export async function buildModels(): Promise<{ ok: boolean; messages: string[] }
       scaleScene(doc, typeof r.scale === 'number' ? [r.scale, r.scale, r.scale] : r.scale);
     const dims = r.vehicle ? vehicleDims(doc, r.vehicle.wheels) : null;
     await optimizeDocument(doc);
-    const errors = validateModel(r.id, r.kind, doc, r.vehicle?.vehicleKind === 3 ? HELICOPTER_TRIANGLES : undefined);
+    const errors = validateModel(r.id, r.kind, doc, triangleLimitFor(r));
     if (errors.length) {
       messages.push(...errors.map((e) => `✘ ${e}`));
       continue;
     }
     const glb = await io.writeBinary(doc);
-    const file = `${r.id}.glb`;
-    await writeFile(path.join(paths.out, file), glb);
-    sizes[r.id] = glb.byteLength;
-    manifest.push({
+    const sha256 = createHash('sha256').update(glb).digest('hex');
+    // Regionsmodelle: unveränderliche Dateinamen mit Hash, eigenes Manifest, nicht im Offline-Budget
+    const file = r.remote ? `${r.id}.${sha256.slice(0, 10)}.glb` : `${r.id}.glb`;
+    await writeFile(path.join(r.remote ? paths.outRemote : paths.out, file), glb);
+    if (!r.remote) sizes[r.id] = glb.byteLength;
+    (r.remote ? remote : manifest).push({
       id: r.id,
       kind: r.kind,
       file,
@@ -73,16 +79,22 @@ export async function buildModels(): Promise<{ ok: boolean; messages: string[] }
       zones,
       parts: detachableParts(doc),
       ...(r.vehicle && dims ? { vehicle: { ...r.vehicle, ...dims } } : {}),
+      ...(r.remote ? { sha256 } : {}),
     });
     messages.push(`✔ ${r.id}: ${countTriangles(doc)} Dreiecke, ${(glb.byteLength / 1024).toFixed(0)} KB`);
   }
   const budget = checkBudget(sizes);
   messages.push(`${budget.ok ? '✔' : '✘'} ${budget.message}`);
   const ok = budget.ok && !messages.some((m) => m.startsWith('✘'));
-  if (ok)
+  if (ok) {
     await writeFile(
       path.join(paths.out, 'manifest.json'),
       JSON.stringify({ version: 1, models: manifest }, null, 2) + '\n',
     );
+    await writeFile(
+      path.join(paths.outRemote, 'manifest-remote.json'),
+      JSON.stringify({ version: 1, models: remote }, null, 2) + '\n',
+    );
+  }
   return { ok, messages };
 }

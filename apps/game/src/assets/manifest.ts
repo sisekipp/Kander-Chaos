@@ -31,6 +31,8 @@ export interface ModelEntry {
   /** Knoten der lösbaren Teile (`detach_*`). */
   parts: string[];
   vehicle?: VehicleInfo;
+  /** Prüfsumme (nur Modelle der Region, `manifest-remote.json`). */
+  sha256?: string;
 }
 
 export interface ModelManifest {

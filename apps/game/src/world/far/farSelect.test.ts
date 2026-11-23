@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vite-plus/test';
 import { buildFarTerrain } from '@kandern/world-format';
-import { farGrid, visibleSilhouettes } from './farSelect.ts';
+import { farGrid, silhouetteBoxes, visibleSilhouettes } from './farSelect.ts';
 
 describe('visibleSilhouettes', () => {
   const list = [
@@ -27,5 +27,29 @@ describe('farGrid', () => {
       1,
     );
     expect(none.indices.length).toBe(0);
+  });
+});
+
+describe('silhouetteBoxes', () => {
+  const list = [
+    { x: 100, z: 0, h: 60, w: 30, d: 20, landmarkId: 'muenster' },
+    { x: 500, z: 0, h: 80, w: 10, d: 10 },
+  ];
+  it('Wahrzeichen aus mehreren gedrehten Quadern, sonst ein Quader', () => {
+    const shapes = {
+      muenster: [
+        [0, 10, 0, 40, 20, 20],
+        [-15, 40, 5, 6, 60, 6],
+      ],
+    };
+    // Längsachse nach Norden (+z): lx zeigt nach +z
+    const lms = new Map([['muenster', { x: 100, z: 0, ux: 0, uz: 1 }]]);
+    const b = silhouetteBoxes(list, [0, 1], shapes, lms, () => 250);
+    expect(b).toHaveLength(3);
+    expect(b[0]).toMatchObject({ x: 100, y: 260, z: 0, sx: 40, sy: 20 });
+    expect(b[1].z).toBeCloseTo(-15);
+    expect(b[1].x).toBeCloseTo(95);
+    expect(b[1].yaw).toBeCloseTo(-Math.PI / 2);
+    expect(b[2]).toMatchObject({ x: 500, y: 290, sx: 10, yaw: 0 });
   });
 });

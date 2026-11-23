@@ -21,9 +21,29 @@ export type LandmarkStyle =
   | 'ruin'
   | 'hall'
   | 'civic'
-  | 'inn';
+  | 'inn'
+  // Region (Change landmarks-region)
+  | 'tower'
+  | 'station_hall'
+  | 'terminal'
+  | 'control_tower'
+  | 'hangar'
+  | 'bridge'
+  | 'stadium'
+  | 'fair_hall'
+  | 'airplane';
 
-export interface LandmarkOverride {
+/** Gemeinsame Zusatzangaben für Wahrzeichen der Region. */
+interface RegionFields {
+  /** Sollhöhe in m (bekannte Höhe; Modell und Prüfung richten sich danach). */
+  height?: number;
+  /** Großes Modell (Hochhaus, Terminal): höhere Dreiecksgrenze. */
+  large?: boolean;
+  /** Wahrzeichen der Region (Modell wird bei Bedarf nachgeladen). */
+  region?: boolean;
+}
+
+export interface LandmarkOverride extends RegionFields {
   id?: string;
   name?: string;
   style?: LandmarkStyle;
@@ -31,7 +51,9 @@ export interface LandmarkOverride {
   detail?: string;
 }
 
-export interface LandmarkExtra {
+export interface LandmarkExtra extends RegionFields {
+  /** Ausrichtung der Längsachse in Grad (0 = Norden, im Uhrzeigersinn). */
+  heading?: number;
   id: string;
   name: string;
   style: LandmarkStyle;
@@ -60,6 +82,12 @@ export interface Landmark {
   wallHeight: number;
   roofHeight: number;
   levels: number;
+  /** Sollhöhe (nur Wahrzeichen der Region). */
+  height?: number;
+  large?: boolean;
+  region?: boolean;
+  /** Liegt in einer Nachladeregion (dort nur Modelle aus der Liste der Region). */
+  remote?: boolean;
   /** Tiefste Geländehöhe unter Mitte und Grundrissecken (m, aus dem DGM): Fußpunkt des Modells in allen Ringen. */
   ground: number;
 }
@@ -121,6 +149,13 @@ export function localFootprint(ring: number[], cx: number, cz: number, ux: numbe
 
 const round = (v: number, f = 100) => Math.round(v * f) / f;
 
+/** Zusatzangaben der Region nur übernehmen, wenn gesetzt (Kandern-Wahrzeichen bleiben unverändert). */
+const regionFields = (r: RegionFields | undefined): RegionFields => ({
+  ...(r?.height !== undefined ? { height: r.height } : {}),
+  ...(r?.large ? { large: true } : {}),
+  ...(r?.region ? { region: true } : {}),
+});
+
 /**
  * Wahrzeichen aus den Gebäuden (automatisch nach Art, Überschreibungen nach OSM-ID) und freie Extras.
  * `placed` liefert Höhen und Stockwerke nach den Ergänzungsregeln. Ergebnis nach ID sortiert, IDs eindeutig.
@@ -175,10 +210,12 @@ export function selectLandmarks(
       wallHeight: round(b.wallHeight),
       roofHeight: round(b.roofHeight),
       levels: b.levels,
+      ...regionFields(ov),
     });
   }
   for (const e of extras) {
     const [w, l] = e.size;
+    const h = ((e.heading ?? 90) * Math.PI) / 180;
     out.push({
       id: unique(e.id),
       name: e.name,
@@ -187,13 +224,22 @@ export function selectLandmarks(
       buildingId: null,
       x: round(e.x),
       z: round(e.z),
-      ux: 1,
-      uz: 0,
+      ux: round(Math.sin(h), 1e4),
+      uz: round(Math.cos(h), 1e4),
       footprint: [-l / 2, -w / 2, l / 2, -w / 2, l / 2, w / 2, -l / 2, w / 2],
       wallHeight: 0,
       roofHeight: 0,
       levels: 0,
+      ...regionFields(e),
     });
   }
   return out.map((l) => ({ ...l, ground: lowest(l) })).sort((a, b) => a.id.localeCompare(b.id));
+}
+
+/** Überschreibungen, deren OSM-Gebäude nicht in der Welt gelandet ist (Tippfehler, Gebäude fehlt). */
+export function missingOverrides(overrides: Record<string, LandmarkOverride>, found: Landmark[]): string[] {
+  const ids = new Set(found.flatMap((l) => (l.buildingId === null ? [] : [String(osmIdOf(l.buildingId))])));
+  return Object.keys(overrides)
+    .filter((k) => !ids.has(k))
+    .sort();
 }

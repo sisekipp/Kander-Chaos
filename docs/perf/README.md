@@ -135,3 +135,17 @@ Route: Landeplatz Kandern → Lörrach → Basel Innenstadt → Landeplatz EuroA
 Auch hier begrenzt die Bildwiederholrate (100 fps); maßgeblich ist die Messung auf dem iPad Pro 1. Gen (Ziel Ø ≥ 30 fps, 1-%-Low ≥ 20 fps). Screenshots von Piste und Autobahn legt `e2e/airport.spec.ts` unter `apps/game/test-results/` ab.
 
 **iPad Pro 1. Gen (23.11.2026):** Flug über Basel und Messroute „Heli Basel“ mit Netz-Nachladen auf dem Gerät geprüft – flüssig, vom Tester als ausreichend bestätigt (keine Einzelwerte notiert).
+
+### Mit den Wahrzeichen der Region (Change landmarks-region, 23.11.2026)
+
+Gleiche Route „Heli Basel“, jetzt mit 31 nachgeladenen Wahrzeichen-Modellen (Roche-Türme, Münster, Rathaus, Terminal, Flugzeuge …):
+
+| Wert (Desktop, WebKit, E2E) | Ergebnis |
+| --- | --- |
+| Dauer | 522 s |
+| Ø Bildrate | 98,8 fps |
+| 1-%-Low | 83,3 fps |
+| Längstes Bild | 438 ms (einmalig) |
+| Stichproben ohne Gelände | 0 von 1026 |
+
+Screenshots von Basel, Weil am Rhein, Lörrach, Müllheim und dem Flughafen legt `e2e/landmarks-region.spec.ts` unter `apps/game/test-results/` ab.

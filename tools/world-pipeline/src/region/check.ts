@@ -75,3 +75,27 @@ export function checkRegion(tiles: TileData[], skyline: SkylineEntry[], t: Regio
   check(!!tall, `Roche-Turm > 150 m in der Fernsicht-Liste${tall ? ` (${tall.h} m)` : ''}`);
   return { ok, messages };
 }
+
+/** Wahrzeichen der Region: alle Einträge der Liste gefunden, Höhe in der Fernsicht-Liste ±10 % der Sollhöhe. */
+export function checkLandmarks(
+  expected: { id: string; height?: number }[],
+  found: { id: string }[],
+  skyline: SkylineEntry[],
+): CheckResult {
+  const messages: string[] = [];
+  const have = new Set(found.map((l) => l.id));
+  const missing = expected.filter((e) => !have.has(e.id)).map((e) => e.id);
+  messages.push(
+    missing.length
+      ? `✘ ${missing.length} Wahrzeichen der Region fehlen: ${missing.join(', ')}`
+      : `✔ alle ${expected.length} Wahrzeichen der Region gefunden`,
+  );
+  const off: string[] = [];
+  for (const e of expected) {
+    const s = skyline.find((k) => k.landmarkId === e.id);
+    if (!s || e.height === undefined) continue;
+    if (Math.abs(s.h - e.height) > e.height * 0.1) off.push(`${e.id} ${s.h} m statt ${e.height} m`);
+  }
+  messages.push(off.length ? `✘ Höhen weichen > 10 % ab: ${off.join('; ')}` : '✔ Höhen der Wahrzeichen ±10 %');
+  return { ok: !missing.length && !off.length, messages };
+}

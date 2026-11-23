@@ -62,8 +62,9 @@ export function createTiles(
   const scene = game.scene;
   const q = game.quality;
   const usable = LandmarkLayer.usable(landmarkList, getModels());
+  let landmarksRef: LandmarkLayer | null = null;
   const tiles = new TileManager({
-    skipBuildings: usable.flatMap((l) => (l.buildingId === null ? [] : [l.buildingId])),
+    skipBuildings: (id) => landmarksRef?.skipFor(id) ?? [],
     scene,
     index,
     worldUrl: WORLD_URL,
@@ -82,7 +83,11 @@ export function createTiles(
   });
   tiles.addLayer(new GeometryLayer(scene, materials));
   const landmarks = new LandmarkLayer(scene, getModels()!, usable, index.tileSize, physics);
-  if (usable.length) tiles.addLayer(landmarks);
+  landmarksRef = landmarks;
+  if (usable.length) {
+    tiles.addLayer(landmarks);
+    landmarks.watchRemote((id) => tiles.refresh(id));
+  }
   if (physics) tiles.addLayer(new CollisionLayer(scene));
   tiles.addLayer(new RoadLayer(scene, materials.roads, physics, materials.water));
   tiles.addLayer(new TreeLayer(scene, createTreeBases(scene, materials.trees)));

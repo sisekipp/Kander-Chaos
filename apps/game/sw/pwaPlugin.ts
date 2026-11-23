@@ -38,6 +38,7 @@ export function pwaPlugin(opts: PwaPluginOptions): Plugin {
           !f.startsWith('world/') &&
           // Nachladeregionen: nur bei Bedarf geladen, eigener Speicher (Region-Cache, 400 MB)
           !f.startsWith('world-remote/') &&
+          !f.startsWith('models-remote/') &&
           f !== '_headers' &&
           !f.endsWith('.map'),
       );

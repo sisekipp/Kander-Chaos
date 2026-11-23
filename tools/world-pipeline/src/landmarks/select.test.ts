@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vite-plus/test';
 import { BuildingType, RoofShape, type Building } from '@kandern/world-format';
-import { localFootprint, osmIdOf, selectLandmarks, styleOf, type RawLandmarkBuilding } from './select.ts';
+import {
+  localFootprint,
+  missingOverrides,
+  osmIdOf,
+  selectLandmarks,
+  styleOf,
+  type RawLandmarkBuilding,
+} from './select.ts';
 
 const building = (id: number): Building => ({
   id,
@@ -79,5 +86,34 @@ describe('selectLandmarks', () => {
 
   it('localFootprint dreht in die Längsachse', () => {
     expect(localFootprint([10, 0, 0, 10], 0, 0, 0, 1)).toEqual([0, -10, 10, 0]);
+  });
+});
+
+describe('Wahrzeichen der Region', () => {
+  const raw: RawLandmarkBuilding[] = [{ id: 1e12 + 7, tags: { building: 'office' }, outline: rect }];
+  const placed = new Map(raw.map((r) => [r.id, building(r.id)]));
+
+  it('Treffer per OSM-ID übernimmt Sollhöhe, Größe und Region', () => {
+    const [l] = selectLandmarks(raw, placed, {
+      '7': { id: 'roche', name: 'Roche', style: 'tower', height: 205, large: true, region: true },
+    });
+    expect(l).toMatchObject({ id: 'roche', style: 'tower', height: 205, large: true, region: true });
+  });
+
+  it('freies Wahrzeichen: Koordinate und Ausrichtung (0° = Norden = +z)', () => {
+    const [l] = selectLandmarks([], new Map(), {}, [
+      { id: 'flugzeug', name: 'F', style: 'airplane', x: 10, z: 20, size: [30, 40], heading: 0, region: true },
+    ]);
+    expect(l).toMatchObject({ x: 10, z: 20, ux: 0, uz: 1, buildingId: null, region: true });
+    const [e] = selectLandmarks([], new Map(), {}, [
+      { id: 'b', name: 'B', style: 'bridge', x: 0, z: 0, size: [8, 20], heading: 90 },
+    ]);
+    expect(e.ux).toBeCloseTo(1);
+    expect(e.region).toBeUndefined();
+  });
+
+  it('fehlende OSM-ID wird gemeldet', () => {
+    const ov = { '7': { style: 'tower' as const }, '999': { style: 'tower' as const } };
+    expect(missingOverrides(ov, selectLandmarks(raw, placed, ov))).toEqual(['999']);
   });
 });

@@ -1,5 +1,92 @@
 [
   {
+    "id": "landmark-basel-badischer-bahnhof",
+    "kind": "landmark",
+    "source": "landmarks/basel-badischer-bahnhof.glb",
+    "remote": true,
+    "large": true
+  },
+  {
+    "id": "landmark-basel-claraturm",
+    "kind": "landmark",
+    "source": "landmarks/basel-claraturm.glb",
+    "remote": true,
+    "large": true
+  },
+  {
+    "id": "landmark-basel-messe",
+    "kind": "landmark",
+    "source": "landmarks/basel-messe.glb",
+    "remote": true,
+    "large": true
+  },
+  {
+    "id": "landmark-basel-messeturm",
+    "kind": "landmark",
+    "source": "landmarks/basel-messeturm.glb",
+    "remote": true,
+    "large": true
+  },
+  {
+    "id": "landmark-basel-mittlere-bruecke",
+    "kind": "landmark",
+    "source": "landmarks/basel-mittlere-bruecke.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-basel-muenster",
+    "kind": "landmark",
+    "source": "landmarks/basel-muenster.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-basel-rathaus",
+    "kind": "landmark",
+    "source": "landmarks/basel-rathaus.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-basel-roche-bau-1",
+    "kind": "landmark",
+    "source": "landmarks/basel-roche-bau-1.glb",
+    "remote": true,
+    "large": true
+  },
+  {
+    "id": "landmark-basel-roche-bau-2",
+    "kind": "landmark",
+    "source": "landmarks/basel-roche-bau-2.glb",
+    "remote": true,
+    "large": true
+  },
+  {
+    "id": "landmark-basel-sbb",
+    "kind": "landmark",
+    "source": "landmarks/basel-sbb.glb",
+    "remote": true,
+    "large": true
+  },
+  {
+    "id": "landmark-basel-spalentor",
+    "kind": "landmark",
+    "source": "landmarks/basel-spalentor.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-basel-st-jakob-park",
+    "kind": "landmark",
+    "source": "landmarks/basel-st-jakob-park.glb",
+    "remote": true,
+    "large": true
+  },
+  {
+    "id": "landmark-basel-st-jakob-turm",
+    "kind": "landmark",
+    "source": "landmarks/basel-st-jakob-turm.glb",
+    "remote": true,
+    "large": true
+  },
+  {
     "id": "landmark-church-277927901",
     "kind": "landmark",
     "source": "landmarks/church-277927901.glb"
@@ -53,6 +140,61 @@
     "id": "landmark-civic-kandertalhalle",
     "kind": "landmark",
     "source": "landmarks/civic-kandertalhalle.glb"
+  },
+  {
+    "id": "landmark-euroairport-flugzeug-1",
+    "kind": "landmark",
+    "source": "landmarks/euroairport-flugzeug-1.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-euroairport-flugzeug-2",
+    "kind": "landmark",
+    "source": "landmarks/euroairport-flugzeug-2.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-euroairport-flugzeug-3",
+    "kind": "landmark",
+    "source": "landmarks/euroairport-flugzeug-3.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-euroairport-flugzeug-4",
+    "kind": "landmark",
+    "source": "landmarks/euroairport-flugzeug-4.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-euroairport-flugzeug-5",
+    "kind": "landmark",
+    "source": "landmarks/euroairport-flugzeug-5.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-euroairport-hangar-1",
+    "kind": "landmark",
+    "source": "landmarks/euroairport-hangar-1.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-euroairport-hangar-2",
+    "kind": "landmark",
+    "source": "landmarks/euroairport-hangar-2.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-euroairport-terminal",
+    "kind": "landmark",
+    "source": "landmarks/euroairport-terminal.glb",
+    "remote": true,
+    "large": true
+  },
+  {
+    "id": "landmark-euroairport-tower",
+    "kind": "landmark",
+    "source": "landmarks/euroairport-tower.glb",
+    "remote": true
   },
   {
     "id": "landmark-fire_station-30483984",
@@ -195,9 +337,40 @@
     "source": "landmarks/kindergarten-668713576.glb"
   },
   {
+    "id": "landmark-loerrach-bahnhof",
+    "kind": "landmark",
+    "source": "landmarks/loerrach-bahnhof.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-loerrach-burg-roetteln",
+    "kind": "landmark",
+    "source": "landmarks/loerrach-burg-roetteln.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-loerrach-rathaus",
+    "kind": "landmark",
+    "source": "landmarks/loerrach-rathaus.glb",
+    "remote": true,
+    "large": true
+  },
+  {
     "id": "landmark-manor-schloss-buergeln",
     "kind": "landmark",
     "source": "landmarks/manor-schloss-buergeln.glb"
+  },
+  {
+    "id": "landmark-muellheim-bahnhof",
+    "kind": "landmark",
+    "source": "landmarks/muellheim-bahnhof.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-muellheim-martinskirche",
+    "kind": "landmark",
+    "source": "landmarks/muellheim-martinskirche.glb",
+    "remote": true
   },
   {
     "id": "landmark-sausenburg",
@@ -238,5 +411,29 @@
     "id": "landmark-townhall-rathaus-sitzenkirch",
     "kind": "landmark",
     "source": "landmarks/townhall-rathaus-sitzenkirch.glb"
+  },
+  {
+    "id": "landmark-weil-dreilaenderbruecke",
+    "kind": "landmark",
+    "source": "landmarks/weil-dreilaenderbruecke.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-weil-vitra-design-museum",
+    "kind": "landmark",
+    "source": "landmarks/weil-vitra-design-museum.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-weil-vitra-feuerwehrhaus",
+    "kind": "landmark",
+    "source": "landmarks/weil-vitra-feuerwehrhaus.glb",
+    "remote": true
+  },
+  {
+    "id": "landmark-weil-vitra-haus",
+    "kind": "landmark",
+    "source": "landmarks/weil-vitra-haus.glb",
+    "remote": true
   }
 ]

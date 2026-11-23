@@ -1,0 +1,226 @@
+{
+  "$comment": "Wahrzeichen der Region (Change landmarks-region). overrides: OSM-ID -> Bauvorlage/Handarbeit, height = Sollhöhe in m (Quelle: öffentliche Angaben, beim Bau mit Fotos abgleichen). extras: freie Bauten per Koordinate, heading in Grad (0 = Norden, im Uhrzeigersinn).",
+  "overrides": {
+    "317511699": {
+      "id": "basel-roche-bau-2",
+      "name": "Roche-Turm Bau 2",
+      "style": "tower",
+      "detail": "roche-bau-2",
+      "height": 205,
+      "large": true
+    },
+    "680531949": {
+      "id": "basel-roche-bau-1",
+      "name": "Roche-Turm Bau 1",
+      "style": "tower",
+      "detail": "roche-bau-1",
+      "height": 178,
+      "large": true
+    },
+    "315916699": { "id": "basel-messeturm", "name": "Messeturm Basel", "style": "tower", "height": 105, "large": true },
+    "1066854142": { "id": "basel-claraturm", "name": "Claraturm", "style": "tower", "height": 96, "large": true },
+    "97330670": {
+      "id": "basel-st-jakob-turm",
+      "name": "St. Jakob-Turm",
+      "style": "tower",
+      "height": 71,
+      "large": true
+    },
+    "137472252": {
+      "id": "basel-muenster",
+      "name": "Basler Münster",
+      "style": "church",
+      "detail": "basler-muenster",
+      "height": 65
+    },
+    "7634307": {
+      "id": "basel-rathaus",
+      "name": "Rathaus Basel",
+      "style": "townhall",
+      "detail": "rathaus-basel",
+      "height": 30
+    },
+    "3531078": {
+      "id": "basel-spalentor",
+      "name": "Spalentor",
+      "style": "townhall",
+      "detail": "spalentor",
+      "height": 40
+    },
+    "100712891": {
+      "id": "basel-sbb",
+      "name": "Bahnhof Basel SBB",
+      "style": "station_hall",
+      "detail": "basel-sbb",
+      "height": 25,
+      "large": true
+    },
+    "100789428": {
+      "id": "basel-badischer-bahnhof",
+      "name": "Badischer Bahnhof",
+      "style": "station_hall",
+      "detail": "badischer-bahnhof",
+      "height": 22,
+      "large": true
+    },
+    "18445990": {
+      "id": "basel-messe",
+      "name": "Messe Basel",
+      "style": "fair_hall",
+      "detail": "messe-halle-1",
+      "height": 32,
+      "large": true
+    },
+    "24218258": {
+      "id": "weil-vitra-feuerwehrhaus",
+      "name": "Vitra-Feuerwehrhaus",
+      "style": "civic",
+      "detail": "vitra-feuerwehrhaus",
+      "height": 12
+    },
+    "208410276": {
+      "id": "weil-vitra-design-museum",
+      "name": "Vitra Design Museum",
+      "style": "museum",
+      "detail": "vitra-museum",
+      "height": 15
+    },
+    "196642543": {
+      "id": "weil-vitra-haus",
+      "name": "Vitra Haus",
+      "style": "civic",
+      "detail": "vitra-haus",
+      "height": 22
+    },
+    "90792567": {
+      "id": "loerrach-burg-roetteln",
+      "name": "Burg Rötteln",
+      "style": "ruin",
+      "detail": "burg-roetteln",
+      "height": 25
+    },
+    "86323418": { "id": "loerrach-rathaus", "name": "Rathaus Lörrach", "style": "tower", "height": 60, "large": true },
+    "86323386": { "id": "loerrach-bahnhof", "name": "Bahnhof Lörrach", "style": "station", "height": 12 },
+    "163860837": { "id": "muellheim-martinskirche", "name": "Martinskirche Müllheim", "style": "church", "height": 30 },
+    "481916833": {
+      "id": "euroairport-terminal",
+      "name": "Terminal EuroAirport",
+      "style": "terminal",
+      "detail": "terminal-eap",
+      "height": 20,
+      "large": true
+    },
+    "481916976": { "id": "euroairport-hangar-1", "name": "Hangar EuroAirport", "style": "hangar", "height": 22 },
+    "481298814": { "id": "euroairport-hangar-2", "name": "Hangar EuroAirport Süd", "style": "hangar", "height": 22 }
+  },
+  "extras": [
+    {
+      "id": "basel-mittlere-bruecke",
+      "name": "Mittlere Brücke",
+      "style": "bridge",
+      "detail": "mittlere-bruecke",
+      "lat": 47.56026,
+      "lon": 7.58994,
+      "heading": 333,
+      "size": [20, 192],
+      "height": 12
+    },
+    {
+      "id": "weil-dreilaenderbruecke",
+      "name": "Dreiländerbrücke",
+      "style": "bridge",
+      "detail": "dreilaenderbruecke",
+      "lat": 47.59133,
+      "lon": 7.59189,
+      "heading": 97,
+      "size": [8, 248],
+      "height": 24
+    },
+    {
+      "id": "basel-st-jakob-park",
+      "name": "St. Jakob-Park",
+      "style": "stadium",
+      "lat": 47.5416,
+      "lon": 7.6203,
+      "heading": 15,
+      "size": [150, 190],
+      "height": 32,
+      "large": true
+    },
+    {
+      "id": "muellheim-bahnhof",
+      "name": "Bahnhof Müllheim",
+      "style": "station",
+      "lat": 47.8099,
+      "lon": 7.6205,
+      "heading": 15,
+      "size": [12, 40],
+      "height": 11
+    },
+    {
+      "id": "euroairport-tower",
+      "name": "Tower EuroAirport",
+      "style": "control_tower",
+      "lat": 47.6002,
+      "lon": 7.5262,
+      "heading": 0,
+      "size": [14, 14],
+      "height": 45
+    },
+    {
+      "id": "euroairport-flugzeug-1",
+      "name": "Flugzeug 1",
+      "style": "airplane",
+      "detail": "medium",
+      "lat": 47.5996,
+      "lon": 7.5284,
+      "heading": 250,
+      "size": [36, 40],
+      "height": 12
+    },
+    {
+      "id": "euroairport-flugzeug-2",
+      "name": "Flugzeug 2",
+      "style": "airplane",
+      "detail": "medium",
+      "lat": 47.6001,
+      "lon": 7.5287,
+      "heading": 250,
+      "size": [36, 40],
+      "height": 12
+    },
+    {
+      "id": "euroairport-flugzeug-3",
+      "name": "Flugzeug 3",
+      "style": "airplane",
+      "detail": "medium",
+      "lat": 47.5991,
+      "lon": 7.5281,
+      "heading": 250,
+      "size": [36, 40],
+      "height": 12
+    },
+    {
+      "id": "euroairport-flugzeug-4",
+      "name": "Flugzeug 4",
+      "style": "airplane",
+      "detail": "regional",
+      "lat": 47.6006,
+      "lon": 7.529,
+      "heading": 250,
+      "size": [27, 30],
+      "height": 9
+    },
+    {
+      "id": "euroairport-flugzeug-5",
+      "name": "Flugzeug 5",
+      "style": "airplane",
+      "detail": "regional",
+      "lat": 47.5986,
+      "lon": 7.5278,
+      "heading": 250,
+      "size": [27, 30],
+      "height": 9
+    }
+  ]
+}
